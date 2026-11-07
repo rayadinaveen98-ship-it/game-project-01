@@ -1,0 +1,15 @@
+{
+  "name": "snapline-pulse-grid-p21",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "description": "GP-01 Snapline Sprint P2.1 approved Pulse Grid direction / visual refinement review",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/prepare.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}

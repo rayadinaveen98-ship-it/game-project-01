@@ -64,3 +64,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Gameplay remains working Plan & Run A. Chromium desktop route+win passes in all three palettes; emulated mobile touch and GO succeeds. Base 10 unit tests pass. **Physical P2 testing and final visual approval are pending.**
 - See [visual review report](../05-art-direction/snapline/P2_VISUAL_REVIEW_v0.6.md) and [browser source](../../prototypes/snapline/visual-review/README_P2.md).
 - No one theme selected, no art bible locked, no B/C mechanics implemented or APK built.
+
+## Snapline Pulse Grid direction approved — November 7, 2026 (DEC-022)
+**Owner chose Option A (Pulse Grid)** for the Snapline prototype and authorized the next visual refinement stage. Ink Trail and Micro Runner remain archival concepts, not active production directions. P2 sample lab is merged from PR #13.
+
+**P2.1 refinement implemented for review** in `prototypes/snapline/pulse-grid/`: actual Home→Game→Result flow, accurate run length/time/attempt values (not mock-up figures), Help overlay, next/retry/home actions, responsive Pulse Grid layout and preserved P1 collision simulation. No final screen-level sign-off yet.
+
+**Tests:** original 10/10 unit tests pass; Chromium desktop Home→Game→draw→GO→Result passes; 360, 390 and 412 width mobile **emulation** runs pass with actual finger trace and Next Course. Physical device P2.1 test and approved layout/screenshots remain pending. See [art bible](../05-art-direction/snapline/PULSE_GRID_ART_BIBLE_v0.1.md) and [visual refinement report](../05-art-direction/snapline/P2_1_VISUAL_REVIEW.md).
