@@ -100,3 +100,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Added seven tests (22 total): guided collision, timely rescue, late-snap failure, invalid edits, seeded 480-target fuzz, deterministic replay and baseline parity.
 - Locally passed strict TS/Node 22/22 and real Chromium desktop + 360/390/412 mobile **emulation** interactive B correction; A baseline regression passed separately. P4 physical-device approval and independent playtesting still pending.
 - **No Live Drawing C, monetization, APK or full-game production approved.** [P4 technical report](../06-technical-design/snapline_P4_implementation_report.md).
+
+## P4 merge verification — November 7, 2026
+- The playable P4 prototype is **on `main`**, from [PR #17](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/17) at merge commit `cc28c0e7b350ac2a4a99cb475d3cc74fa4218bde`.
+- Five GitHub workflows passed: P4 Practice & QA, P3 Snap, P2.1 Pulse Grid, P1 Baseline, and Documentation.
+- Mode B adds optional practice **Course 03 / Patrol Crossing**. Modes A/B retain the original first two fair comparison courses. The owner's P4 physical-device acceptance remains pending.
+- Offline playable file: `prototypes/snapline/pulse-grid/standalone.html`.
+- Next gate: physical P4 phone verification, then independent A/B comprehension/game-feel study. C / Live Drawing is a separate future prototype option, not implemented.
