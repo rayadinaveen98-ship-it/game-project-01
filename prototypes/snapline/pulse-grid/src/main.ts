@@ -2,6 +2,8 @@ import type {Course,Route,Run,Vec,GameMode} from './core/types.js';
 import {MODE_COPY,coursesForMode,isAccessibleCourse,firstCourse,nextCourse} from './game/catalog.js';
 import {readProgress,writeProgress,recordWin,clearProgress,completedInMode,progressId} from './game/progress.js';
 import type {LocalStore,Progress} from './game/progress.js';
+import {MODE_GUIDES,readGuideHistory,markGuide,saveGuideHistory} from './game/onboarding.js';
+import type {GuideHistory,GuideChoice} from './game/onboarding.js';
 import {distance,lengthOf,pointAtDistance} from './core/geometry.js';
 import {validateRoute,beginRun,advanceRun,FIXED_STEP,START_ZONE} from './core/simulation.js';
 import {COURSES,BOARD_WIDTH,BOARD_HEIGHT} from './game/courses.js';
@@ -30,6 +32,7 @@ let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attemp
 let mode:GameMode='a';
 const localStore:LocalStore|null=(()=>{try{return window.localStorage;}catch{return null;}})();
 let progress:Progress=readProgress(localStore);
+let guideHistory:GuideHistory=readGuideHistory(localStore);
 let liveComplete=false,liveWaitingTicks=0,liveError:string|null=null,liveInputReleased=false;
 let snapSpent=false,snapEditing=false,snapDragging=false,snapPointer:number|null=null;
 let snapPlan:SnapPlan|null=null,snapTarget:Vec|null=null,snapPreview:SnapCheck|null=null;
@@ -281,8 +284,42 @@ type AppView='home'|'courses'|'game'|'result';
 let appView:AppView='home';
 const howto=document.querySelector<HTMLElement>('#howtoOverlay');
 if(!howto)throw new Error('Help overlay missing');
+const guideKicker=document.getElementById('guideKicker');
+const guideTitle=document.getElementById('howtoTitle');
+const guideTagline=document.getElementById('guideTagline');
+const guideSteps=document.getElementById('guideSteps');
+const guideGo=document.querySelector<HTMLButtonElement>('#closeHowto');
+const guideSkip=document.querySelector<HTMLButtonElement>('#skipHowto');
+const guideFromCourses=document.querySelector<HTMLButtonElement>('#courseGuideBtn');
+if(!guideKicker||!guideTitle||!guideTagline||!guideSteps||!guideGo||!guideSkip||!guideFromCourses)throw new Error('Mode guides controls missing');
+let guideReturnFocus:HTMLElement|null=null;
+function openModeGuide(origin:HTMLElement|null):void{
+  if(run?.phase==='running'){
+    run={...run,phase:'paused'};accumulator=0;refresh();
+  }
+  const copy=MODE_GUIDES[mode];
+  guideKicker!.textContent=copy.label;
+  guideTitle!.textContent=copy.title;
+  guideTagline!.textContent=copy.tagline;
+  guideSteps!.replaceChildren();
+  for(const step of copy.steps){const item=document.createElement('li');item.textContent=step;guideSteps!.append(item);}
+  guideGo!.replaceChildren(document.createTextNode(copy.button+' '));
+  const mark=document.createElement('span');mark.setAttribute('aria-hidden','true');mark.textContent='✓';guideGo!.append(mark);
+  guideReturnFocus=origin;
+  howto!.hidden=false;
+  guideGo!.focus();
+}
+function closeModeGuide(choice:GuideChoice):void{
+  if(howto!.hidden)return;
+  guideHistory=markGuide(guideHistory,mode,choice);
+  saveGuideHistory(localStore,guideHistory);
+  howto!.hidden=true;
+  guideReturnFocus?.focus();
+  guideReturnFocus=null;
+}
 function showView(view:AppView):void{
   appView=view;
+  if(view!=='game')howto!.hidden=true;
   document.body.dataset.view=view;
   for(const [name,id] of [['home','homeScreen'],['courses','courseScreen'],['game','gameScreen'],['result','resultScreen']] as const){
     const element=document.getElementById(id);if(element)element.hidden=name!==view;
@@ -320,6 +357,7 @@ const courseSummary=document.getElementById('courseSummary');
 if(!courseList||!courseHeading||!courseSummary)throw new Error('P6.1 course catalog missing');
 function showCourseMenu():void{
   courseHeading!.textContent=MODE_COPY[mode].name;
+  guideFromCourses!.setAttribute('aria-label',`How to play ${MODE_COPY[mode].name}`);
   courseSummary!.textContent=`${completedInMode(progress,mode)} / ${coursesForMode(mode).length} cleared locally`;
   courseList!.replaceChildren();
   for(const [index,entry] of coursesForMode(mode).entries()){
@@ -329,7 +367,7 @@ function showCourseMenu():void{
     const title=document.createElement('strong');title.textContent=entry.title.slice(5).replace(' (B Practice)','');
     const details=document.createElement('span');details.textContent=saved?`✓ CLEARED · ${saved.wins} WIN${saved.wins===1?'':'S'} · BEST ${(saved.bestTimeTicks*FIXED_STEP).toFixed(2)}s`:'NOT YET CLEARED';
     button.append(overline,title,details);
-    button.addEventListener('click',()=>{newCourse(entry.id);showView('game');});
+    button.addEventListener('click',()=>{newCourse(entry.id);showView('game');if(!guideHistory[mode])openModeGuide(btnHelp);});
     courseList!.append(button);
   }
   showView('courses');
@@ -347,9 +385,20 @@ document.getElementById('nextDemo')?.addEventListener('click',()=>{
 document.getElementById('retryResult')?.addEventListener('click',()=>{newCourse(course.id,false);showView('game');});
 document.getElementById('resultHome')?.addEventListener('click',()=>showView('home'));
 document.getElementById('backToHome')?.addEventListener('click',()=>showView('home'));
-btnHelp.addEventListener('click',()=>{howto.hidden=false;document.getElementById('closeHowto')?.focus();});
-document.getElementById('closeHowto')?.addEventListener('click',()=>{howto.hidden=true;btnHelp.focus();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!howto.hidden){howto.hidden=true;btnHelp.focus();}});
+guideFromCourses!.addEventListener('click',()=>openModeGuide(guideFromCourses!));
+btnHelp.addEventListener('click',()=>openModeGuide(btnHelp));
+guideGo!.addEventListener('click',()=>closeModeGuide('viewed'));
+guideSkip!.addEventListener('click',()=>closeModeGuide('skipped'));
+document.addEventListener('keydown',e=>{
+  if(howto.hidden)return;
+  if(e.key==='Escape'){e.preventDefault();closeModeGuide('skipped');return;}
+  if(e.key==='Tab'){
+    const active=document.activeElement;
+    if(e.shiftKey&&active===guideGo){e.preventDefault();guideSkip!.focus();}
+    else if(!e.shiftKey&&active===guideSkip){e.preventDefault();guideGo!.focus();}
+  }
+});
 showView('home');selectMode('a');
 Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,mode,snapSpent,liveComplete,liveWaitingTicks,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null}),
-  __p61Snapshot:()=>({view:appView,mode,course:course.id,available:coursesForMode(mode).map(c=>c.id),cleared:completedInMode(progress,mode),progress:JSON.parse(JSON.stringify(progress))})});
+  __p61Snapshot:()=>({view:appView,mode,course:course.id,available:coursesForMode(mode).map(c=>c.id),cleared:completedInMode(progress,mode),progress:JSON.parse(JSON.stringify(progress))}),
+  __p62Snapshot:()=>({view:appView,mode,course:course.id,guideOpen:!howto.hidden,guideTitle:guideTitle?.textContent,guideSteps:guideSteps?.children.length,guideHistory:{...guideHistory}})});

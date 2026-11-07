@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P6.1 Progress</title>
+  <title>Snapline Sprint — Pulse Grid P6.2 Mode Guides</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body data-theme="pulse" data-view="home">
@@ -13,19 +13,19 @@
       <div class="rail-top">
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>Approved Pulse Grid style. Now test a single mid-run route correction without losing fair collisions.</p>
-        <span class="lab-tag">P4 • SNAP PRACTICE + QA</span>
+        <p>Three gameplay modes. Each has a focused first-run guide with the same approved Pulse Grid style.</p>
+        <span class="lab-tag">P6.2 • THREE MODE GUIDES</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
-        <p class="rail-note"><strong>1.</strong> Start a course.<br><strong>2.</strong> Drag one line from S to F.<br><strong>3.</strong> Press GO.<br><strong>4.</strong> In mode B, tap SNAP and drag the glowing anchor.<br><strong>5.</strong> Reach F and compare results.</p>
+        <p class="rail-note"><strong>A</strong> Plan a complete route.<br><strong>B</strong> Correct one point while running.<br><strong>C</strong> Draw live ahead of the runner.<br>Tap any course to see a short, mode-specific first-run guide.</p>
       </div>
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. Snap correction is experimental, not the final mechanic.</p>
+        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. All three mechanics are kept as distinct modes.</p>
       </div>
-      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A and B share the same route and collision engine.</p></div>
+      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
     </section>
 
     <section class="presentation" aria-label="Phone-scale visual preview">
@@ -67,7 +67,7 @@
 
         <div class="course-screen overlay-screen" id="courseScreen" hidden>
           <div class="course-top"><button type="button" id="courseBack" class="course-back">← MODES</button><span>YOUR COURSES</span></div>
-          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><p id="courseModeHeading">PLAN & RUN</p></div>
+          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><div class="mode-learn-row"><p id="courseModeHeading">PLAN & RUN</p><button type="button" id="courseGuideBtn" class="mode-learn-btn">HOW TO PLAY <span aria-hidden="true">↗</span></button></div></div>
           <div class="course-cards" id="courseCards" aria-label="Available levels"></div>
           <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Your completed courses stay on this device.</span></div>
         </div>
@@ -86,11 +86,24 @@
             <div class="result-detail" id="resultDetail">Values from this run, not placeholder statistics.</div></div>
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
-        <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>Three modes.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>In mode <b>C</b>, start drawing from S: the runner launches while you draw. Stay ahead of the runner. If it reaches the tip, you have 0.75 seconds to extend the trail; join a new stroke at the mint tip. GO is automatic.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+        <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" aria-describedby="guideTagline" hidden>
+          <div class="howto-card" tabindex="-1">
+            <span class="howto-small" id="guideKicker">A · PLAN & RUN</span>
+            <h2 id="howtoTitle">Plan your path.</h2>
+            <p class="guide-tagline" id="guideTagline">Take your time. One clear route is enough.</p>
+            <svg class="guide-preview" viewBox="0 0 290 96" role="img" aria-label="Mint route bends around a coral obstacle to reach the finish">
+              <g stroke="var(--grid)" stroke-width=".7" opacity=".35"><path d="M0 32H290M0 64H290M40 0V96M100 0V96M160 0V96M220 0V96M280 0V96"/></g>
+              <rect x="109" y="35" width="70" height="31" rx="6" fill="var(--hazard)" stroke="var(--accent)" stroke-width="2"/>
+              <path d="M27 75L66 75L77 18L205 18L235 28L266 28" fill="none" stroke="var(--mint)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="75" r="11" stroke="var(--mint)" fill="var(--screen)" stroke-width="2.5"/><text x="27" y="79" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">S</text>
+              <circle cx="266" cy="28" r="11" stroke="var(--accent)" fill="var(--screen)" stroke-width="2.5"/><text x="266" y="32" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">F</text>
+            </svg>
+            <ol class="guide-steps" id="guideSteps"><li>Start at S and draw to F.</li></ol>
+            <div class="guide-actions"><button type="button" class="home-cta" id="closeHowto">START PLANNING <span aria-hidden="true">✓</span></button><button type="button" class="guide-skip" id="skipHowto">SKIP GUIDE</button></div>
+          </div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.1 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.2 BUILD</span></div>
     </section>
   </main>
   <script type="module" src="./src/main.js"></script>

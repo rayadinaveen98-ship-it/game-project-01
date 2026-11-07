@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P6.1 Progress</title>
+  <title>Snapline Sprint — Pulse Grid P6.2 Mode Guides</title>
   <style>
 /* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -114,6 +114,27 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 .course-bottom>span{font-size:9px;color:var(--muted);line-height:1.5}
 @media(max-width:400px){.course-screen{padding:19px 21px 19px}.course-intro{padding:9px 0 12px}.course-intro h2{font-size:43px}.course-intro p{margin:11px 0 0}.course-card{min-height:92px;padding:11px 14px;gap:6px}.course-cards{gap:9px;padding-bottom:10px}.course-bottom{padding-top:10px;gap:6px}.course-bottom button{height:36px}.course-bottom>span{font-size:9px}}
 
+/* P6.2 — concise guides, one visual system, no extra gameplay HUD clutter. */
+.mode-learn-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.course-intro .mode-learn-row p{margin:0;font-size:10px;letter-spacing:.12em}
+.mode-learn-btn{border:1px solid var(--divider);background:var(--surface);border-radius:9px;min-height:44px;padding:0 12px;color:var(--mint)!important;font-size:9px;font-weight:850;letter-spacing:.065em;white-space:nowrap}
+.mode-learn-btn:hover,.mode-learn-btn:focus-visible{border-color:var(--mint)}
+.mode-learn-btn span{margin-left:4px}
+.howto-overlay{overscroll-behavior:contain;padding:14px}
+.howto-card{padding:23px 22px;border-radius:18px;max-height:calc(100% - 12px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.howto-card h2{margin:12px 0 7px;font-size:35px;line-height:1.06;letter-spacing:-.06em}
+.howto-card p.guide-tagline{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
+.guide-preview{display:block;width:100%;height:auto;aspect-ratio:290/96;background:var(--board);border:1px solid var(--divider);border-radius:11px;margin:0 0 16px;max-height:96px}
+.guide-steps{list-style:none;padding:0;margin:0;counter-reset:guide;display:flex;flex-direction:column;gap:12px}
+.guide-steps li{counter-increment:guide;position:relative;padding:0 0 0 34px;font-size:12px;line-height:1.55;color:var(--text)}
+.guide-steps li::before{content:counter(guide,decimal-leading-zero);position:absolute;left:0;top:0;color:var(--mint);font-size:10px;font-weight:900;letter-spacing:.04em}
+.guide-actions{display:flex;flex-direction:column;gap:5px;margin-top:18px}
+.guide-actions .home-cta{margin:0;min-height:52px;height:52px;font-size:11px}
+.guide-actions .guide-skip{margin:0;min-height:44px;border:0;background:transparent;color:var(--muted)!important;font-size:10px;font-weight:850;letter-spacing:.09em}
+.guide-actions .guide-skip:hover{color:var(--text)!important}
+@media(max-width:400px){.course-intro .mode-learn-row{margin-top:6px}.course-intro .mode-learn-row p{font-size:9px}.mode-learn-btn{min-height:44px;padding:0 11px}.howto-card{padding:19px 18px}.howto-card h2{font-size:32px}.guide-preview{max-height:81px}.guide-steps{gap:10px}}
+@media(max-height:725px){.howto-card{max-height:calc(100% - 8px);padding:16px}.howto-card h2{margin:7px 0 5px;font-size:29px}.guide-preview{max-height:65px;margin-bottom:9px}.guide-steps{gap:6px}.guide-steps li{font-size:11px}.guide-actions{margin-top:10px}}
+
 </style>
 </head>
 <body data-theme="pulse" data-view="home">
@@ -122,19 +143,19 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
       <div class="rail-top">
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>Approved Pulse Grid style. Now test a single mid-run route correction without losing fair collisions.</p>
-        <span class="lab-tag">P4 • SNAP PRACTICE + QA</span>
+        <p>Three gameplay modes. Each has a focused first-run guide with the same approved Pulse Grid style.</p>
+        <span class="lab-tag">P6.2 • THREE MODE GUIDES</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
-        <p class="rail-note"><strong>1.</strong> Start a course.<br><strong>2.</strong> Drag one line from S to F.<br><strong>3.</strong> Press GO.<br><strong>4.</strong> In mode B, tap SNAP and drag the glowing anchor.<br><strong>5.</strong> Reach F and compare results.</p>
+        <p class="rail-note"><strong>A</strong> Plan a complete route.<br><strong>B</strong> Correct one point while running.<br><strong>C</strong> Draw live ahead of the runner.<br>Tap any course to see a short, mode-specific first-run guide.</p>
       </div>
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. Snap correction is experimental, not the final mechanic.</p>
+        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. All three mechanics are kept as distinct modes.</p>
       </div>
-      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A and B share the same route and collision engine.</p></div>
+      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
     </section>
 
     <section class="presentation" aria-label="Phone-scale visual preview">
@@ -176,7 +197,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 
         <div class="course-screen overlay-screen" id="courseScreen" hidden>
           <div class="course-top"><button type="button" id="courseBack" class="course-back">← MODES</button><span>YOUR COURSES</span></div>
-          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><p id="courseModeHeading">PLAN & RUN</p></div>
+          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><div class="mode-learn-row"><p id="courseModeHeading">PLAN & RUN</p><button type="button" id="courseGuideBtn" class="mode-learn-btn">HOW TO PLAY <span aria-hidden="true">↗</span></button></div></div>
           <div class="course-cards" id="courseCards" aria-label="Available levels"></div>
           <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Your completed courses stay on this device.</span></div>
         </div>
@@ -195,11 +216,24 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
             <div class="result-detail" id="resultDetail">Values from this run, not placeholder statistics.</div></div>
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
-        <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>Three modes.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>In mode <b>C</b>, start drawing from S: the runner launches while you draw. Stay ahead of the runner. If it reaches the tip, you have 0.75 seconds to extend the trail; join a new stroke at the mint tip. GO is automatic.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+        <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" aria-describedby="guideTagline" hidden>
+          <div class="howto-card" tabindex="-1">
+            <span class="howto-small" id="guideKicker">A · PLAN & RUN</span>
+            <h2 id="howtoTitle">Plan your path.</h2>
+            <p class="guide-tagline" id="guideTagline">Take your time. One clear route is enough.</p>
+            <svg class="guide-preview" viewBox="0 0 290 96" role="img" aria-label="Mint route bends around a coral obstacle to reach the finish">
+              <g stroke="var(--grid)" stroke-width=".7" opacity=".35"><path d="M0 32H290M0 64H290M40 0V96M100 0V96M160 0V96M220 0V96M280 0V96"/></g>
+              <rect x="109" y="35" width="70" height="31" rx="6" fill="var(--hazard)" stroke="var(--accent)" stroke-width="2"/>
+              <path d="M27 75L66 75L77 18L205 18L235 28L266 28" fill="none" stroke="var(--mint)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="75" r="11" stroke="var(--mint)" fill="var(--screen)" stroke-width="2.5"/><text x="27" y="79" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">S</text>
+              <circle cx="266" cy="28" r="11" stroke="var(--accent)" fill="var(--screen)" stroke-width="2.5"/><text x="266" y="32" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">F</text>
+            </svg>
+            <ol class="guide-steps" id="guideSteps"><li>Start at S and draw to F.</li></ol>
+            <div class="guide-actions"><button type="button" class="home-cta" id="closeHowto">START PLANNING <span aria-hidden="true">✓</span></button><button type="button" class="guide-skip" id="skipHowto">SKIP GUIDE</button></div>
+          </div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.1 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.2 BUILD</span></div>
     </section>
   </main>
   <script>
@@ -647,6 +681,68 @@ function appendStroke(points, next, spacing = 8) {
 }
 
 },
+"src/game/onboarding.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MODE_GUIDES = exports.GUIDE_KEY = void 0;
+exports.parseGuideHistory = parseGuideHistory;
+exports.readGuideHistory = readGuideHistory;
+exports.markGuide = markGuide;
+exports.saveGuideHistory = saveGuideHistory;
+exports.GUIDE_KEY = 'snapline-pulse-mode-guides-v1';
+exports.MODE_GUIDES = {
+    a: { label: 'A · PLAN & RUN', title: 'Plan your path.', tagline: 'Take your time. One clear route is enough.',
+        steps: ['Touch the glowing S and draw one continuous route to F.', 'Go around coral obstacles and stay inside the ink budget.', 'Tap GO to test your plan. Hit a hazard? Reset and try a better route.'], button: 'START PLANNING' },
+    b: { label: 'B · SNAP & REDIRECT', title: 'Plan. Then adapt.', tagline: 'One correction can change everything.',
+        steps: ['Draw your complete route from S to F, then tap GO.', 'While running, tap SNAP. The runner pauses and a mint anchor appears.', 'Drag the anchor ahead of the runner to a clear path. Release to use your one correction.'], button: 'TRY SNAP MODE' },
+    c: { label: 'C · LIVE DRAWING', title: 'Stay ahead.', tagline: 'Your line moves the game forward.',
+        steps: ['Touch S and draw. The runner launches automatically—there is no GO button.', 'Keep drawing ahead of the moving runner while avoiding coral obstacles.', 'Lift and rejoin at the mint trail tip if needed. Catching up gives a short 0.75s grace period.'], button: 'START DRAWING' }
+};
+function parseGuideHistory(raw) {
+    if (!raw || raw.length > 1024)
+        return {};
+    try {
+        const input = JSON.parse(raw);
+        if (!input || typeof input !== 'object' || Array.isArray(input))
+            return {};
+        const obj = input;
+        if (obj.version !== 1 || !obj.modes || typeof obj.modes !== 'object' || Array.isArray(obj.modes))
+            return {};
+        const m = obj.modes, result = {};
+        for (const k of ['a', 'b', 'c']) {
+            if (m[k] === 'viewed' || m[k] === 'skipped')
+                result[k] = m[k];
+        }
+        return result;
+    }
+    catch {
+        return {};
+    }
+}
+function readGuideHistory(storage) {
+    try {
+        return parseGuideHistory(storage?.getItem(exports.GUIDE_KEY) ?? null);
+    }
+    catch {
+        return {};
+    }
+}
+function markGuide(history, mode, choice) {
+    return { ...history, [mode]: choice };
+}
+function saveGuideHistory(storage, history) {
+    if (!storage)
+        return false;
+    try {
+        storage.setItem(exports.GUIDE_KEY, JSON.stringify({ version: 1, modes: history }));
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+
+},
 "src/game/progress.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -748,6 +844,7 @@ function completedInMode(progress, mode) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const catalog_js_1 = require("./game/catalog.js");
 const progress_js_1 = require("./game/progress.js");
+const onboarding_js_1 = require("./game/onboarding.js");
 const geometry_js_1 = require("./core/geometry.js");
 const simulation_js_1 = require("./core/simulation.js");
 const courses_js_1 = require("./game/courses.js");
@@ -778,6 +875,7 @@ catch {
     return null;
 } })();
 let progress = (0, progress_js_1.readProgress)(localStore);
+let guideHistory = (0, onboarding_js_1.readGuideHistory)(localStore);
 let liveComplete = false, liveWaitingTicks = 0, liveError = null, liveInputReleased = false;
 let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
 let snapPlan = null, snapTarget = null, snapPreview = null;
@@ -1230,8 +1328,54 @@ let appView = 'home';
 const howto = document.querySelector('#howtoOverlay');
 if (!howto)
     throw new Error('Help overlay missing');
+const guideKicker = document.getElementById('guideKicker');
+const guideTitle = document.getElementById('howtoTitle');
+const guideTagline = document.getElementById('guideTagline');
+const guideSteps = document.getElementById('guideSteps');
+const guideGo = document.querySelector('#closeHowto');
+const guideSkip = document.querySelector('#skipHowto');
+const guideFromCourses = document.querySelector('#courseGuideBtn');
+if (!guideKicker || !guideTitle || !guideTagline || !guideSteps || !guideGo || !guideSkip || !guideFromCourses)
+    throw new Error('Mode guides controls missing');
+let guideReturnFocus = null;
+function openModeGuide(origin) {
+    if (run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        accumulator = 0;
+        refresh();
+    }
+    const copy = onboarding_js_1.MODE_GUIDES[mode];
+    guideKicker.textContent = copy.label;
+    guideTitle.textContent = copy.title;
+    guideTagline.textContent = copy.tagline;
+    guideSteps.replaceChildren();
+    for (const step of copy.steps) {
+        const item = document.createElement('li');
+        item.textContent = step;
+        guideSteps.append(item);
+    }
+    guideGo.replaceChildren(document.createTextNode(copy.button + ' '));
+    const mark = document.createElement('span');
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = '✓';
+    guideGo.append(mark);
+    guideReturnFocus = origin;
+    howto.hidden = false;
+    guideGo.focus();
+}
+function closeModeGuide(choice) {
+    if (howto.hidden)
+        return;
+    guideHistory = (0, onboarding_js_1.markGuide)(guideHistory, mode, choice);
+    (0, onboarding_js_1.saveGuideHistory)(localStore, guideHistory);
+    howto.hidden = true;
+    guideReturnFocus?.focus();
+    guideReturnFocus = null;
+}
 function showView(view) {
     appView = view;
+    if (view !== 'game')
+        howto.hidden = true;
     document.body.dataset.view = view;
     for (const [name, id] of [['home', 'homeScreen'], ['courses', 'courseScreen'], ['game', 'gameScreen'], ['result', 'resultScreen']]) {
         const element = document.getElementById(id);
@@ -1280,6 +1424,7 @@ if (!courseList || !courseHeading || !courseSummary)
     throw new Error('P6.1 course catalog missing');
 function showCourseMenu() {
     courseHeading.textContent = catalog_js_1.MODE_COPY[mode].name;
+    guideFromCourses.setAttribute('aria-label', `How to play ${catalog_js_1.MODE_COPY[mode].name}`);
     courseSummary.textContent = `${(0, progress_js_1.completedInMode)(progress, mode)} / ${(0, catalog_js_1.coursesForMode)(mode).length} cleared locally`;
     courseList.replaceChildren();
     for (const [index, entry] of (0, catalog_js_1.coursesForMode)(mode).entries()) {
@@ -1294,7 +1439,8 @@ function showCourseMenu() {
         const details = document.createElement('span');
         details.textContent = saved ? `✓ CLEARED · ${saved.wins} WIN${saved.wins === 1 ? '' : 'S'} · BEST ${(saved.bestTimeTicks * simulation_js_1.FIXED_STEP).toFixed(2)}s` : 'NOT YET CLEARED';
         button.append(overline, title, details);
-        button.addEventListener('click', () => { newCourse(entry.id); showView('game'); });
+        button.addEventListener('click', () => { newCourse(entry.id); showView('game'); if (!guideHistory[mode])
+            openModeGuide(btnHelp); });
         courseList.append(button);
     }
     showView('courses');
@@ -1320,16 +1466,35 @@ document.getElementById('nextDemo')?.addEventListener('click', () => {
 document.getElementById('retryResult')?.addEventListener('click', () => { newCourse(course.id, false); showView('game'); });
 document.getElementById('resultHome')?.addEventListener('click', () => showView('home'));
 document.getElementById('backToHome')?.addEventListener('click', () => showView('home'));
-btnHelp.addEventListener('click', () => { howto.hidden = false; document.getElementById('closeHowto')?.focus(); });
-document.getElementById('closeHowto')?.addEventListener('click', () => { howto.hidden = true; btnHelp.focus(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !howto.hidden) {
-    howto.hidden = true;
-    btnHelp.focus();
-} });
+guideFromCourses.addEventListener('click', () => openModeGuide(guideFromCourses));
+btnHelp.addEventListener('click', () => openModeGuide(btnHelp));
+guideGo.addEventListener('click', () => closeModeGuide('viewed'));
+guideSkip.addEventListener('click', () => closeModeGuide('skipped'));
+document.addEventListener('keydown', e => {
+    if (howto.hidden)
+        return;
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModeGuide('skipped');
+        return;
+    }
+    if (e.key === 'Tab') {
+        const active = document.activeElement;
+        if (e.shiftKey && active === guideGo) {
+            e.preventDefault();
+            guideSkip.focus();
+        }
+        else if (!e.shiftKey && active === guideSkip) {
+            e.preventDefault();
+            guideGo.focus();
+        }
+    }
+});
 showView('home');
 selectMode('a');
 Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, liveComplete, liveWaitingTicks, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }),
-    __p61Snapshot: () => ({ view: appView, mode, course: course.id, available: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), cleared: (0, progress_js_1.completedInMode)(progress, mode), progress: JSON.parse(JSON.stringify(progress)) }) });
+    __p61Snapshot: () => ({ view: appView, mode, course: course.id, available: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), cleared: (0, progress_js_1.completedInMode)(progress, mode), progress: JSON.parse(JSON.stringify(progress)) }),
+    __p62Snapshot: () => ({ view: appView, mode, course: course.id, guideOpen: !howto.hidden, guideTitle: guideTitle?.textContent, guideSteps: guideSteps?.children.length, guideHistory: { ...guideHistory } }) });
 
 },
 "src/ui/render.js":function(require,module,exports){
