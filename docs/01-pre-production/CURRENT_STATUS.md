@@ -32,3 +32,11 @@ These remain available in the previously supplied v0.4 archive. Avoid claiming G
 Prepare tester briefing with anonymized form; recruit first-time players; record observations without inventing outcomes. Keep three experimental mechanic families open.
 
 No gameplay programming has begun. No APK exists.
+
+## Concept slate expansion — November 7, 2026 (proposed)
+Three user-submitted directions have been analyzed without selecting a game:
+- C09: untitled young-girl adventure (NEW proposal)
+- C08: Snapline Sprint drawing arcade (REVISITED; title not cleared)
+- C02-R: cinematic detective mystery (REVISED proposal; no title approved)
+
+See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ideas_comparative_assessment.md) for mechanic briefs, confirmed competitor overlaps, visual and production risk, business assumptions, and proposed independent gameplay tests. This supersedes **no** approved decision and **does not** change the historical v0.4 snapshot. Human playtesting is still pending.
