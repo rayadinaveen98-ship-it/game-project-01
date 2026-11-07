@@ -1,0 +1,20 @@
+ID,Phase,Task,Priority,Status,Owner,Definition_of_Done
+TASK-001,P0,Draft preproduction project charter,P0,DRAFT_COMPLETE,Assistant,Charter file exists; awaiting product owner review
+TASK-002,P0,Create source-of-truth decision/risk/backlog logs,P0,DRAFT_COMPLETE,Assistant,Baseline logs with traceable IDs exist
+TASK-003,P1,Identify 3–5 original game concepts,P0,EIGHT_CONCEPT_HYPOTHESES_DRAFTED_COLLISIONS_FLAGGED,Assistant,Concept cards with falsifiable fun hypotheses
+TASK-004,P1,Research comparators and player review patterns,P0,FIRST_NINETEEN_COMPARATOR_AUDIT_COMPLETED_MORE_PENDING,Assistant,Dated grounded links and observed vs inferred findings
+TASK-005,P1,Score and select approved concept,P0,BLOCKED_ON_RESEARCH,User,Decision recorded and concept frozen
+TASK-006,P2,Write approved game-specific GDD,P0,NOT_STARTED,Assistant,"Mechanics, progression, UI flows, scope, tests specified"
+TASK-007,P2,Produce three visual directions and choose one,P0,NOT_STARTED,Assistant,Art bible and production target approved
+TASK-008,P3,Prove remote Android APK build pipeline,P0,NOT_STARTED,Assistant,"Actual APK generated, hash/manifest checked, device smoke verified"
+TASK-009,P3,Prototype core game loop,P0,NOT_STARTED,Assistant,Mechanic playable and observed player study complete
+TASK-010,P4,Deliver approved vertical slice,P0,NOT_STARTED,Assistant,Production-quality integrated screen and device QA passed
+TASK-011,P0,Screen working names and near-identical mechanics,P0,INITIAL_COLLISIONS_FOUND,Assistant,Risk/alternate mechanic investigation before approval
+TASK-012,P0,Complete systematic player review coding and competitor hands-on tests,P0,NOT_STARTED,Assistant,"Samples and observed gameplay captured, with access conditions stated"
+TASK-013,P0,Design original rule diagrams for three experiment subjects,P0,DRAFT_DIAGRAMS_PREPARED_UNTESTED,Assistant,Three original concept stimuli with equal visual fidelity
+TASK-014,P0,Conduct actual first-time player comprehension/playability experiments,P0,NOT_STARTED_REQUIRES_REAL_TESTERS,User and Assistant,Real tester results captured and analyzed; no simulation of humans
+TASK-015,P0,Generate printable player and facilitator Concept Lab workbooks,P0,COMPLETED_UNTESTED,Assistant,PDF opens and has three original diagram stimulus sets
+TASK-016,P0,Check puzzle handouts for unique valid target configurations,P0,COMPLETED_STATIC_QA,Assistant,Exhaustive enumeration saved with targets and initial states
+TASK-017,P0,Run facilitator dry-run and revise ambiguous paper instructions,P0,PENDING_HUMAN_REVIEW,User and Assistant,All three sets can be run as written without coaching
+TASK-018,P0,Recruit balanced fresh participants and conduct paper tests,P0,BLOCKED_ON_RECRUITMENT,User,"Raw anonymized entries and test timestamps, not synthetic results"
+TASK-019,P0,Pilot content authoring and time each unit for cost model,P0,NOT_STARTED,Assistant,Timed production log with per-content-unit estimates

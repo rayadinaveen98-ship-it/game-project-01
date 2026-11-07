@@ -1,0 +1,19 @@
+ID,Risk,Probability,Impact,Mitigation,Owner,Status,Required_Evidence
+R-001,Remote APK build system not available,High,Critical,Set up reproducible CI/remote Godot SDK build; run proof APK,Assistant,OPEN,"Actual APK, logs, digest, device install"
+R-002,API36 incompatibility in chosen engine/toolchain,Medium,Critical,Verify targetSdk 36 in built manifest; validate AAB,Assistant,OPEN,Verified Android manifest and Play-ready export
+R-003,Art quality drift from intended style,High,High,"Approve art bible, screen references, in-engine screenshot reviews",Assistant,OPEN,Visual QA comparison per screen
+R-004,Game concept lacks validated player interest,High,High,Competitor research and external first-time playtest,Assistant,OPEN,Research links and observed playtests
+R-005,Scope creep prevents completion,High,High,"Small first release, formal backlog change control, gate approvals",Assistant,OPEN,GDD v1 scope and approved changes
+R-006,Third-party asset copyright or license violations,Medium,High,Asset provenance and license registry,Assistant,OPEN,License inventory complete
+R-007,Play account cost or testing prerequisite unknown,Medium,Medium,Check account eligibility and realistic test recruitment before launch,User,OPEN,Verified account state and launch checklist
+R-008,Poor offline save or device lifecycle handling,Medium,High,Specify lifecycle in GDD; automated and device tests,Assistant,OPEN,Save/restart/resume test evidence
+R-009,Genre-scale revenue misread as achievable individual-game income,High,High,Separate IAP vs ad and markets; no revenue forecasts without audience and retention evidence,Assistant,OPEN,Market definition plus actual cohort unit economics
+R-010,Candidate title or mechanic resembles existing IP,Medium,High,Direct competitor and trademark screening before concept lock; build original assets,Assistant,OPEN,Competitor comparison and legal risk review
+R-011,Story-driven candidate needs more writing and localization than budget,High,Medium,Scope case/episode count; test one representative vignette and translation workflow,Assistant,OPEN,Content production pilot and language plan
+R-012,Exact working-title and premise collision in C01/C02/C04/C06,High,Critical,Retire exact names; redesign duplicated mechanics; trademark/search screening,Assistant,OPEN,Collision audit completed and cleared alternate names only after concept validated
+R-013,Film tycoon core feature set already crowded in 2026,High,High,Test a new primary player verb rather than generic film release loop,Assistant,OPEN,Mechanic experiment compared with Movie Tycoon and Silver Screen Story
+R-014,Public store signals and selected reviews overinterpreted as conversion potential,High,High,Mark observations vs hypotheses; recruit actual testers; refrain from forecasts,Assistant,OPEN,Review coding and real player data
+R-015,Paper puzzle appears unique only because rule omitted edge cases,High,Medium,Enumerate every binary configuration and publish exact semantics; validate instructions with humans,Assistant,MITIGATED_ON_EXAMPLE_BOARDS,Exhaustive enumeration + tester explanations
+R-016,Film player ratings conflated with audience interpretation,High,High,Separate maker intent from a blind viewer judgment; do not score individual solutions as objectively correct,Assistant,OPEN,Blind-viewer responses and repeatability
+R-017,Real participants not yet recruited or their data collected,High,High,Do not imply paper artifacts equal player validation; user can recruit consented participants,User,OPEN,Anonymized per-session research log
+R-018,Concept lab examples trivial or too text-heavy on a mobile screen,Medium,High,Use both introductory and extended worksheets and test legibility at common Android sizes,Assistant,OPEN,Observed confusion and size comparison
