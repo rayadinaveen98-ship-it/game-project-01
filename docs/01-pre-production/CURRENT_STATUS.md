@@ -57,3 +57,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Distributed:** self-contained offline `prototypes/snapline/standalone.html` and reproducible source build. **Real phone test still pending.** Hosted Pages link is not yet verified.
 - **Remaining:** physical Android smoke test, mockup visual approval P2, variant B/C comparison, wider QA, real user playtest, APK/market proof.
 - **Important:** initial P1 mechanic code does not authorize a complete game, final art style, or product launch. [Engineering report](../06-technical-design/snapline_P1_implementation_report.md).
+
+## Snapline P2 visual proposals — November 7, 2026
+- Owner confirmed P1 movement and collisions work correctly and authorized progression to P2 (see [DEC-021](../decision-log/DEC-021-snapline-p1-owner-feedback.md)). This is owner acceptance, not independent player data.
+- Three **proposed**, original HTML/Canvas visual themes built for the same P1 detour course: A Pulse Grid, B Ink Trail, C Micro Runner. Home/Game/Result direction studies are available.
+- Gameplay remains working Plan & Run A. Chromium desktop route+win passes in all three palettes; emulated mobile touch and GO succeeds. Base 10 unit tests pass. **Physical P2 testing and final visual approval are pending.**
+- See [visual review report](../05-art-direction/snapline/P2_VISUAL_REVIEW_v0.6.md) and [browser source](../../prototypes/snapline/visual-review/README_P2.md).
+- No one theme selected, no art bible locked, no B/C mechanics implemented or APK built.
