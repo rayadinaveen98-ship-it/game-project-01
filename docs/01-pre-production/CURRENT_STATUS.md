@@ -121,3 +121,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **6/6 GitHub workflows passed** before merge (P5, P4, P3, P2, P1, docs). The offline playable file is `prototypes/snapline/pulse-grid/standalone.html`.
 - P5 C mode uses an automatically moving runner, append-only trail, join-a-new-stroke support, and fixed-step line-tip grace with real moving hazard collision.
 - **Not complete:** owner's physical phone C controls QA, first-time player comparison A/B/C, final mechanic choice, hardware FPS, and any APK / launch. No commercial or retention evidence.
+
+## P6 core-mechanic evaluation — November 7, 2026
+- Owner reported the P5 prototype was good and asked for the next step, **without selecting A/B/C**. This is positive owner feedback but not equivalent to a comparative preference or measured performance.
+- **P6 next gate:** compare A Plan & Run, B Snap & Redirect and C Live Drawing on common Courses 01/02. Exclude B-only practice Course 03 from head-to-head outcomes. Ask which mode is most fun, controllable and replayable.
+- Document actual physical-phone feel, then conduct unfamiliar-player evaluation if feasible, and only then request explicit approval for a **6–8 level vertical slice**.
+- [P6 selection and study protocol](../08-production-roadmap/SNAPLINE_P6_SELECTION_GATE.md).
+- No final game mechanic is selected; no expansion/APK/monetization authorized by this P6 document.
