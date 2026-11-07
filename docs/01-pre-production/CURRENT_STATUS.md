@@ -183,3 +183,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - The legacy P4 CI step that expected a fixed `03 SNAP PRACTICE` label was updated to assert practice's stable ID and name; it then passed on PR #26.
 - Offline playable is `prototypes/snapline/pulse-grid/standalone.html`. **Owner physical Android P6.3 testing, browser-owned persistent storage on real navigation, measured device performance, accessibility and outside-player difficulty evaluation remain pending**.
 - [P6.3 owner acceptance issue](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/25) · [P6.4 hardening issue](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/27).
+
+## Snapline P6.4 touch and pause recovery implemented — November 7, 2026
+- Owner replied "ok bro continue" following the P6.3 eight-course build. [DEC-028](../decision-log/DEC-028-snapline-p63-feedback-p64-reliability.md) records authorization to continue *reliability engineering*, not independent Android or unfamiliar-user acceptance.
+- **P6.4 implementation on feature branch:** safe pointercancel/lostpointercapture cleanup, window blur/background pause, no hidden route changes when Help opens during a captured gesture; C keeps existing live trail and waits for explicit resume; interrupted B snap edit cancels without spending the snap; A incomplete stroke discarded.
+- Mode and course geometry, selected Pulse Grid visual identity, tutorial preferences and local completion storage schema are unchanged. Course list text no longer promises durable progress unconditionally when browser storage is restricted.
+- Local strict build, **59/59 Node tests** (48 existing, 11 new), Chromium A/B/C interruption/recovery and browser/mobile-emulated regression tests pass; C real run after rejoin completes, B new left-snap rescue still wins.
+- **Not verified:** physical Android input/background behavior, actual browser-origin localStorage across reopen (environment blocks external/local navigation), FPS, screen-reader accessibility, outside-player study, native APK or commercial viability. See [P6.4 QA](../06-technical-design/snapline_P64_reliability_QA.md).
