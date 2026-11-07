@@ -9,3 +9,6 @@ Art bible and build screenshots will be versioned after a visual identity is app
 
 ## Pulse Grid selection and P2.1 refinement
 Option A selected by owner (DEC-022). [Pulse Grid Art Bible v0.1](snapline/PULSE_GRID_ART_BIBLE_v0.1.md) and [P2.1 screen review](snapline/P2_1_VISUAL_REVIEW.md) are the active references. Final screen details remain pending approval.
+
+## Snapline P6.2 contextual guides
+Actual browser-rendered A/B/C guide screens built in the existing Pulse Grid theme. [P6.2 mode-guide review](snapline/P6_2_MODE_GUIDES_REVIEW.md) documents the screen and device approval gap.
