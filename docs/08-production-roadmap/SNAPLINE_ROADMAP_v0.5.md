@@ -27,3 +27,12 @@ No release date or APK claim. Do not broaden the prototype midstream.
 
 ## November 7, 2026 — P1 accepted; P2 implemented as review lab
 The product owner reported the P1 collisions and movement worked perfectly and authorized the next step. P2 original visual comparisons have been built (actual HTML/Canvas) with Home/Game/Result previews for A/B/C on the same P1 engine. They are **pending owner style approval**, not finished production visuals. P2 mechanical QA: 10/10 tests, desktop runs in each theme and mobile emulated touch pass; physical device check pending. [Visual report](../05-art-direction/snapline/P2_VISUAL_REVIEW_v0.6.md).
+
+## November 7, 2026 — P2.1 update
+- [x] Owner selected Pulse Grid / A as the **visual direction** (DEC-022).
+- [x] Implemented P2.1 real Home/Game/Result/Help browser flow, rather than preview-only Home/Result.
+- [x] Produced art bible v0.1 and original browser screenshots for review.
+- [x] Local strict build + 10 existing unit tests pass; desktop and 360/390/412-width mobile emulated UI flows pass.
+- [ ] Owner signs off final P2.1 screen treatment after viewing screenshots and testing on physical phone.
+- [ ] B/C mechanic experiments, art production, hardware profiling and independent playtesting remain pending.
+This does NOT authorize full-game production or native APK work.
