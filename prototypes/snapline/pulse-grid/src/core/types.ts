@@ -10,9 +10,9 @@ export interface MovingHazard {
   readonly axis: 'x'|'y';
 }
 export interface Course {
-  readonly id: 'detour' | 'timing' | 'snaplab';
+  readonly id: 'detour' | 'timing' | 'snaplab' | 'planbasics' | 'efficient' | 'snapchoice' | 'liveahead' | 'liveflow';
   readonly supportedModes: readonly GameMode[];
-  readonly family: 'shared' | 'practice';
+  readonly family: 'shared' | 'practice' | 'signature';
   readonly title: string;
   readonly hint: string;
   readonly start: Vec;

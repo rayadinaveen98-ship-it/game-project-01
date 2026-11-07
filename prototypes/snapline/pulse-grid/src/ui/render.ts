@@ -1,8 +1,10 @@
-import type {Course,Rect,Run,Vec,Route} from '../core/types.js';
-import {hazardPosition,BOARD_WIDTH,BOARD_HEIGHT,RUNNER_RADIUS,SNAP_LAB_GUIDE} from '../game/courses.js';
+import type {Course,Rect,Run,Vec,Route,GameMode} from '../core/types.js';
+import {hazardPosition,BOARD_WIDTH,BOARD_HEIGHT,RUNNER_RADIUS,SNAP_LAB_GUIDE,SECOND_CHANCE_GUIDE} from '../game/courses.js';
+
+import {coursesForMode} from '../game/catalog.js';
 
 export interface VisualState {
-  course:Course;draft:readonly Vec[];route:Route|null;run:Run|null;
+  course:Course;mode:GameMode;draft:readonly Vec[];route:Route|null;run:Run|null;
   inkUsed:number;invalid:boolean;drawing:boolean;
   snap?:{anchor:Vec;original:Vec;lead:Vec;tail:Vec;preview:Route|null;valid:boolean};
   live?:{completed:boolean;waiting:boolean;tip:Vec;grace:number};
@@ -90,17 +92,21 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,360,640);
   const theme=themeKey(),p=PAL[theme];drawBackground(ctx,theme,p);
   ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle=p.muted;
-  ctx.font=theme==='ink'?'bold 12px Georgia,serif':'800 12px system-ui';ctx.fillText(s.course.id==='snaplab'?'03 // REDIRECT THE PATROL':theme==='pulse'?(s.course.id==='detour'?'01 // DRAW THE DETOUR':'02 // TIME THE GATE'):theme==='ink'?'01 — The winding way':'01  •  THE DETOUR',16,24);
-  ctx.font='700 11px system-ui';ctx.fillText(s.course.id==='detour'?'STATIC HAZARDS':'MOVING HAZARD',16,42);
+  const eligible=coursesForMode(s.mode),ordinal=eligible.findIndex(c=>c.id===s.course.id)+1;
+  const num=String(ordinal).padStart(2,'0');
+  ctx.font=theme==='ink'?'bold 12px Georgia,serif':'800 12px system-ui';
+  ctx.fillText(`${num} // ${s.course.title.toUpperCase()}`,16,24);
+  ctx.font='700 11px system-ui';
+  ctx.fillText(s.course.family==='practice'?'PRACTICE · LEARN THE MOVE':s.course.moving.length?'MOVING HAZARD':'STATIC OBSTACLES',16,42);
   if(theme==='pulse'){ctx.strokeStyle=p.mint+'66';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(299,23);ctx.lineTo(341,23);ctx.stroke()}
   if(theme==='ink'){ctx.strokeStyle=p.accent;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(295,27);ctx.quadraticCurveTo(312,17,342,25);ctx.stroke()}
   if(theme==='micro'){dot(ctx,{x:329,y:26},11,'#ffffffaa');dot(ctx,{x:329,y:26},4,p.accent)}
   for(const wall of s.course.walls)drawWall(ctx,wall,theme,p);
   drawMoving(ctx,s,theme,p);
   // Non-interactive teaching guide: does not alter any collision, ink or player input geometry.
-  if(s.course.id==='snaplab'&&!s.run&&!s.route&&s.draft.length===0){
+  if((s.course.id==='snaplab'||s.course.id==='snapchoice')&&!s.run&&!s.route&&s.draft.length===0){
     ctx.save();ctx.setLineDash([8,8]);ctx.globalAlpha=.35;
-    stroke(ctx,SNAP_LAB_GUIDE,p.ink,3);ctx.restore();
+    stroke(ctx,s.course.id==='snapchoice'?SECOND_CHANCE_GUIDE:SNAP_LAB_GUIDE,p.ink,3);ctx.restore();
     ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.font='800 11px system-ui';
     ctx.fillStyle=p.mint;ctx.fillText('TRACE THE GUIDE',338,505);
   }
@@ -143,5 +149,5 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.font='900 12px system-ui';
   ctx.fillStyle=theme==='pulse'?'#effdfd':theme==='ink'?'#292d26':'#251d55';
   ctx.fillText(`INK    ${Math.round(s.inkUsed)} / ${s.course.maxInk}`,180,613.5);
-  ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.fillStyle=p.muted;ctx.font='800 10px system-ui';ctx.fillText(s.course.id==='detour'?'PATH / 01':s.course.id==='timing'?'PATH / 02':'PRACTICE / 03',343,590);
+  ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.fillStyle=p.muted;ctx.font='800 10px system-ui';ctx.fillText(`${s.course.family==='practice'?'PRACTICE':'PATH'} / ${num}`,343,590);
 }

@@ -8,11 +8,17 @@ export const MODE_COPY:Readonly<Record<GameMode,{name:string,verb:string,summary
   b:{name:'SNAP & REDIRECT',verb:'ADAPT',summary:'Plan ahead. Make one careful mid-run correction.'},
   c:{name:'LIVE DRAWING',verb:'REACT',summary:'Keep drawing as your runner moves along the line.'}
 };
+/** Intentional, mode-specific learning progression (not source-array order). */
+export const MODE_COURSE_ORDER:Readonly<Record<GameMode,readonly Course['id'][]>>={
+ a:['planbasics','detour','efficient','timing'],
+ b:['detour','snaplab','snapchoice','timing'],
+ c:['liveahead','detour','liveflow','timing']
+};
 export function supportsMode(course:Course,mode:GameMode):boolean{
   return course.supportedModes.includes(mode);
 }
 export function coursesForMode(mode:GameMode):readonly Course[]{
-  return COURSES.filter(course=>supportsMode(course,mode));
+  return MODE_COURSE_ORDER[mode].map(id=>COURSES.find(c=>c.id===id)).filter((c):c is Course=>Boolean(c&&supportsMode(c,mode)));
 }
 export function isAccessibleCourse(mode:GameMode,id:string):boolean{
   return coursesForMode(mode).some(course=>course.id===id);

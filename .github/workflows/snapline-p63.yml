@@ -1,0 +1,45 @@
+name: Snapline P6.3 — Eight-Course Content and Regression
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p63.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p63.yml'
+jobs:
+  p63-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript
+        run: npm install --no-audit --no-fund
+      - name: Compile and run all 48 previous and new course tests
+        run: npm run check
+      - name: Verify eight distinct course IDs and three mode orders
+        run: |
+          grep -q "id:'planbasics'" src/game/courses.ts
+          grep -q "id:'efficient'" src/game/courses.ts
+          grep -q "id:'snapchoice'" src/game/courses.ts
+          grep -q "id:'liveahead'" src/game/courses.ts
+          grep -q "id:'liveflow'" src/game/courses.ts
+          grep -q "MODE_COURSE_ORDER" src/game/catalog.ts
+      - name: Rebuild and compare offline HTML
+        run: |
+          node scripts/make-single-html.mjs
+          git diff --exit-code -- standalone.html
+      - name: Upload playable P6.3 browser build
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p63-eight-courses
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error

@@ -8,25 +8,27 @@ function storage(){const data=new Map();return {data,getItem:key=>data.get(key)?
 
 test('P6.1 course registry admits shared courses to all three modes and practice to B only',()=>{
  assert.deepEqual(MODES,['a','b','c']);
- assert.deepEqual(COURSES.map(c=>c.id),['detour','timing','snaplab']);
- assert.deepEqual(coursesForMode('a').map(c=>c.id),['detour','timing']);
- assert.deepEqual(coursesForMode('b').map(c=>c.id),['detour','timing','snaplab']);
- assert.deepEqual(coursesForMode('c').map(c=>c.id),['detour','timing']);
+ assert.deepEqual(COURSES.slice(0,3).map(c=>c.id),['detour','timing','snaplab']);
+ assert.deepEqual(coursesForMode('a').map(c=>c.id),['planbasics','detour','efficient','timing']);
+ assert.deepEqual(coursesForMode('b').map(c=>c.id),['detour','snaplab','snapchoice','timing']);
+ assert.deepEqual(coursesForMode('c').map(c=>c.id),['liveahead','detour','liveflow','timing']);
  assert.equal(isAccessibleCourse('a','snaplab'),false);
  assert.equal(isAccessibleCourse('c','snaplab'),false);
  assert.equal(isAccessibleCourse('b','snaplab'),true);
  assert.ok(Object.values(MODE_COPY).every(copy=>copy.name&&copy.summary&&copy.verb));
 });
 test('P6.1 next course stays in the selected mode and never wraps to another mode',()=>{
+ assert.equal(firstCourse('a').id,'planbasics');
+ assert.equal(firstCourse('b').id,'detour');
+ assert.equal(firstCourse('c').id,'liveahead');
  for(const mode of MODES){
-  assert.equal(firstCourse(mode).id,'detour');
-  assert.equal(nextCourse(mode,'detour')?.id,'timing');
+  const list=coursesForMode(mode);
+  assert.equal(list.length,4);
+  for(let i=0;i<list.length-1;i++)assert.equal(nextCourse(mode,list[i].id)?.id,list[i+1].id);
+  assert.equal(nextCourse(mode,list.at(-1).id),null);
  }
- assert.equal(nextCourse('a','timing'),null);
- assert.equal(nextCourse('c','timing'),null);
- assert.equal(nextCourse('b','timing')?.id,'snaplab');
- assert.equal(nextCourse('b','snaplab'),null);
  assert.equal(nextCourse('c','snaplab'),null);
+ assert.equal(nextCourse('a','snapchoice'),null);
 });
 test('P6.1 wins isolate mode/level keys and update independent best time and ink values',()=>{
  let p={};p=recordWin(p,'a','detour',500,701.2);

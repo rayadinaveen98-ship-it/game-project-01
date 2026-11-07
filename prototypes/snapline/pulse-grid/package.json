@@ -1,9 +1,9 @@
 {
   "name": "snapline-sprint",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "private": true,
   "type": "module",
-  "description": "Snapline Sprint P6.2: contextual first-use tutorials for all three modes with saved course progress in the approved Pulse Grid prototype",
+  "description": "Snapline Sprint P6.3: eight deterministic authored courses across A/B/C, with Pulse Grid visual identity and mode-isolated progress",
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/prepare.mjs",
     "test": "node --test tests/*.test.mjs",

@@ -12,7 +12,7 @@ function at(tick){let run=first;for(let i=0;i<tick;i++)run=advanceRun(run,lab);r
 function pause(run){return {...run,phase:'paused'}}
 
 test('P4 adds B-only practice definition without mutating the original two scored courses',()=>{
- assert.deepEqual(COURSES.map(c=>c.id),['detour','timing','snaplab']);
+ assert.deepEqual(COURSES.slice(0,3).map(c=>c.id),['detour','timing','snaplab']);
  assert.equal(lab.maxInk,870);
  assert.equal(lengthOf(SNAP_LAB_GUIDE)<lab.maxInk,true);
  assert.equal(COURSES[0].walls.length,2);
