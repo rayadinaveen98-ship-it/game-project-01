@@ -107,3 +107,11 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Mode B adds optional practice **Course 03 / Patrol Crossing**. Modes A/B retain the original first two fair comparison courses. The owner's P4 physical-device acceptance remains pending.
 - Offline playable file: `prototypes/snapline/pulse-grid/standalone.html`.
 - Next gate: physical P4 phone verification, then independent A/B comprehension/game-feel study. C / Live Drawing is a separate future prototype option, not implemented.
+
+## Snapline P4 acceptance and C mode comparison P5 — November 7, 2026
+- Owner replied "all good" after P4 practice, so [DEC-024](../decision-log/DEC-024-snapline-p4-acceptance-p5-experiment.md) authorizes continued prototyping. This does not independently verify physical phone FPS or usability.
+- **P5 experimental implementation on feature branch**: C **Live Drawing**, where the runner automatically launches at 85 units while players extend the trail, pause/rejoin by lifting the finger, and get an exact 0.75-second tip grace period with hazards still moving.
+- Modes A/B, their two base courses and B-only Practice Course 03 remain intact and selectable. Pulse Grid style unchanged.
+- **Local verification:** 28/28 TypeScript/Node tests pass; desktop + 360/390/412 Chromium mobile-emulated interactive C runs passed; partial-stroke continuation and tip-timeout passed. Separate prior A and B interactive regressions passed. Physical P5 phone QA still pending.
+- No mode chosen as the final game, no external player study, no APK, no deployed Pages demo or monetization.
+- [P5 mechanics/QA report](../06-technical-design/snapline_P5_live_drawing_review.md).
