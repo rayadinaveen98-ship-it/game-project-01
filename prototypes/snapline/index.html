@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#181d21" />
+  <title>Snapline Sprint | P1 Mechanics Test</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div><div class="eyebrow">GAME PROJECT 01 <span class="dot">·</span> BUILD P1</div><h1>Snapline Sprint</h1></div>
+      <div class="chip" title="Engineering-only prototype">MECHANICS LAB</div>
+    </header>
+    <section class="stage" aria-label="Draw a course for the runner">
+      <div class="stagebar"><label for="courseSelect">Course</label>
+        <select id="courseSelect" aria-label="Select test course">
+          <option value="detour">01 — Static Detour</option>
+          <option value="timing">02 — Moving Hazard</option>
+        </select>
+      </div>
+      <div class="canvaswrap"><canvas id="courseCanvas" width="360" height="640" role="img" aria-label="Interactive course with S start, F finish and gray obstacles. Drag one stroke from start to finish."></canvas></div>
+      <div class="statusbox" role="status" aria-live="polite">
+        <strong id="status">Draw from start to finish.</strong>
+        <span id="substatus">Trace one path around the obstacles.</span>
+      </div>
+      <div id="result" class="result" hidden></div>
+      <div class="controls">
+        <button id="goBtn" class="primary" disabled>GO <span aria-hidden="true">▶</span></button>
+        <button id="resetBtn">↺ Reset</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="muteBtn" disabled title="P1 contains no audio">Audio off</button>
+      </div>
+    </section>
+    <footer>TEST BUILD ONLY <span aria-hidden="true">·</span> No final character, UI style, animation or APK approved.</footer>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+name: Snapline P1 — Build and Test
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prototypes/snapline/**"
+      - ".github/workflows/snapline-p1.yml"
+  pull_request:
+    paths:
+      - "prototypes/snapline/**"
+      - ".github/workflows/snapline-p1.yml"
+permissions:
+  contents: read
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pinned TypeScript compiler
+        working-directory: prototypes/snapline
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Build and run deterministic unit tests
+        working-directory: prototypes/snapline
+        run: npm run check
+      - name: Regenerate self-contained browser demo
+        working-directory: prototypes/snapline
+        run: node scripts/make-single-html.mjs
+      - name: Verify committed browser demo is generated from the source
+        run: git diff --exit-code -- prototypes/snapline/standalone.html
+      - name: Upload built static application (not a published site)
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p1-static-demo
+          path: prototypes/snapline/dist/
+          if-no-files-found: error
