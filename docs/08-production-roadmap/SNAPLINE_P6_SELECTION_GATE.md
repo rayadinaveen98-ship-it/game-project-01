@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-11-07):** The owner explicitly chose to **retain all three gameplay mechanics as separate modes**. See [DEC-025](../decision-log/DEC-025-snapline-three-distinct-modes.md) and the [active P6 three-mode vertical-slice plan](SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md). This earlier single-winner evaluation gate is preserved as a historical proposal; its "choose one" instruction is no longer active.
+
 # Snapline Sprint — P6 mechanic selection and vertical-slice gate
 
 **Date:** 2026-11-07  

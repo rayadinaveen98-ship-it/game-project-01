@@ -80,3 +80,8 @@ The practice course is **not** included in A/B comparison scores. See [P4 report
 - [ ] Independent unfamiliar-player comparison for A/B/C, counterbalanced where possible.
 - [ ] Product/visual continuity review before expanding to content or monetization.
 See [P5 review](../06-technical-design/snapline_P5_live_drawing_review.md).
+
+## November 7, 2026 — P6 pivot: three complementary modes retained
+**APPROVED by owner (DEC-025):** A Plan & Run, B Snap & Redirect, and C Live Drawing all remain separately selectable in the ONE Snapline Sprint game. Do not choose or delete a winner as directed by the earlier P6 selection proposal. Preserve approved Pulse Grid design, shared collision engine and existing three-mode P5 baseline.
+
+**New vertical-slice target, pending implementation:** 8 distinct courses total (2 shared across all modes + 6 mode-only, yielding 12 playable mode-course combinations), 5 new course definitions beyond the 3 already present; mode-specific onboarding, local progress, actual phone QA, and small player study. New features and paid systems excluded. [Detailed active P6 plan](SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).

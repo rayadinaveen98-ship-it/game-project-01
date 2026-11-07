@@ -128,3 +128,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Document actual physical-phone feel, then conduct unfamiliar-player evaluation if feasible, and only then request explicit approval for a **6–8 level vertical slice**.
 - [P6 selection and study protocol](../08-production-roadmap/SNAPLINE_P6_SELECTION_GATE.md).
 - No final game mechanic is selected; no expansion/APK/monetization authorized by this P6 document.
+
+## P6 product-direction decision — November 7, 2026 (DEC-025)
+- The owner explicitly prefers **retaining A Plan & Run, B Snap & Redirect and C Live Drawing as three distinct playable modes**, not choosing one winner. This supersedes the one-mechanic selection gate.
+- **One shared game**, one approved Pulse Grid visual identity, one collision/simulation foundation, with mode-specific instruction and appropriate levels. All modes remain directly selectable.
+- The proposed first vertical slice targets **8 distinct authored courses total / 12 mode-course combinations**: 2 shared existing courses across all 3 modes; 3 existing/new mode tutorials; and 3 mode-specific signature challenges. Three course definitions already exist; five more are proposed, **not yet built**.
+- See [DEC-025](../decision-log/DEC-025-snapline-three-distinct-modes.md) and [active P6 plan](../08-production-roadmap/SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).
+- P6 implementation, physical device profiling, independent user studies, commercial model and APK remain pending.
