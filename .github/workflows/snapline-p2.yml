@@ -1,0 +1,41 @@
+name: Snapline P2 — Source and Type Checks
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/visual-review/**'
+      - '.github/workflows/snapline-p2.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/visual-review/**'
+      - '.github/workflows/snapline-p2.yml'
+jobs:
+  p2-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: prototypes/snapline/visual-review
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript
+        run: npm install --no-audit --no-fund
+      - name: Type check, build, and run existing collision tests
+        run: npm run check
+      - name: Rebuild self-contained review HTML
+        run: node scripts/make-single-html.mjs
+      - name: Verify reviewer HTML and no runtime URLs
+        run: |
+          test -s standalone.html
+          grep -q 'data-set-theme="pulse"' standalone.html
+          grep -q 'data-set-theme="ink"' standalone.html
+          grep -q 'data-set-theme="micro"' standalone.html
+          grep -q '__snaplineSnapshot' standalone.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p2-visual-lab
+          path: prototypes/snapline/visual-review/standalone.html
+          if-no-files-found: error
