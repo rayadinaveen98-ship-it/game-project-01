@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P3 Alpha</title>
+  <title>Snapline Sprint — Pulse Grid P4 QA</title>
   <style>
 /* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -90,7 +90,7 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
         <p>Approved Pulse Grid style. Now test a single mid-run route correction without losing fair collisions.</p>
-        <span class="lab-tag">P3 • SNAP & REDIRECT ALPHA</span>
+        <span class="lab-tag">P4 • SNAP PRACTICE + QA</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
@@ -115,7 +115,7 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
           </header>
           <div class="level-header">
             <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>
-            <label class="sr-only" for="courseSelect">Course</label><select id="courseSelect" aria-label="Select test course"><option value="detour">01</option><option value="timing">02</option></select>
+            <label class="sr-only" for="courseSelect">Course</label><select id="courseSelect" aria-label="Select test course"><option value="detour">01</option><option value="timing">02</option><option value="snaplab" hidden disabled>03 ★</option></select>
           </div>
           <div class="board-frame"><canvas id="courseCanvas" width="360" height="640" aria-label="Interactive route course: drag one stroke from S to F, avoid the obstacles." tabindex="0"></canvas></div>
           <div class="hud-status" role="status" aria-live="polite"><div class="status-glyph" aria-hidden="true">↗</div><div><strong id="status">Draw a line from S to F.</strong><span id="substatus">Trace one continuous path.</span></div></div>
@@ -125,7 +125,7 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
         </div>
 
         <div class="home-screen overlay-screen" id="homeScreen" hidden>
-          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">TWO TEST COURSES</span></div>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">TWO COURSES + B PRACTICE</span></div>
           <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
           <h2>Make<br>your own<br><em>way.</em></h2>
           <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and test a single mid-run correction.</p>
@@ -156,10 +156,10 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
         <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One snap.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One snap.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P3 ALPHA</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P4 BUILD</span></div>
     </section>
   </main>
   <script>
@@ -433,10 +433,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 "src/game/courses.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COURSES = exports.RUNNER_RADIUS = exports.BOARD_HEIGHT = exports.BOARD_WIDTH = void 0;
+exports.COURSES = exports.SNAP_LAB_GUIDE = exports.RUNNER_RADIUS = exports.BOARD_HEIGHT = exports.BOARD_WIDTH = void 0;
 exports.hazardPosition = hazardPosition;
 exports.getCourse = getCourse;
 exports.BOARD_WIDTH = 360, exports.BOARD_HEIGHT = 640, exports.RUNNER_RADIUS = 9;
+/** Tutorial guide: an intentionally risky starting route; a timely rightward snap rescues it. */
+exports.SNAP_LAB_GUIDE = [{ x: 38, y: 555 }, { x: 255, y: 550 }, { x: 319, y: 87 }];
 exports.COURSES = [
     {
         id: 'detour', title: '01 · Static Detour',
@@ -450,6 +452,13 @@ exports.COURSES = [
         start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 865, runnerSpeed: 160,
         walls: [{ x: 94, y: 385, w: 95, h: 54 }, { x: 205, y: 180, w: 62, h: 49 }],
         moving: [{ center: { x: 182, y: 303 }, radius: 23, amplitude: 92, phase: 0, angularSpeed: 1.7, axis: 'y' }]
+    },
+    {
+        id: 'snaplab', title: '03 · Patrol Crossing (B Practice)',
+        hint: 'Trace guide, press GO, then SNAP right.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 870, runnerSpeed: 160,
+        walls: [{ x: 100, y: 393, w: 90, h: 50 }, { x: 105, y: 158, w: 65, h: 70 }],
+        moving: [{ center: { x: 235, y: 305 }, radius: 24, amplitude: 40, phase: -3, angularSpeed: 1.7, axis: 'x' }]
     }
 ];
 function hazardPosition(h, seconds) {
@@ -507,7 +516,7 @@ if (!canvas || !goBtn || !resetBtn || !pauseBtn || !helpBtn || !select || !banne
 const canvasEl = canvas, btnGo = goBtn, btnReset = resetBtn, btnPause = pauseBtn, btnHelp = helpBtn, sel = select, txt = banner, hint = sub, resultEl = result;
 let course = courses_js_1.COURSES[0];
 let draft = [], route = null, run = null;
-let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0;
+let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0, tutorialPrompted = false;
 let mode = 'a';
 let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
 let snapPlan = null, snapTarget = null, snapPreview = null;
@@ -550,7 +559,7 @@ function refresh() {
     sel.disabled = snapEditing || p === 'running' || p === 'paused';
     resultEl.hidden = p !== 'won' && p !== 'lost';
     if (snapEditing) {
-        message('SNAP PAUSED — move mint anchor', snapPreview?.ok ? `Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink` : snapPreview && !snapPreview.ok ? snapPreview.reason : 'Drag the ring on your route. One edit only.');
+        message('SNAP PAUSED — move mint anchor', snapPreview?.ok ? `Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink` : snapPreview && !snapPreview.ok ? snapPreview.reason : course.id === 'snaplab' ? 'Drag the ring right, then release.' : 'Drag the ring to a safer location.');
     }
     else if (p === 'won') {
         resultEl.textContent = `✓ FINISHED — ${((run?.ticks ?? 0) * simulation_js_1.FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts === 1 ? '' : 's'}`;
@@ -561,7 +570,7 @@ function refresh() {
         message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
     }
     else if (p === 'running')
-        message('Running route…', 'Watch the runner and the moving hazard.');
+        message('Running route…', course.id === 'snaplab' ? 'Tap SNAP while climbing, drag ring right.' : 'Watch the runner and the moving hazard.');
     else if (p === 'paused')
         message('Paused.', 'Press Resume to continue from the same simulation tick.');
     else if (route)
@@ -570,7 +579,7 @@ function refresh() {
         message('Draw a line from S to F.', course.hint);
 }
 function newCourse(id, clearAttempts = true) {
-    course = courses_js_1.COURSES.find(x => x.id === id) ?? courses_js_1.COURSES[0];
+    course = courses_js_1.COURSES.find(x => x.id === id && (x.id !== 'snaplab' || mode === 'b')) ?? courses_js_1.COURSES[0];
     draft = [];
     route = null;
     run = null;
@@ -579,16 +588,24 @@ function newCourse(id, clearAttempts = true) {
     accumulator = 0;
     cancelEdit(false);
     snapSpent = false;
+    tutorialPrompted = false;
     snapHistory.length = 0;
     if (clearAttempts)
         attempts = 0;
+    const practice = sel.querySelector('option[value="snaplab"]');
+    if (practice) {
+        practice.hidden = mode !== 'b';
+        practice.disabled = mode !== 'b';
+    }
     sel.value = course.id;
+    const ordinal = course.id === 'detour' ? '01' : course.id === 'timing' ? '02' : '03';
+    const max = mode === 'b' ? '03' : '02';
     const label = document.querySelector('#courseLabel');
     if (label)
-        label.textContent = course.id === 'detour' ? '01 STATIC DETOUR' : '02 MOVING HAZARD';
+        label.textContent = course.id === 'detour' ? '01 STATIC DETOUR' : course.id === 'timing' ? '02 MOVING HAZARD' : '03 SNAP PRACTICE';
     const progress = document.querySelector('#courseProgress');
     if (progress)
-        progress.innerHTML = course.id === 'detour' ? '01 <span>/</span> 02' : '02 <span>/</span> 02';
+        progress.innerHTML = `${ordinal} <span>/</span> ${max}`;
     refresh();
 }
 function pointFromEvent(e) {
@@ -815,6 +832,10 @@ function loop(now) {
             accumulator -= simulation_js_1.FIXED_STEP;
             safety++;
         }
+        if (course.id === 'snaplab' && mode === 'b' && !snapSpent && !tutorialPrompted && run.phase === 'running' && run.ticks >= 170) {
+            tutorialPrompted = true;
+            message('NOW: SNAP AND MOVE RIGHT', 'Tap SNAP, then drag mint ring right.');
+        }
         if (run.phase !== 'running') {
             refresh();
             if (run.phase === 'won')
@@ -828,7 +849,7 @@ function loop(now) {
 newCourse(course.id);
 requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })) }) });
+Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), tutorialPrompted }) });
 let appView = 'home';
 const howto = document.querySelector('#howtoOverlay');
 if (!howto)
@@ -855,26 +876,25 @@ function showEarnedResult() {
     if (run?.phase !== 'won' || !route || appView !== 'game')
         return;
     assignText('resultEyebrow', 'RUN COMPLETED');
-    assignText('resultSequence', course.id === 'detour' ? '01 / 02' : '02 / 02');
+    assignText('resultSequence', course.id === 'detour' ? '01 / 02' : course.id === 'timing' ? '02 / 02' : '03 / 03');
     assignText('resultOverline', 'ROUTE COMPLETE');
     const headline = document.getElementById('resultHeadline');
     if (headline)
         headline.innerHTML = 'Beautifully<br><em>done.</em>';
-    assignText('resultMessage', course.id === 'detour' ? 'You made it around the detour.' : 'You navigated the moving hazard.');
-    assignText('resultCourseLabel', course.id === 'detour' ? 'COURSE 01' : 'COURSE 02');
-    assignText('resultCourseTitle', course.id === 'detour' ? 'THE DETOUR' : 'THE MOVING GATE');
+    assignText('resultMessage', course.id === 'detour' ? 'You made it around the detour.' : course.id === 'timing' ? 'You navigated the moving hazard.' : 'You redirected around the crossing patrol.');
+    assignText('resultCourseLabel', course.id === 'detour' ? 'COURSE 01' : course.id === 'timing' ? 'COURSE 02' : 'PRACTICE 03');
+    assignText('resultCourseTitle', course.id === 'detour' ? 'THE DETOUR' : course.id === 'timing' ? 'THE MOVING GATE' : 'PATROL CROSSING');
     assignText('resultInk', String(Math.round(route.length)));
     assignText('resultTime', (run.ticks * simulation_js_1.FIXED_STEP).toFixed(2));
     assignText('resultAttempts', String(attempts));
     assignText('resultDetail', mode === 'b' ? (snapSpent ? 'Snap & Redirect • 1 correction used' : 'Snap & Redirect • no correction used') : 'Plan & Run • live gameplay metrics.');
     const next = document.querySelector('#nextDemo');
-    if (next) {
-        next.innerHTML = course.id === 'detour' ? 'NEXT COURSE <span>➜</span>' : 'PLAY COURSE 01 <span>➜</span>';
-    }
+    if (next)
+        next.innerHTML = (course.id === 'detour' || (course.id === 'timing' && mode === 'b')) ? 'NEXT COURSE <span>➜</span>' : 'PLAY COURSE 01 <span>➜</span>';
     showView('result');
 }
 document.getElementById('startDemo')?.addEventListener('click', () => { newCourse('detour'); showView('game'); });
-document.getElementById('nextDemo')?.addEventListener('click', () => { newCourse(course.id === 'detour' ? 'timing' : 'detour'); showView('game'); });
+document.getElementById('nextDemo')?.addEventListener('click', () => { newCourse(course.id === 'detour' ? 'timing' : course.id === 'timing' && mode === 'b' ? 'snaplab' : 'detour'); showView('game'); });
 document.getElementById('retryResult')?.addEventListener('click', () => { newCourse(course.id, false); showView('game'); });
 document.getElementById('resultHome')?.addEventListener('click', () => showView('home'));
 document.getElementById('backToHome')?.addEventListener('click', () => showView('home'));
@@ -1145,7 +1165,7 @@ function render(canvas, s) {
     ctx.textAlign = 'left';
     ctx.fillStyle = p.muted;
     ctx.font = theme === 'ink' ? 'bold 12px Georgia,serif' : '800 12px system-ui';
-    ctx.fillText(theme === 'pulse' ? (s.course.id === 'detour' ? '01 // DRAW THE DETOUR' : '02 // TIME THE GATE') : theme === 'ink' ? '01 — The winding way' : '01  •  THE DETOUR', 16, 24);
+    ctx.fillText(s.course.id === 'snaplab' ? '03 // REDIRECT THE PATROL' : theme === 'pulse' ? (s.course.id === 'detour' ? '01 // DRAW THE DETOUR' : '02 // TIME THE GATE') : theme === 'ink' ? '01 — The winding way' : '01  •  THE DETOUR', 16, 24);
     ctx.font = '700 11px system-ui';
     ctx.fillText(s.course.id === 'detour' ? 'STATIC HAZARDS' : 'MOVING HAZARD', 16, 42);
     if (theme === 'pulse') {
@@ -1171,6 +1191,19 @@ function render(canvas, s) {
     for (const wall of s.course.walls)
         drawWall(ctx, wall, theme, p);
     drawMoving(ctx, s, theme, p);
+    // Non-interactive teaching guide: does not alter any collision, ink or player input geometry.
+    if (s.course.id === 'snaplab' && !s.run && !s.route && s.draft.length === 0) {
+        ctx.save();
+        ctx.setLineDash([8, 8]);
+        ctx.globalAlpha = .35;
+        stroke(ctx, courses_js_1.SNAP_LAB_GUIDE, p.ink, 3);
+        ctx.restore();
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '800 11px system-ui';
+        ctx.fillStyle = p.mint;
+        ctx.fillText('TRACE THE GUIDE', 338, 505);
+    }
     const pts = s.snap?.preview?.points ?? s.route?.points ?? s.draft;
     if (pts.length > 1) {
         if (theme === 'pulse') {
@@ -1249,7 +1282,7 @@ function render(canvas, s) {
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = p.muted;
     ctx.font = '800 10px system-ui';
-    ctx.fillText(s.course.id === 'detour' ? 'PATH / 01' : 'PATH / 02', 343, 590);
+    ctx.fillText(s.course.id === 'detour' ? 'PATH / 01' : s.course.id === 'timing' ? 'PATH / 02' : 'PRACTICE / 03', 343, 590);
 }
 
 }};const cache={};function load(id){if(cache[id])return cache[id].exports;const fn=modules[id];if(!fn)throw Error('Module not found: '+id);const mod={exports:{}};cache[id]=mod;const localReq=(spec)=>{if(!spec.startsWith('.'))throw Error('External dependency refused: '+spec);const arr=id.split('/').slice(0,-1);for(const part of spec.split('/')){if(part==='..')arr.pop();else if(part!=='.')arr.push(part)}return load(arr.join('/'))};fn(localReq,mod,mod.exports);return mod.exports}load('src/main.js')})();

@@ -21,7 +21,7 @@ const canvasEl=canvas,btnGo=goBtn,btnReset=resetBtn,btnPause=pauseBtn,btnHelp=he
 
 let course:Course=COURSES[0]!;
 let draft:Vec[]=[],route:Route|null=null,run:Run|null=null;
-let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attempts=0;
+let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attempts=0,tutorialPrompted=false;
 type GameMode='a'|'b';
 let mode:GameMode='a';
 let snapSpent=false,snapEditing=false,snapDragging=false,snapPointer:number|null=null;
@@ -59,23 +59,29 @@ function refresh():void{
   sel.disabled=snapEditing||p==='running'||p==='paused';
   resultEl.hidden=p!=='won'&&p!=='lost';
   if(snapEditing){
-    message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:'Drag the ring on your route. One edit only.');
+    message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:course.id==='snaplab'?'Drag the ring right, then release.':'Drag the ring to a safer location.');
   } else if(p==='won'){
     resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`;
     message('Completed successfully.', 'Try a shorter or safer route, or switch courses.');
   }else if(p==='lost'){
     resultEl.textContent=`✕ ${run?.failure??'Attempt failed'}`;
     message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
-  }else if(p==='running')message('Running route…','Watch the runner and the moving hazard.');
+  }else if(p==='running')message('Running route…',course.id==='snaplab'?'Tap SNAP while climbing, drag ring right.':'Watch the runner and the moving hazard.');
   else if(p==='paused')message('Paused.','Press Resume to continue from the same simulation tick.');
   else if(route)message('Route ready. Press GO.',`${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
   else if(!drawing)message('Draw a line from S to F.',course.hint);
 }
 function newCourse(id:string,clearAttempts=true):void{
-  course=COURSES.find(x=>x.id===id)??COURSES[0]!;
-  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;snapHistory.length=0;if(clearAttempts)attempts=0;
-  sel.value=course.id;const label=document.querySelector<HTMLElement>('#courseLabel');if(label)label.textContent=course.id==='detour'?'01 STATIC DETOUR':'02 MOVING HAZARD';
-  const progress=document.querySelector<HTMLElement>('#courseProgress');if(progress)progress.innerHTML=course.id==='detour'?'01 <span>/</span> 02':'02 <span>/</span> 02';
+  course=COURSES.find(x=>x.id===id && (x.id!=='snaplab'||mode==='b'))??COURSES[0]!;
+  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;if(clearAttempts)attempts=0;
+  const practice=sel.querySelector<HTMLOptionElement>('option[value="snaplab"]');
+  if(practice){practice.hidden=mode!=='b';practice.disabled=mode!=='b';}
+  sel.value=course.id;
+  const ordinal=course.id==='detour'?'01':course.id==='timing'?'02':'03';
+  const max=mode==='b'?'03':'02';
+  const label=document.querySelector<HTMLElement>('#courseLabel');
+  if(label)label.textContent=course.id==='detour'?'01 STATIC DETOUR':course.id==='timing'?'02 MOVING HAZARD':'03 SNAP PRACTICE';
+  const progress=document.querySelector<HTMLElement>('#courseProgress');if(progress)progress.innerHTML=`${ordinal} <span>/</span> ${max}`;
   refresh();
 }
 function pointFromEvent(e:PointerEvent):Vec{
@@ -195,6 +201,10 @@ function loop(now:number){
     while(accumulator>=FIXED_STEP&&run.phase==='running'&&safety<8){
       run=advanceRun(run,course);accumulator-=FIXED_STEP;safety++;
     }
+    if(course.id==='snaplab'&&mode==='b'&&!snapSpent&&!tutorialPrompted&&run.phase==='running'&&run.ticks>=170){
+      tutorialPrompted=true;
+      message('NOW: SNAP AND MOVE RIGHT','Tap SNAP, then drag mint ring right.');
+    }
     if(run.phase!=='running'){refresh();if(run.phase==='won')showEarnedResult();}
   }
   render(canvasEl,{course,draft,route,run,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
@@ -203,7 +213,7 @@ function loop(now:number){
 }
 newCourse(course.id);requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x}))})});
+Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),tutorialPrompted})});
 
 // P2.1 Pulse Grid refinement: one owner-selected theme, actual app flow and truthful live metrics.
 type AppView='home'|'game'|'result';
@@ -225,21 +235,22 @@ function assignText(id:string,value:string):void{const e=document.getElementById
 function showEarnedResult():void{
   if(run?.phase!=='won'||!route||appView!=='game')return;
   assignText('resultEyebrow','RUN COMPLETED');
-  assignText('resultSequence',course.id==='detour'?'01 / 02':'02 / 02');
+  assignText('resultSequence',course.id==='detour'?'01 / 02':course.id==='timing'?'02 / 02':'03 / 03');
   assignText('resultOverline','ROUTE COMPLETE');
   const headline=document.getElementById('resultHeadline');if(headline)headline.innerHTML='Beautifully<br><em>done.</em>';
-  assignText('resultMessage',course.id==='detour'?'You made it around the detour.':'You navigated the moving hazard.');
-  assignText('resultCourseLabel',course.id==='detour'?'COURSE 01':'COURSE 02');
-  assignText('resultCourseTitle',course.id==='detour'?'THE DETOUR':'THE MOVING GATE');
+  assignText('resultMessage',course.id==='detour'?'You made it around the detour.':course.id==='timing'?'You navigated the moving hazard.':'You redirected around the crossing patrol.');
+  assignText('resultCourseLabel',course.id==='detour'?'COURSE 01':course.id==='timing'?'COURSE 02':'PRACTICE 03');
+  assignText('resultCourseTitle',course.id==='detour'?'THE DETOUR':course.id==='timing'?'THE MOVING GATE':'PATROL CROSSING');
   assignText('resultInk',String(Math.round(route.length)));
   assignText('resultTime',(run.ticks*FIXED_STEP).toFixed(2));
   assignText('resultAttempts',String(attempts));
   assignText('resultDetail',mode==='b'?(snapSpent?'Snap & Redirect • 1 correction used':'Snap & Redirect • no correction used'):'Plan & Run • live gameplay metrics.');
-  const next=document.querySelector<HTMLButtonElement>('#nextDemo');if(next){next.innerHTML=course.id==='detour'?'NEXT COURSE <span>➜</span>':'PLAY COURSE 01 <span>➜</span>';}
+  const next=document.querySelector<HTMLButtonElement>('#nextDemo');
+  if(next)next.innerHTML=(course.id==='detour'||(course.id==='timing'&&mode==='b'))?'NEXT COURSE <span>➜</span>':'PLAY COURSE 01 <span>➜</span>';
   showView('result');
 }
 document.getElementById('startDemo')?.addEventListener('click',()=>{newCourse('detour');showView('game');});
-document.getElementById('nextDemo')?.addEventListener('click',()=>{newCourse(course.id==='detour'?'timing':'detour');showView('game');});
+document.getElementById('nextDemo')?.addEventListener('click',()=>{newCourse(course.id==='detour'?'timing':course.id==='timing'&&mode==='b'?'snaplab':'detour');showView('game');});
 document.getElementById('retryResult')?.addEventListener('click',()=>{newCourse(course.id,false);showView('game');});
 document.getElementById('resultHome')?.addEventListener('click',()=>showView('home'));
 document.getElementById('backToHome')?.addEventListener('click',()=>showView('home'));

@@ -9,7 +9,7 @@ export interface MovingHazard {
   readonly axis: 'x'|'y';
 }
 export interface Course {
-  readonly id: 'detour' | 'timing';
+  readonly id: 'detour' | 'timing' | 'snaplab';
   readonly title: string;
   readonly hint: string;
   readonly start: Vec;
