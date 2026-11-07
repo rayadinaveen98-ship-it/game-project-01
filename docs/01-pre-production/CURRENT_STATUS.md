@@ -40,3 +40,13 @@ Three user-submitted directions have been analyzed without selecting a game:
 - C02-R: cinematic detective mystery (REVISED proposal; no title approved)
 
 See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ideas_comparative_assessment.md) for mechanic briefs, confirmed competitor overlaps, visual and production risk, business assumptions, and proposed independent gameplay tests. This supersedes **no** approved decision and **does not** change the historical v0.4 snapshot. Human playtesting is still pending.
+
+## Prototype focus shift — November 7, 2026 (DEC-020)
+**Approved:** C08 Snapline Sprint is the FIRST PLAYABLE PROTOTYPE and active planning workstream. This **does not** select a shipping game. C09 girl-explorer is postponed for future development, not rejected. C02-R remains in concept discovery.
+
+**Current stage:** Snapline v0.5 pre-production planning. No prototype code, playable link, art approval, APK or completed device testing. Three A/B/C mechanic variants are **proposals**, not locked choices.
+
+- [DEC-020 approved selection](../decision-log/DEC-020-first-prototype-selection.md)
+- [Snapline prototype brief](../04-game-design/snapline/PROTOTYPE_BRIEF_v0.5.md)
+- [Snapline visual approval gate](../05-art-direction/snapline/VISUAL_REVIEW_GATE_v0.5.md)
+- [Prototype roadmap](../08-production-roadmap/SNAPLINE_ROADMAP_v0.5.md)
