@@ -140,3 +140,13 @@ P5 3-mode prototype: IMPLEMENTED. P6 architecture/content expansion: NOT STARTED
 - [ ] Independent GitHub CI and merge.
 - [ ] Physical Android background, touch input and FPS validation, authentic browser-origin progress persistence, accessibility QA and owner acceptance.
 No additional course content, art redesign, accounts or monetization. [P6.4 QA report](../06-technical-design/snapline_P64_reliability_QA.md).
+
+## P6.5 evaluation tool — November 7, 2026
+- [x] Implement a separate offline lab embedding the unchanged P6.4 game with all 3 modes and 8 courses.
+- [x] Provide six balanced A/B/C order permutations, consent-gated anonymous facilitator form, correct partial/complete session status, optional ratings and local-only JSON/CSV export.
+- [x] Verify **16 Node study-tool tests**, Chromium desktop/mobile lab views, actual embedded A game win, no passive result collection. Research screens are a standalone tool, not production Pulse Grid UI.
+- [ ] Independent GitHub CI for P6.5 and merge to main.
+- [ ] Gather genuine opt-in unfamiliar-player observations. **Count currently = zero.**
+- [ ] Review raw player feedback and decide specific UI, accessibility and course balancing fixes. Do not fabricate user preference or force a mode winner.
+- [ ] Actual physical Android P6.4 background/persistence/FPS QA remains outstanding; study tool does not replace it.
+[Research protocol](../07-research/SNAPLINE_P65_PLAYTEST_PLAN.md).
