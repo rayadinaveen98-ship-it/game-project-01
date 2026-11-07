@@ -81,6 +81,17 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
 @media(max-width:400px){.home-art{height:24%;top:42%}.home-bottom{bottom:15px}.mode-picker{margin-bottom:8px}.home-metadata{margin-bottom:8px}.home-footer{margin-top:10px}.game-buttons{gap:5px}body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(59px,.7fr) 38px 38px 38px;gap:4px}}
 @media(max-width:355px){body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) 58px 35px 35px 35px;gap:3px}.game-screen{padding-left:12px!important;padding-right:12px!important}}
 
+/* P5: three prototype modes, still Pulse Grid. Avoid stacking text at 360px. */
+.mode-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.mode-picker button{min-height:45px;white-space:normal;font-size:9px;line-height:1.28;padding:7px 5px;letter-spacing:0}
+.mode-picker strong{display:block;margin:0 0 3px;font-size:11px}
+body[data-mode="c"] .game-buttons{grid-template-columns:1fr 48px 48px 48px}
+body[data-mode="c"] .game-buttons .action-btn{display:none!important}
+body[data-mode="c"] .game-buttons{grid-template-columns:repeat(3,1fr)}
+body[data-mode="c"] .game-buttons .icon-btn{max-width:none}
+body[data-mode="c"] .bottom-rail span{color:var(--mint)}
+@media(max-width:400px){.mode-picker button{font-size:8.3px;padding:6px 3px;min-height:44px}.mode-picker strong{margin-bottom:3px}.home-copy{line-height:1.45;margin-top:10px}}
+
 </style>
 </head>
 <body data-theme="pulse" data-view="home">
@@ -125,10 +136,10 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
         </div>
 
         <div class="home-screen overlay-screen" id="homeScreen" hidden>
-          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">TWO COURSES + B PRACTICE</span></div>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">THREE GAMEPLAY EXPERIMENTS</span></div>
           <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
           <h2>Make<br>your own<br><em>way.</em></h2>
-          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and test a single mid-run correction.</p>
+          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and compare three ways to create your own route.</p>
           <svg class="home-art" viewBox="0 0 340 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs><linearGradient id="homeGlow" x1="0" y1="1" x2="1" y2="0"><stop stop-color="var(--mint)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
             <g opacity=".36" stroke="var(--grid)" stroke-width="1"><path d="M0 50H340 M0 100H340 M0 150H340 M0 200H340 M0 250H340 M50 0V270 M100 0V270 M150 0V270 M200 0V270 M250 0V270 M300 0V270"/></g>
@@ -138,7 +149,7 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
             <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
             <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
           </svg>
-          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button><button type="button" id="modeC" aria-pressed="false"><strong>C</strong> LIVE DRAWING</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
         </div>
 
         <div class="result-screen overlay-screen" id="resultScreen" hidden>
@@ -156,10 +167,10 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
         <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One snap.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>Three modes.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>In mode <b>C</b>, start drawing from S: the runner launches while you draw. Stay ahead of the runner. If it reaches the tip, you have 0.75 seconds to extend the trail; join a new stroke at the mint tip. GO is automatic.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P4 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P5 BUILD</span></div>
     </section>
   </main>
   <script>
@@ -243,6 +254,80 @@ function movingCircleHitsSegment(runnerFrom, runnerTo, centreFrom, centreTo, com
 }
 
 },
+"src/core/live.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LIVE_JOIN_RADIUS = exports.LIVE_GRACE_TICKS = exports.LIVE_LAUNCH_LENGTH = void 0;
+exports.appendLivePoint = appendLivePoint;
+exports.adoptLiveRoute = adoptLiveRoute;
+exports.advanceLiveRun = advanceLiveRun;
+const geometry_js_1 = require("./geometry.js");
+const drawing_js_1 = require("../game/drawing.js");
+const courses_js_1 = require("../game/courses.js");
+const simulation_js_1 = require("./simulation.js");
+exports.LIVE_LAUNCH_LENGTH = 85;
+exports.LIVE_GRACE_TICKS = 90; // 0.75s at fixed 120Hz, with hazards still advancing.
+exports.LIVE_JOIN_RADIUS = 29;
+/** Reject barrier crossings *before* committing a fresh visible stroke. */
+function appendLivePoint(points, target, course) {
+    if (!(0, geometry_js_1.isValidVec)(target) || target.x < 0 || target.x > courses_js_1.BOARD_WIDTH || target.y < 0 || target.y > courses_js_1.BOARD_HEIGHT)
+        return { ok: false, reason: 'Stay inside the course.' };
+    if (points.length === 0) {
+        if ((0, geometry_js_1.distance)(target, course.start) > 29)
+            return { ok: false, reason: 'Start at S.' };
+        return { ok: true, route: { points: [{ ...course.start }], length: 0 }, completed: false };
+    }
+    if (points.length > 4980)
+        return { ok: false, reason: 'Too many route points. Reset and redraw.' };
+    const previous = points[points.length - 1];
+    const nextPoints = (0, drawing_js_1.appendStroke)(points, target, 8);
+    for (let k = points.length; k < nextPoints.length; k++) {
+        const a = nextPoints[k - 1], b = nextPoints[k];
+        if (course.walls.some(w => (0, geometry_js_1.segmentHitsRect)(a, b, w, courses_js_1.RUNNER_RADIUS)))
+            return { ok: false, reason: 'Trail cannot cross a coral wall.' };
+    }
+    const len = (0, geometry_js_1.lengthOf)(nextPoints);
+    if (len > course.maxInk + 1e-8)
+        return { ok: false, reason: 'Ink limit reached; redraw a shorter trail.' };
+    return { ok: true, route: { points: nextPoints, length: len }, completed: (0, geometry_js_1.distance)(nextPoints.at(-1), course.finish) <= simulation_js_1.GOAL_ZONE };
+}
+/** Append-only: current position and elapsed ticks stay fixed exactly. */
+function adoptLiveRoute(run, route) {
+    if (route.length + 1e-8 < run.route.length)
+        throw Error('Cannot erase traversed trail.');
+    if (route.points.length < run.route.points.length)
+        throw Error('Live route must append only.');
+    for (let i = 0; i < run.route.points.length; i++) {
+        if ((0, geometry_js_1.distance)(route.points[i], run.route.points[i]) > 1e-8)
+            throw Error('Cannot alter existing trail points.');
+    }
+    if ((0, geometry_js_1.distance)((0, geometry_js_1.pointAtDistance)(route.points, run.distance), run.position) > 1e-5)
+        throw Error('Live route update would teleport runner.');
+    return { ...run, route };
+}
+/** A stationary runner may wait at the line tip for 0.75s; this is SIMULATION time. */
+function advanceLiveRun(run, course, completed, waitingTicks) {
+    if (run.phase !== 'running')
+        return { run, waitingTicks };
+    if (run.route.length - run.distance > 1e-7) {
+        const progressed = (0, simulation_js_1.advanceRun)(run, course, simulation_js_1.FIXED_STEP, true);
+        const atTip = !completed && progressed.phase === 'running' && progressed.route.length - progressed.distance <= 1e-7;
+        return { run: progressed, waitingTicks: atTip ? 1 : 0 };
+    }
+    if (completed) { // P1 reaches FINISH on the last moving tick, so no premature win in waiting state.
+        const won = (0, geometry_js_1.distance)(run.position, course.finish) <= simulation_js_1.GOAL_ZONE;
+        return { run: { ...run, phase: won ? 'won' : 'lost', failure: won ? null : 'Missed finish zone.' }, waitingTicks: 0 };
+    }
+    const t0 = run.ticks * simulation_js_1.FIXED_STEP, t1 = (run.ticks + 1) * simulation_js_1.FIXED_STEP;
+    if (course.moving.some(h => (0, geometry_js_1.movingCircleHitsSegment)(run.position, run.position, (0, courses_js_1.hazardPosition)(h, t0), (0, courses_js_1.hazardPosition)(h, t1), courses_js_1.RUNNER_RADIUS + h.radius)))
+        return { run: { ...run, phase: 'lost', ticks: run.ticks + 1, failure: 'Hit the moving hazard while waiting for ink.' }, waitingTicks: waitingTicks + 1 };
+    const nextWait = waitingTicks + 1;
+    if (nextWait >= exports.LIVE_GRACE_TICKS)
+        return { run: { ...run, phase: 'lost', ticks: run.ticks + 1, failure: 'Your runner caught the end of your line.' }, waitingTicks: nextWait };
+    return { run: { ...run, ticks: run.ticks + 1 }, waitingTicks: nextWait };
+}
+
+},
 "src/core/simulation.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -279,7 +364,7 @@ function beginRun(route, course) {
         throw new Error('route not valid');
     return { phase: 'running', route, distance: 0, ticks: 0, position: { ...route.points[0] }, failure: null, courseId: course.id };
 }
-function advanceRun(run, course, dt = exports.FIXED_STEP) {
+function advanceRun(run, course, dt = exports.FIXED_STEP, allowIncomplete = false) {
     if (run.phase !== 'running')
         return run;
     if (run.courseId !== course.id)
@@ -298,6 +383,8 @@ function advanceRun(run, course, dt = exports.FIXED_STEP) {
             return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Hit the moving hazard.' };
     }
     if (nd >= run.route.length - 1e-8) {
+        if (allowIncomplete && (0, geometry_js_1.distance)(next, course.finish) > exports.GOAL_ZONE)
+            return { ...run, position: next, distance: nd, ticks: run.ticks + 1 };
         if ((0, geometry_js_1.distance)(next, course.finish) <= exports.GOAL_ZONE)
             return { ...run, phase: 'won', position: next, distance: nd, ticks: run.ticks + 1, failure: null };
         return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Missed the finish zone.' };
@@ -502,6 +589,7 @@ const courses_js_1 = require("./game/courses.js");
 const drawing_js_1 = require("./game/drawing.js");
 const render_js_1 = require("./ui/render.js");
 const snap_js_1 = require("./core/snap.js");
+const live_js_1 = require("./core/live.js");
 const canvas = document.querySelector('#courseCanvas');
 const goBtn = document.querySelector('#goBtn');
 const resetBtn = document.querySelector('#resetBtn');
@@ -518,16 +606,18 @@ let course = courses_js_1.COURSES[0];
 let draft = [], route = null, run = null;
 let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0, tutorialPrompted = false;
 let mode = 'a';
+let liveComplete = false, liveWaitingTicks = 0, liveError = null, liveInputReleased = false;
 let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
 let snapPlan = null, snapTarget = null, snapPreview = null;
 const snapHistory = [];
 const btnSnap = document.querySelector('#snapBtn');
 const modeA = document.querySelector('#modeA');
 const modeB = document.querySelector('#modeB');
+const modeC = document.querySelector('#modeC');
 const modeDescription = document.querySelector('#modeDescription');
-if (!btnSnap || !modeA || !modeB || !modeDescription)
+if (!btnSnap || !modeA || !modeB || !modeC || !modeDescription)
     throw new Error('P3 controls missing');
-const buttonSnap = btnSnap, buttonA = modeA, buttonB = modeB, modeInfo = modeDescription;
+const buttonSnap = btnSnap, buttonA = modeA, buttonB = modeB, buttonC = modeC, modeInfo = modeDescription;
 function cancelEdit(resume) {
     if (snapEditing && run?.phase === 'paused' && resume)
         run = { ...run, phase: 'running' };
@@ -544,21 +634,39 @@ function phase() { return run?.phase ?? 'ready'; }
 function message(top, bottom) { txt.textContent = top; hint.textContent = bottom; }
 function refresh() {
     const p = phase();
-    btnGo.disabled = !route || p !== 'ready';
-    buttonSnap.hidden = mode === 'a';
+    btnGo.hidden = mode === 'c';
+    btnGo.disabled = mode === 'c' || !route || p !== 'ready';
+    buttonSnap.hidden = mode !== 'b';
     buttonSnap.disabled = mode === 'a' || snapSpent || (!snapEditing && p !== 'running');
     buttonSnap.textContent = snapEditing ? 'CANCEL' : snapSpent ? 'USED' : 'SNAP';
     buttonSnap.setAttribute('aria-label', snapEditing ? 'Cancel route correction' : snapSpent ? 'Snap already used' : 'Pause to adjust your route once');
     document.body.dataset.mode = mode;
     buttonA.setAttribute('aria-pressed', String(mode === 'a'));
     buttonB.setAttribute('aria-pressed', String(mode === 'b'));
-    modeInfo.textContent = mode === 'b' ? 'Draw • Run • Snap once' : 'Draw • Run • Improve';
+    buttonC.setAttribute('aria-pressed', String(mode === 'c'));
+    modeInfo.textContent = mode === 'b' ? 'Draw • Run • Snap once' : mode === 'c' ? 'Draw ahead • runner follows live' : 'Draw • Run • Improve';
     btnPause.disabled = snapEditing || (p !== 'running' && p !== 'paused');
     btnPause.textContent = p === 'paused' ? '▶' : 'Ⅱ';
     btnPause.setAttribute('aria-label', p === 'paused' ? 'Resume run' : 'Pause run');
     sel.disabled = snapEditing || p === 'running' || p === 'paused';
     resultEl.hidden = p !== 'won' && p !== 'lost';
-    if (snapEditing) {
+    if (mode === 'c') {
+        if (p === 'won') {
+            resultEl.textContent = `✓ FINISHED — ${((run?.ticks ?? 0) * simulation_js_1.FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts === 1 ? '' : 's'}`;
+            message('Live trail completed.', 'The runner followed your drawing in real time.');
+        }
+        else if (p === 'lost') {
+            resultEl.textContent = `✕ ${run?.failure ?? 'Attempt failed'}`;
+            message('Live trail interrupted.', run?.failure ?? 'Reset and draw ahead.');
+        }
+        else if (p === 'paused')
+            message('Live run paused.', 'Resume to keep the runner moving.');
+        else if (p === 'running')
+            message(liveError ?? (liveWaitingTicks > 0 ? 'DRAW AHEAD — runner at the tip' : 'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length ?? 0)} / ${course.maxInk} • ${Math.max(0, Math.round((live_js_1.LIVE_GRACE_TICKS - liveWaitingTicks) / 120 * 10) / 10)}s tip grace`);
+        else
+            message(liveError ?? 'Touch S and draw continuously.', 'The runner launches after a short trail. Continue drawing to F.');
+    }
+    else if (snapEditing) {
         message('SNAP PAUSED — move mint anchor', snapPreview?.ok ? `Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink` : snapPreview && !snapPreview.ok ? snapPreview.reason : course.id === 'snaplab' ? 'Drag the ring right, then release.' : 'Drag the ring to a safer location.');
     }
     else if (p === 'won') {
@@ -590,6 +698,10 @@ function newCourse(id, clearAttempts = true) {
     snapSpent = false;
     tutorialPrompted = false;
     snapHistory.length = 0;
+    liveComplete = false;
+    liveWaitingTicks = 0;
+    liveError = null;
+    liveInputReleased = false;
     if (clearAttempts)
         attempts = 0;
     const practice = sel.querySelector('option[value="snaplab"]');
@@ -614,6 +726,37 @@ function pointFromEvent(e) {
         y: Math.max(0, Math.min(courses_js_1.BOARD_HEIGHT, (e.clientY - rect.top) * courses_js_1.BOARD_HEIGHT / rect.height)) };
 }
 function beginStroke(e) {
+    if (mode === 'c') {
+        if (e.pointerType === 'mouse' && e.button !== 0)
+            return;
+        if (drawing || activePointer !== null || liveComplete || phase() === 'lost' || phase() === 'won')
+            return;
+        const pos = pointFromEvent(e);
+        const join = route?.points.at(-1) ?? course.start;
+        if ((0, geometry_js_1.distance)(pos, join) > live_js_1.LIVE_JOIN_RADIUS) {
+            liveError = 'Continue from the glowing trail tip.';
+            refresh();
+            return;
+        }
+        const initial = route?.points ?? [];
+        const check = (0, live_js_1.appendLivePoint)(initial, pos, course);
+        if (!check.ok) {
+            liveError = check.reason;
+            refresh();
+            return;
+        }
+        if (!route)
+            route = check.route;
+        liveComplete = check.completed;
+        liveError = null;
+        drawing = true;
+        activePointer = e.pointerId;
+        liveInputReleased = false;
+        canvasEl.setPointerCapture(e.pointerId);
+        refresh();
+        e.preventDefault();
+        return;
+    }
     if (snapEditing) {
         if (!snapPlan || !run || snapDragging)
             return;
@@ -655,7 +798,43 @@ function beginStroke(e) {
     refresh();
     e.preventDefault();
 }
+function applyLivePoint(position) {
+    if (liveComplete)
+        return;
+    const result = (0, live_js_1.appendLivePoint)(route?.points ?? [], position, course);
+    if (!result.ok) {
+        liveError = result.reason;
+        refresh();
+        return;
+    }
+    if (route && result.route.length <= route.length + 1e-7)
+        return;
+    route = result.route;
+    liveComplete = result.completed;
+    liveError = null;
+    if (!run && route.length >= live_js_1.LIVE_LAUNCH_LENGTH) {
+        run = (0, simulation_js_1.beginRun)(route, course);
+        attempts++;
+        accumulator = 0;
+        liveWaitingTicks = 0;
+    }
+    else if (run) {
+        run = (0, live_js_1.adoptLiveRoute)(run, route);
+        liveWaitingTicks = 0;
+    }
+    refresh();
+}
 function moveStroke(e) {
+    if (mode === 'c' && drawing && e.pointerId === activePointer) {
+        const samples = e.getCoalescedEvents?.() ?? [];
+        for (const ev of samples) {
+            if (ev.pointerId === activePointer)
+                applyLivePoint(pointFromEvent(ev));
+        }
+        applyLivePoint(pointFromEvent(e));
+        e.preventDefault();
+        return;
+    }
     if (snapDragging && e.pointerId === snapPointer && snapPlan && run) {
         snapTarget = pointFromEvent(e);
         snapPreview = (0, snap_js_1.previewSnap)(run, course, snapPlan, snapTarget);
@@ -677,6 +856,20 @@ function moveStroke(e) {
     e.preventDefault();
 }
 function endStroke(e) {
+    if (mode === 'c' && drawing && e.pointerId === activePointer) {
+        if (e.type === 'pointerup')
+            applyLivePoint(pointFromEvent(e));
+        drawing = false;
+        activePointer = null;
+        liveInputReleased = true;
+        if (canvasEl.hasPointerCapture(e.pointerId))
+            canvasEl.releasePointerCapture(e.pointerId);
+        if (e.type !== 'pointerup')
+            liveError = 'Trail released. Continue from the mint tip.';
+        refresh();
+        e.preventDefault();
+        return;
+    }
     if (snapDragging && e.pointerId === snapPointer) {
         snapDragging = false;
         snapPointer = null;
@@ -739,6 +932,8 @@ canvasEl.addEventListener('pointermove', moveStroke);
 canvasEl.addEventListener('pointerup', endStroke);
 canvasEl.addEventListener('pointercancel', endStroke);
 canvasEl.addEventListener('lostpointercapture', e => {
+    if (mode === 'c')
+        return;
     if (snapDragging && snapPointer === e.pointerId) {
         snapDragging = false;
         snapPointer = null;
@@ -798,6 +993,7 @@ function selectMode(next) {
 }
 buttonA.addEventListener('click', () => selectMode('a'));
 buttonB.addEventListener('click', () => selectMode('b'));
+buttonC.addEventListener('click', () => selectMode('c'));
 btnReset.addEventListener('click', () => newCourse(course.id, false));
 btnPause.addEventListener('click', () => {
     if (snapEditing)
@@ -828,7 +1024,13 @@ function loop(now) {
         accumulator += delta;
         let safety = 0;
         while (accumulator >= simulation_js_1.FIXED_STEP && run.phase === 'running' && safety < 8) {
-            run = (0, simulation_js_1.advanceRun)(run, course);
+            if (mode === 'c') {
+                const next = (0, live_js_1.advanceLiveRun)(run, course, liveComplete, liveWaitingTicks);
+                run = next.run;
+                liveWaitingTicks = next.waitingTicks;
+            }
+            else
+                run = (0, simulation_js_1.advanceRun)(run, course);
             accumulator -= simulation_js_1.FIXED_STEP;
             safety++;
         }
@@ -843,13 +1045,14 @@ function loop(now) {
         }
     }
     (0, render_js_1.render)(canvasEl, { course, draft, route, run, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
+        live: mode === 'c' ? { completed: liveComplete, waiting: liveWaitingTicks > 0, tip: route?.points.at(-1) ?? course.start, grace: Math.max(0, 1 - liveWaitingTicks / live_js_1.LIVE_GRACE_TICKS) } : undefined,
         snap: snapEditing && snapPlan ? { anchor: snapTarget ?? snapPlan.anchor, original: snapPlan.anchor, lead: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.leadDistance), tail: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.tailDistance), preview: snapPreview?.ok ? snapPreview.route : null, valid: snapPreview === null ? true : snapPreview.ok } : undefined });
     requestAnimationFrame(loop);
 }
 newCourse(course.id);
 requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), tutorialPrompted }) });
+Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
 let appView = 'home';
 const howto = document.querySelector('#howtoOverlay');
 if (!howto)
@@ -887,7 +1090,7 @@ function showEarnedResult() {
     assignText('resultInk', String(Math.round(route.length)));
     assignText('resultTime', (run.ticks * simulation_js_1.FIXED_STEP).toFixed(2));
     assignText('resultAttempts', String(attempts));
-    assignText('resultDetail', mode === 'b' ? (snapSpent ? 'Snap & Redirect • 1 correction used' : 'Snap & Redirect • no correction used') : 'Plan & Run • live gameplay metrics.');
+    assignText('resultDetail', mode === 'b' ? (snapSpent ? 'Snap & Redirect • 1 correction used' : 'Snap & Redirect • no correction used') : mode === 'c' ? 'Live Drawing • continuous route • genuine gameplay metrics.' : 'Plan & Run • live gameplay metrics.');
     const next = document.querySelector('#nextDemo');
     if (next)
         next.innerHTML = (course.id === 'detour' || (course.id === 'timing' && mode === 'b')) ? 'NEXT COURSE <span>➜</span>' : 'PLAY COURSE 01 <span>➜</span>';
@@ -906,7 +1109,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !howto.hid
 } });
 showView('home');
 selectMode('a');
-Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }) });
+Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, liveComplete, liveWaitingTicks, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }) });
 
 },
 "src/ui/render.js":function(require,module,exports){
@@ -1221,6 +1424,26 @@ function render(canvas, s) {
         else {
             stroke(ctx, pts, s.invalid ? p.accent : '#ffffff90', 13);
             stroke(ctx, pts, s.invalid ? p.accent : p.ink, 6);
+        }
+    }
+    if (s.live) {
+        const pos = s.live.tip;
+        if (!s.live.completed) {
+            ctx.save();
+            ctx.setLineDash([4, 5]);
+            ctx.strokeStyle = s.live.waiting ? '#fa977c' : '#72f3d8';
+            ctx.lineWidth = 2.3;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 16, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+            dot(ctx, pos, 4.5, s.live.waiting ? '#fa977c' : '#72f3d8');
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.font = '800 10px system-ui';
+            ctx.fillStyle = '#c6eff0';
+            ctx.fillText(s.live.waiting ? 'DRAW NOW' : 'DRAW AHEAD', pos.x, Math.max(59, pos.y - 25));
         }
     }
     if (s.snap) {

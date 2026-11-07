@@ -21,7 +21,7 @@ export function beginRun(route:Route,course:Course):Run{
   if(route.points.length<2||route.length<=0)throw new Error('route not valid');
   return {phase:'running',route,distance:0,ticks:0,position:{...route.points[0]!},failure:null,courseId:course.id};
 }
-export function advanceRun(run:Run,course:Course,dt=FIXED_STEP):Run{
+export function advanceRun(run:Run,course:Course,dt=FIXED_STEP,allowIncomplete=false):Run{
   if(run.phase!=='running')return run;
   if(run.courseId!==course.id)throw new Error('course changed during attempt');
   if(Math.abs(dt-FIXED_STEP)>1e-12)throw new Error('use fixed timestep');
@@ -37,6 +37,7 @@ export function advanceRun(run:Run,course:Course,dt=FIXED_STEP):Run{
       return {...run,phase:'lost',position:next,distance:nd,ticks:run.ticks+1,failure:'Hit the moving hazard.'};
   }
   if(nd>=run.route.length-1e-8){
+    if(allowIncomplete && distance(next,course.finish)>GOAL_ZONE)return {...run,position:next,distance:nd,ticks:run.ticks+1};
     if(distance(next,course.finish)<=GOAL_ZONE) return {...run,phase:'won',position:next,distance:nd,ticks:run.ticks+1,failure:null};
     return {...run,phase:'lost',position:next,distance:nd,ticks:run.ticks+1,failure:'Missed the finish zone.'};
   }

@@ -5,6 +5,7 @@ export interface VisualState {
   course:Course;draft:readonly Vec[];route:Route|null;run:Run|null;
   inkUsed:number;invalid:boolean;drawing:boolean;
   snap?:{anchor:Vec;original:Vec;lead:Vec;tail:Vec;preview:Route|null;valid:boolean};
+  live?:{completed:boolean;waiting:boolean;tip:Vec;grace:number};
 }
 type ThemeKey='pulse'|'ink'|'micro';
 interface Palette{bg:string;grid:string;major:string;ink:string;inkSoft:string;wall:string;edge:string;text:string;muted:string;mint:string;accent:string;moving:string;runner:string;barBack:string}
@@ -108,6 +109,16 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
     if(theme==='pulse'){ctx.save();ctx.shadowColor=s.invalid?p.accent:p.ink;ctx.shadowBlur=11;stroke(ctx,pts,s.invalid?p.accent:p.ink,7);ctx.restore();stroke(ctx,pts,'#eefffa',2)}
     else if(theme==='ink'){stroke(ctx,pts,s.invalid?p.accent:p.inkSoft,10);stroke(ctx,pts,s.invalid?p.accent:p.ink,4.6)}
     else {stroke(ctx,pts,s.invalid?p.accent:'#ffffff90',13);stroke(ctx,pts,s.invalid?p.accent:p.ink,6)}
+  }
+  if(s.live){
+    const pos=s.live.tip;
+    if(!s.live.completed){
+      ctx.save();ctx.setLineDash([4,5]);ctx.strokeStyle=s.live.waiting?'#fa977c':'#72f3d8';ctx.lineWidth=2.3;
+      ctx.beginPath();ctx.arc(pos.x,pos.y,16,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+      dot(ctx,pos,4.5,s.live.waiting?'#fa977c':'#72f3d8');
+      ctx.textAlign='center';ctx.textBaseline='bottom';ctx.font='800 10px system-ui';ctx.fillStyle='#c6eff0';
+      ctx.fillText(s.live.waiting?'DRAW NOW':'DRAW AHEAD',pos.x,Math.max(59,pos.y-25));
+    }
   }
   if(s.snap){
     const a=s.snap;

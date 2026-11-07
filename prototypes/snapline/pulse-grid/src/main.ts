@@ -6,6 +6,8 @@ import {appendStroke} from './game/drawing.js';
 import {render} from './ui/render.js';
 import {createSnapPlan,previewSnap} from './core/snap.js';
 import type {SnapPlan,SnapCheck,SnapEvent} from './core/snap.js';
+import {appendLivePoint,adoptLiveRoute,advanceLiveRun,LIVE_LAUNCH_LENGTH,LIVE_JOIN_RADIUS,LIVE_GRACE_TICKS} from './core/live.js';
+import {GOAL_ZONE} from './core/simulation.js';
 
 const canvas=document.querySelector<HTMLCanvasElement>('#courseCanvas');
 const goBtn=document.querySelector<HTMLButtonElement>('#goBtn');
@@ -22,17 +24,19 @@ const canvasEl=canvas,btnGo=goBtn,btnReset=resetBtn,btnPause=pauseBtn,btnHelp=he
 let course:Course=COURSES[0]!;
 let draft:Vec[]=[],route:Route|null=null,run:Run|null=null;
 let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attempts=0,tutorialPrompted=false;
-type GameMode='a'|'b';
+type GameMode='a'|'b'|'c';
 let mode:GameMode='a';
+let liveComplete=false,liveWaitingTicks=0,liveError:string|null=null,liveInputReleased=false;
 let snapSpent=false,snapEditing=false,snapDragging=false,snapPointer:number|null=null;
 let snapPlan:SnapPlan|null=null,snapTarget:Vec|null=null,snapPreview:SnapCheck|null=null;
 const snapHistory:SnapEvent[]=[];
 const btnSnap=document.querySelector<HTMLButtonElement>('#snapBtn');
 const modeA=document.querySelector<HTMLButtonElement>('#modeA');
 const modeB=document.querySelector<HTMLButtonElement>('#modeB');
+const modeC=document.querySelector<HTMLButtonElement>('#modeC');
 const modeDescription=document.querySelector<HTMLElement>('#modeDescription');
-if(!btnSnap||!modeA||!modeB||!modeDescription)throw new Error('P3 controls missing');
-const buttonSnap=btnSnap,buttonA=modeA,buttonB=modeB,modeInfo=modeDescription;
+if(!btnSnap||!modeA||!modeB||!modeC||!modeDescription)throw new Error('P3 controls missing');
+const buttonSnap=btnSnap,buttonA=modeA,buttonB=modeB,buttonC=modeC,modeInfo=modeDescription;
 function cancelEdit(resume:boolean):void{
   if(snapEditing&&run?.phase==='paused'&&resume)run={...run,phase:'running'};
   snapEditing=false;snapDragging=false;snapPointer=null;snapPlan=null;snapTarget=null;snapPreview=null;
@@ -44,21 +48,29 @@ function phase(){return run?.phase??'ready';}
 function message(top:string,bottom:string){txt.textContent=top;hint.textContent=bottom;}
 function refresh():void{
   const p=phase();
-  btnGo.disabled=!route||p!=='ready';
-  buttonSnap.hidden=mode==='a';
+  btnGo.hidden=mode==='c';
+  btnGo.disabled=mode==='c'||!route||p!=='ready';
+  buttonSnap.hidden=mode!=='b';
   buttonSnap.disabled=mode==='a'||snapSpent||(!snapEditing&&p!=='running');
   buttonSnap.textContent=snapEditing?'CANCEL':snapSpent?'USED':'SNAP';
   buttonSnap.setAttribute('aria-label',snapEditing?'Cancel route correction':snapSpent?'Snap already used':'Pause to adjust your route once');
   document.body.dataset.mode=mode;
   buttonA.setAttribute('aria-pressed',String(mode==='a'));
   buttonB.setAttribute('aria-pressed',String(mode==='b'));
-  modeInfo.textContent=mode==='b'?'Draw • Run • Snap once':'Draw • Run • Improve';
+  buttonC.setAttribute('aria-pressed',String(mode==='c'));
+  modeInfo.textContent=mode==='b'?'Draw • Run • Snap once':mode==='c'?'Draw ahead • runner follows live':'Draw • Run • Improve';
   btnPause.disabled=snapEditing||(p!=='running'&&p!=='paused');
   btnPause.textContent=p==='paused'?'▶':'Ⅱ';
   btnPause.setAttribute('aria-label',p==='paused'?'Resume run':'Pause run');
   sel.disabled=snapEditing||p==='running'||p==='paused';
   resultEl.hidden=p!=='won'&&p!=='lost';
-  if(snapEditing){
+  if(mode==='c'){
+    if(p==='won') { resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`; message('Live trail completed.', 'The runner followed your drawing in real time.'); }
+    else if(p==='lost') { resultEl.textContent=`✕ ${run?.failure??'Attempt failed'}`; message('Live trail interrupted.',run?.failure??'Reset and draw ahead.'); }
+    else if(p==='paused')message('Live run paused.','Resume to keep the runner moving.');
+    else if(p==='running')message(liveError??(liveWaitingTicks>0?'DRAW AHEAD — runner at the tip':'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length??0)} / ${course.maxInk} • ${Math.max(0,Math.round((LIVE_GRACE_TICKS-liveWaitingTicks)/120*10)/10)}s tip grace`);
+    else message(liveError??'Touch S and draw continuously.', 'The runner launches after a short trail. Continue drawing to F.');
+  } else if(snapEditing){
     message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:course.id==='snaplab'?'Drag the ring right, then release.':'Drag the ring to a safer location.');
   } else if(p==='won'){
     resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`;
@@ -73,7 +85,8 @@ function refresh():void{
 }
 function newCourse(id:string,clearAttempts=true):void{
   course=COURSES.find(x=>x.id===id && (x.id!=='snaplab'||mode==='b'))??COURSES[0]!;
-  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;if(clearAttempts)attempts=0;
+  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;
+  liveComplete=false;liveWaitingTicks=0;liveError=null;liveInputReleased=false;if(clearAttempts)attempts=0;
   const practice=sel.querySelector<HTMLOptionElement>('option[value="snaplab"]');
   if(practice){practice.hidden=mode!=='b';practice.disabled=mode!=='b';}
   sel.value=course.id;
@@ -90,6 +103,20 @@ function pointFromEvent(e:PointerEvent):Vec{
           y:Math.max(0,Math.min(BOARD_HEIGHT,(e.clientY-rect.top)*BOARD_HEIGHT/rect.height))};
 }
 function beginStroke(e:PointerEvent):void{
+  if(mode==='c'){
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    if(drawing||activePointer!==null||liveComplete||phase()==='lost'||phase()==='won')return;
+    const pos=pointFromEvent(e);
+    const join=route?.points.at(-1)??course.start;
+    if(distance(pos,join)>LIVE_JOIN_RADIUS){liveError='Continue from the glowing trail tip.';refresh();return;}
+    const initial=route?.points??[];
+    const check=appendLivePoint(initial,pos,course);
+    if(!check.ok){liveError=check.reason;refresh();return;}
+    if(!route)route=check.route;
+    liveComplete=check.completed;liveError=null;
+    drawing=true;activePointer=e.pointerId;liveInputReleased=false;
+    canvasEl.setPointerCapture(e.pointerId);refresh();e.preventDefault();return;
+  }
   if(snapEditing){
     if(!snapPlan||!run||snapDragging)return;
     if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -107,7 +134,22 @@ function beginStroke(e:PointerEvent):void{
   drawing=true;activePointer=e.pointerId;draft=[pos];route=null;accumulator=0;
   canvasEl.setPointerCapture(e.pointerId);txt.textContent='Drawing…';hint.textContent='Keep dragging towards the finish circle.';refresh();e.preventDefault();
 }
+function applyLivePoint(position:Vec):void{
+  if(liveComplete)return;
+  const result=appendLivePoint(route?.points??[],position,course);
+  if(!result.ok){liveError=result.reason;refresh();return;}
+  if(route && result.route.length<=route.length+1e-7)return;
+  route=result.route;liveComplete=result.completed;liveError=null;
+  if(!run && route.length>=LIVE_LAUNCH_LENGTH){run=beginRun(route,course);attempts++;accumulator=0;liveWaitingTicks=0;}
+  else if(run){run=adoptLiveRoute(run,route);liveWaitingTicks=0;}
+  refresh();
+}
 function moveStroke(e:PointerEvent):void{
+  if(mode==='c'&&drawing&&e.pointerId===activePointer){
+    const samples=e.getCoalescedEvents?.()??[];
+    for(const ev of samples){if(ev.pointerId===activePointer)applyLivePoint(pointFromEvent(ev));}
+    applyLivePoint(pointFromEvent(e));e.preventDefault();return;
+  }
   if(snapDragging&&e.pointerId===snapPointer&&snapPlan&&run){
     snapTarget=pointFromEvent(e);snapPreview=previewSnap(run,course,snapPlan,snapTarget);
     refresh();e.preventDefault();return;
@@ -122,6 +164,13 @@ function moveStroke(e:PointerEvent):void{
   e.preventDefault();
 }
 function endStroke(e:PointerEvent):void{
+  if(mode==='c'&&drawing&&e.pointerId===activePointer){
+    if(e.type==='pointerup')applyLivePoint(pointFromEvent(e));
+    drawing=false;activePointer=null;liveInputReleased=true;
+    if(canvasEl.hasPointerCapture(e.pointerId))canvasEl.releasePointerCapture(e.pointerId);
+    if(e.type!=='pointerup')liveError='Trail released. Continue from the mint tip.';
+    refresh();e.preventDefault();return;
+  }
   if(snapDragging&&e.pointerId===snapPointer){
     snapDragging=false;snapPointer=null;
     if(canvasEl.hasPointerCapture(e.pointerId))canvasEl.releasePointerCapture(e.pointerId);
@@ -158,6 +207,7 @@ canvasEl.addEventListener('pointermove',moveStroke);
 canvasEl.addEventListener('pointerup',endStroke);
 canvasEl.addEventListener('pointercancel',endStroke);
 canvasEl.addEventListener('lostpointercapture',e=>{
+  if(mode==='c')return;
   if(snapDragging&&snapPointer===e.pointerId){snapDragging=false;snapPointer=null;snapTarget=snapPlan?.anchor??null;snapPreview=null;refresh();}
   if(drawing&&activePointer===e.pointerId){drawing=false;activePointer=null;draft=[];route=null;message('Input interrupted.','Try another stroke.');refresh();}
 });
@@ -180,6 +230,7 @@ function selectMode(next:GameMode):void{
 }
 buttonA.addEventListener('click',()=>selectMode('a'));
 buttonB.addEventListener('click',()=>selectMode('b'));
+buttonC.addEventListener('click',()=>selectMode('c'));
 btnReset.addEventListener('click',()=>newCourse(course.id,false));
 btnPause.addEventListener('click',()=>{
   if(snapEditing)return;
@@ -199,7 +250,9 @@ function loop(now:number){
     accumulator+=delta;
     let safety=0;
     while(accumulator>=FIXED_STEP&&run.phase==='running'&&safety<8){
-      run=advanceRun(run,course);accumulator-=FIXED_STEP;safety++;
+      if(mode==='c'){const next=advanceLiveRun(run,course,liveComplete,liveWaitingTicks);run=next.run;liveWaitingTicks=next.waitingTicks;}
+      else run=advanceRun(run,course);
+      accumulator-=FIXED_STEP;safety++;
     }
     if(course.id==='snaplab'&&mode==='b'&&!snapSpent&&!tutorialPrompted&&run.phase==='running'&&run.ticks>=170){
       tutorialPrompted=true;
@@ -208,12 +261,13 @@ function loop(now:number){
     if(run.phase!=='running'){refresh();if(run.phase==='won')showEarnedResult();}
   }
   render(canvasEl,{course,draft,route,run,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
+    live:mode==='c'?{completed:liveComplete,waiting:liveWaitingTicks>0,tip:route?.points.at(-1)??course.start, grace:Math.max(0,1-liveWaitingTicks/LIVE_GRACE_TICKS)}:undefined,
     snap:snapEditing&&snapPlan?{anchor:snapTarget??snapPlan.anchor,original:snapPlan.anchor,lead:pointAtDistance(run!.route.points,snapPlan.leadDistance),tail:pointAtDistance(run!.route.points,snapPlan.tailDistance),preview:snapPreview?.ok?snapPreview.route:null,valid:snapPreview===null?true:snapPreview.ok}:undefined});
   requestAnimationFrame(loop);
 }
 newCourse(course.id);requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),tutorialPrompted})});
+Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),liveComplete,liveWaitingTicks,liveError,liveInputReleased,runnerPosition:run?.position,runDistance:run?.distance,tutorialPrompted})});
 
 // P2.1 Pulse Grid refinement: one owner-selected theme, actual app flow and truthful live metrics.
 type AppView='home'|'game'|'result';
@@ -244,7 +298,7 @@ function showEarnedResult():void{
   assignText('resultInk',String(Math.round(route.length)));
   assignText('resultTime',(run.ticks*FIXED_STEP).toFixed(2));
   assignText('resultAttempts',String(attempts));
-  assignText('resultDetail',mode==='b'?(snapSpent?'Snap & Redirect • 1 correction used':'Snap & Redirect • no correction used'):'Plan & Run • live gameplay metrics.');
+  assignText('resultDetail',mode==='b'?(snapSpent?'Snap & Redirect • 1 correction used':'Snap & Redirect • no correction used'):mode==='c'?'Live Drawing • continuous route • genuine gameplay metrics.':'Plan & Run • live gameplay metrics.');
   const next=document.querySelector<HTMLButtonElement>('#nextDemo');
   if(next)next.innerHTML=(course.id==='detour'||(course.id==='timing'&&mode==='b'))?'NEXT COURSE <span>➜</span>':'PLAY COURSE 01 <span>➜</span>';
   showView('result');
@@ -258,4 +312,4 @@ btnHelp.addEventListener('click',()=>{howto.hidden=false;document.getElementById
 document.getElementById('closeHowto')?.addEventListener('click',()=>{howto.hidden=true;btnHelp.focus();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!howto.hidden){howto.hidden=true;btnHelp.focus();}});
 showView('home');selectMode('a');
-Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,mode,snapSpent,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null})});
+Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,mode,snapSpent,liveComplete,liveWaitingTicks,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null})});

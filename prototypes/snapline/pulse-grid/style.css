@@ -72,3 +72,14 @@ body[data-mode="b"] .bottom-rail span{color:#77edda}
 .home-bottom{bottom:21px}
 @media(max-width:400px){.home-art{height:24%;top:42%}.home-bottom{bottom:15px}.mode-picker{margin-bottom:8px}.home-metadata{margin-bottom:8px}.home-footer{margin-top:10px}.game-buttons{gap:5px}body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(59px,.7fr) 38px 38px 38px;gap:4px}}
 @media(max-width:355px){body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) 58px 35px 35px 35px;gap:3px}.game-screen{padding-left:12px!important;padding-right:12px!important}}
+
+/* P5: three prototype modes, still Pulse Grid. Avoid stacking text at 360px. */
+.mode-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.mode-picker button{min-height:45px;white-space:normal;font-size:9px;line-height:1.28;padding:7px 5px;letter-spacing:0}
+.mode-picker strong{display:block;margin:0 0 3px;font-size:11px}
+body[data-mode="c"] .game-buttons{grid-template-columns:1fr 48px 48px 48px}
+body[data-mode="c"] .game-buttons .action-btn{display:none!important}
+body[data-mode="c"] .game-buttons{grid-template-columns:repeat(3,1fr)}
+body[data-mode="c"] .game-buttons .icon-btn{max-width:none}
+body[data-mode="c"] .bottom-rail span{color:var(--mint)}
+@media(max-width:400px){.mode-picker button{font-size:8.3px;padding:6px 3px;min-height:44px}.mode-picker strong{margin-bottom:3px}.home-copy{line-height:1.45;margin-top:10px}}
