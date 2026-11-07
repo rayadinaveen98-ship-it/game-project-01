@@ -46,3 +46,14 @@ This does NOT authorize full-game production or native APK work.
 - [ ] Capture actual desktop and phone-emulated browser evidence; perform physical phone QA.
 - [ ] Evaluate B against A, then revisit C if necessary.
 [P3 technical plan](../04-game-design/snapline/P3_SNAP_REDIRECT_PLAN_v0.7.md) · [Checklist](SNAPLINE_P3_CHECKLIST.md).
+
+## P3 B mechanic alpha implementation — November 7, 2026
+- [x] Added Plan & Run A/B test selector, preserving approved Pulse Grid screen system.
+- [x] One-time pause-and-drag forward anchor, trajectory continuity, valid/invalid path previews, exact ink accounting and reset/cancel.
+- [x] Implemented deterministic snap event replay and 5 new unit tests; **15/15 tests pass locally**.
+- [x] Local desktop Chromium and touch-based emulated phone tests on 360/390/412 widths passed.
+- [ ] CI on GitHub must pass before merging implementation.
+- [ ] Owner physical Android P3 acceptance of responsiveness, collision fairness and visual simplicity.
+- [ ] External uninformed A/B player comparisons and B-specific tutorial refinement.
+- [ ] Live Drawing C experiment, a potential alternative, not implemented yet.
+The work is an alpha mechanics prototype; do not claim production completion.
