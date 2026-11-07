@@ -95,3 +95,13 @@ See [P5 review](../06-technical-design/snapline_P5_live_drawing_review.md).
 - [ ] Owner physical phone test of course navigation, snapping, result and persistent local progress after reopening. Browser-owned storage across real navigation unverified by local environment.
 - [ ] P6.2/P6.3 five new course definitions, tutorials and extra content; **not implemented**.
 - [ ] External player feedback, physical FPS and Play Store release checks.
+
+## P6.3 new-content engineering milestone — November 7, 2026
+- [x] Five additional course definitions (A×2, B×1, C×2); eight total definitions, twelve playable mode-course assignments.
+- [x] Dynamic 4-entry course selection and next navigation, accurate titles/results, normal P6.1 isolated progress storage.
+- [x] Deterministic solvability tests and real browser checks for all five levels (including B's snap).
+- [x] 48/48 Node/TypeScript regression tests locally passed; 360/390/412 CSS px mobile browser emulation passes.
+- [ ] Github PR CI and merge; actual device owner review remains pending.
+- [ ] P6.4 reliability, accessibility, measured physical performance.
+- [ ] P6.5 user study and next product decision.
+[QA report](../06-technical-design/snapline_P63_course_qa_report.md).
