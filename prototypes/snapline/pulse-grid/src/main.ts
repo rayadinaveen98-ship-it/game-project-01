@@ -78,14 +78,14 @@ function refresh():void{
     else if(p==='running')message(liveError??(liveWaitingTicks>0?'DRAW AHEAD — runner at the tip':'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length??0)} / ${course.maxInk} • ${Math.max(0,Math.round((LIVE_GRACE_TICKS-liveWaitingTicks)/120*10)/10)}s tip grace`);
     else message(liveError??'Touch S and draw continuously.', 'The runner launches after a short trail. Continue drawing to F.');
   } else if(snapEditing){
-    message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:course.id==='snaplab'?'Drag the ring right, then release.':'Drag the ring to a safer location.');
+    message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:course.id==='snaplab'?'Drag the ring right, then release.':course.id==='snapchoice'?'Drag the ring left, then release.':'Drag the ring to a safer location.');
   } else if(p==='won'){
     resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`;
     message('Completed successfully.', 'Try a shorter or safer route, or switch courses.');
   }else if(p==='lost'){
     resultEl.textContent=`✕ ${run?.failure??'Attempt failed'}`;
     message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
-  }else if(p==='running')message('Running route…',course.id==='snaplab'?'Tap SNAP while climbing, drag ring right.':'Watch the runner and the moving hazard.');
+  }else if(p==='running')message('Running route…',course.id==='snaplab'?'Tap SNAP while climbing; drag the ring right.':course.id==='snapchoice'?'Tap SNAP while climbing; move the ring left.':'Watch the runner and the moving hazard.');
   else if(p==='paused')message('Paused.','Press Resume to continue from the same simulation tick.');
   else if(route)message('Route ready. Press GO.',`${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
   else if(!drawing)message('Draw a line from S to F.',course.hint);
@@ -94,16 +94,20 @@ function newCourse(id:string,clearAttempts=true):void{
   course=COURSES.find(x=>x.id===id&&isAccessibleCourse(mode,id))??firstCourse(mode);
   draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;
   liveComplete=false;liveWaitingTicks=0;liveError=null;liveInputReleased=false;if(clearAttempts)attempts=0;
-  for(const opt of Array.from(sel.options)){
-    const allowed=isAccessibleCourse(mode,opt.value);
-    opt.hidden=!allowed;opt.disabled=!allowed;
+  const eligible=coursesForMode(mode);
+  // Rebuild the selector for every mode: static P6.2 options cannot represent 8 courses.
+  sel.replaceChildren();
+  for(const [i,entry] of eligible.entries()){
+    const option=document.createElement('option');
+    option.value=entry.id;
+    option.textContent=String(i+1).padStart(2,'0')+(entry.family==='practice'?' ★':'');
+    sel.append(option);
   }
   sel.value=course.id;
-  const eligible=coursesForMode(mode);
   const ordinal=String(eligible.findIndex(c=>c.id===course.id)+1).padStart(2,'0');
   const max=String(eligible.length).padStart(2,'0');
   const label=document.querySelector<HTMLElement>('#courseLabel');
-  if(label)label.textContent=course.id==='detour'?'01 STATIC DETOUR':course.id==='timing'?'02 MOVING HAZARD':'03 SNAP PRACTICE';
+  if(label)label.textContent=`${ordinal} ${course.title.toUpperCase()}`;
   const progress=document.querySelector<HTMLElement>('#courseProgress');if(progress)progress.innerHTML=`${ordinal} <span>/</span> ${max}`;
   refresh();
 }
@@ -264,13 +268,13 @@ function loop(now:number){
       else run=advanceRun(run,course);
       accumulator-=FIXED_STEP;safety++;
     }
-    if(course.id==='snaplab'&&mode==='b'&&!snapSpent&&!tutorialPrompted&&run.phase==='running'&&run.ticks>=170){
+    if((course.id==='snaplab'||course.id==='snapchoice')&&mode==='b'&&!snapSpent&&!tutorialPrompted&&run.phase==='running'&&run.ticks>=(course.id==='snapchoice'?185:170)){
       tutorialPrompted=true;
-      message('NOW: SNAP AND MOVE RIGHT','Tap SNAP, then drag mint ring right.');
+      message(course.id==='snapchoice'?'NOW: SNAP TO THE LEFT':'NOW: SNAP AND MOVE RIGHT',course.id==='snapchoice'?'Tap SNAP, then drag the mint ring left.':'Tap SNAP, then drag the mint ring right.');
     }
     if(run.phase!=='running'){refresh();if(run.phase==='won')showEarnedResult();}
   }
-  render(canvasEl,{course,draft,route,run,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
+  render(canvasEl,{course,mode,draft,route,run,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
     live:mode==='c'?{completed:liveComplete,waiting:liveWaitingTicks>0,tip:route?.points.at(-1)??course.start, grace:Math.max(0,1-liveWaitingTicks/LIVE_GRACE_TICKS)}:undefined,
     snap:snapEditing&&snapPlan?{anchor:snapTarget??snapPlan.anchor,original:snapPlan.anchor,lead:pointAtDistance(run!.route.points,snapPlan.leadDistance),tail:pointAtDistance(run!.route.points,snapPlan.tailDistance),preview:snapPreview?.ok?snapPreview.route:null,valid:snapPreview===null?true:snapPreview.ok}:undefined});
   requestAnimationFrame(loop);
@@ -337,9 +341,15 @@ function showEarnedResult():void{
   assignText('resultSequence',`${String(ordinal).padStart(2,'0')} / ${String(eligible.length).padStart(2,'0')}`);
   assignText('resultOverline','ROUTE COMPLETE');
   const headline=document.getElementById('resultHeadline');if(headline)headline.innerHTML='Beautifully<br><em>done.</em>';
-  assignText('resultMessage',course.id==='detour'?'You made it around the detour.':course.id==='timing'?'You navigated the moving hazard.':'You redirected around the crossing patrol.');
-  assignText('resultCourseLabel',course.id==='detour'?'COURSE 01':course.id==='timing'?'COURSE 02':'PRACTICE 03');
-  assignText('resultCourseTitle',course.id==='detour'?'THE DETOUR':course.id==='timing'?'THE MOVING GATE':'PATROL CROSSING');
+  const completion:Partial<Record<Course['id'],string>>={
+    detour:'You made it around the detour.',timing:'You navigated the moving hazard.',
+    snaplab:'You redirected around the crossing patrol.',planbasics:'Your first planned route worked.',
+    efficient:'You found a precise path through both blocks.',snapchoice:'Your well-timed correction saved the run.',
+    liveahead:'You kept the line moving ahead of your runner.',liveflow:'You kept flowing through the moving corridor.'
+  };
+  assignText('resultMessage',completion[course.id]??'You made it from start to finish.');
+  assignText('resultCourseLabel',`${course.family==='practice'?'PRACTICE':'COURSE'} ${String(ordinal).padStart(2,'0')}`);
+  assignText('resultCourseTitle',course.title.toUpperCase());
   assignText('resultInk',String(Math.round(route.length)));
   assignText('resultTime',(run.ticks*FIXED_STEP).toFixed(2));
   assignText('resultAttempts',String(attempts));
@@ -363,8 +373,8 @@ function showCourseMenu():void{
   for(const [index,entry] of coursesForMode(mode).entries()){
     const button=document.createElement('button');button.type='button';button.className='course-card';
     const saved=progress[progressId(mode,entry.id)];
-    const overline=document.createElement('small');overline.textContent=`COURSE ${String(index+1).padStart(2,'0')}  ·  ${entry.family==='practice'?'PRACTICE':'CHALLENGE'}`;
-    const title=document.createElement('strong');title.textContent=entry.title.slice(5).replace(' (B Practice)','');
+    const overline=document.createElement('small');overline.textContent=`COURSE ${String(index+1).padStart(2,'0')}  ·  ${entry.family==='practice'?'PRACTICE':entry.family==='signature'?'SIGNATURE':'CHALLENGE'}`;
+    const title=document.createElement('strong');title.textContent=entry.title;
     const details=document.createElement('span');details.textContent=saved?`✓ CLEARED · ${saved.wins} WIN${saved.wins===1?'':'S'} · BEST ${(saved.bestTimeTicks*FIXED_STEP).toFixed(2)}s`:'NOT YET CLEARED';
     button.append(overline,title,details);
     button.addEventListener('click',()=>{newCourse(entry.id);showView('game');if(!guideHistory[mode])openModeGuide(btnHelp);});
@@ -401,4 +411,5 @@ document.addEventListener('keydown',e=>{
 showView('home');selectMode('a');
 Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,mode,snapSpent,liveComplete,liveWaitingTicks,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null}),
   __p61Snapshot:()=>({view:appView,mode,course:course.id,available:coursesForMode(mode).map(c=>c.id),cleared:completedInMode(progress,mode),progress:JSON.parse(JSON.stringify(progress))}),
-  __p62Snapshot:()=>({view:appView,mode,course:course.id,guideOpen:!howto.hidden,guideTitle:guideTitle?.textContent,guideSteps:guideSteps?.children.length,guideHistory:{...guideHistory}})});
+  __p62Snapshot:()=>({view:appView,mode,course:course.id,guideOpen:!howto.hidden,guideTitle:guideTitle?.textContent,guideSteps:guideSteps?.children.length,guideHistory:{...guideHistory}}),
+  __p63Snapshot:()=>({view:appView,mode,course:course.id,courseCount:coursesForMode(mode).length,eligible:coursesForMode(mode).map(c=>c.id),courseOptions:Array.from(sel.options).map(o=>o.value),resultTitle:document.getElementById('resultCourseTitle')?.textContent,progress:JSON.parse(JSON.stringify(progress))})});
