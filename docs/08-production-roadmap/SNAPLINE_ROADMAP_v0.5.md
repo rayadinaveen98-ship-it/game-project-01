@@ -24,3 +24,6 @@ No release date or APK claim. Do not broaden the prototype midstream.
 
 ## P1 implementation addendum — November 7, 2026
 **Engineering build achieved:** TypeScript/Canvas browser prototype, Plan & Run A, 2 courses, collision detection and route input, 10 automated tests passed. Desktop and emulated touch Chromium smoke passed. **Owner's physical Android test is outstanding**, so P1 is **implemented / partially verified**, not formally accepted. P2/P3 remain not started. See [implementation evidence](../06-technical-design/snapline_P1_implementation_report.md).
+
+## November 7, 2026 — P1 accepted; P2 implemented as review lab
+The product owner reported the P1 collisions and movement worked perfectly and authorized the next step. P2 original visual comparisons have been built (actual HTML/Canvas) with Home/Game/Result previews for A/B/C on the same P1 engine. They are **pending owner style approval**, not finished production visuals. P2 mechanical QA: 10/10 tests, desktop runs in each theme and mobile emulated touch pass; physical device check pending. [Visual report](../05-art-direction/snapline/P2_VISUAL_REVIEW_v0.6.md).
