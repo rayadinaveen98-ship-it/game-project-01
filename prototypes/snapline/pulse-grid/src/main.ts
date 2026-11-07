@@ -4,6 +4,8 @@ import {readProgress,writeProgress,recordWin,clearProgress,completedInMode,progr
 import type {LocalStore,Progress} from './game/progress.js';
 import {MODE_GUIDES,readGuideHistory,markGuide,saveGuideHistory} from './game/onboarding.js';
 import type {GuideHistory,GuideChoice} from './game/onboarding.js';
+import {interruptionEffect} from './game/interruption.js';
+import type {InterruptionReason,ActiveGesture} from './game/interruption.js';
 import {distance,lengthOf,pointAtDistance} from './core/geometry.js';
 import {validateRoute,beginRun,advanceRun,FIXED_STEP,START_ZONE} from './core/simulation.js';
 import {COURSES,BOARD_WIDTH,BOARD_HEIGHT} from './game/courses.js';
@@ -29,6 +31,7 @@ const canvasEl=canvas,btnGo=goBtn,btnReset=resetBtn,btnPause=pauseBtn,btnHelp=he
 let course:Course=COURSES[0]!;
 let draft:Vec[]=[],route:Route|null=null,run:Run|null=null;
 let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attempts=0,tutorialPrompted=false;
+let pauseNote:string|null=null;
 let mode:GameMode='a';
 const localStore:LocalStore|null=(()=>{try{return window.localStorage;}catch{return null;}})();
 let progress:Progress=readProgress(localStore);
@@ -48,6 +51,7 @@ function cancelEdit(resume:boolean):void{
   if(snapEditing&&run?.phase==='paused'&&resume)run={...run,phase:'running'};
   snapEditing=false;snapDragging=false;snapPointer=null;snapPlan=null;snapTarget=null;snapPreview=null;
   accumulator=0;
+  if(resume)pauseNote=null;
 }
 
 // Audio is deliberately absent from this P1 mechanical proof.
@@ -74,7 +78,7 @@ function refresh():void{
   if(mode==='c'){
     if(p==='won') { resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`; message('Live trail completed.', 'The runner followed your drawing in real time.'); }
     else if(p==='lost') { resultEl.textContent=`✕ ${run?.failure??'Attempt failed'}`; message('Live trail interrupted.',run?.failure??'Reset and draw ahead.'); }
-    else if(p==='paused')message('Live run paused.','Resume to keep the runner moving.');
+    else if(p==='paused')message('Live run paused.',pauseNote??'Press Resume to keep the runner moving.');
     else if(p==='running')message(liveError??(liveWaitingTicks>0?'DRAW AHEAD — runner at the tip':'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length??0)} / ${course.maxInk} • ${Math.max(0,Math.round((LIVE_GRACE_TICKS-liveWaitingTicks)/120*10)/10)}s tip grace`);
     else message(liveError??'Touch S and draw continuously.', 'The runner launches after a short trail. Continue drawing to F.');
   } else if(snapEditing){
@@ -86,14 +90,40 @@ function refresh():void{
     resultEl.textContent=`✕ ${run?.failure??'Attempt failed'}`;
     message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
   }else if(p==='running')message('Running route…',course.id==='snaplab'?'Tap SNAP while climbing; drag the ring right.':course.id==='snapchoice'?'Tap SNAP while climbing; move the ring left.':'Watch the runner and the moving hazard.');
-  else if(p==='paused')message('Paused.','Press Resume to continue from the same simulation tick.');
+  else if(p==='paused')message('Paused.',pauseNote??'Press Resume to continue from the same simulation tick.');
   else if(route)message('Route ready. Press GO.',`${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
   else if(!drawing)message('Draw a line from S to F.',course.hint);
 }
+/** Safe when reset, Android gestures, the tab switcher, or focus loss cancels input. */
+function releaseActivePointers():void{
+  for(const id of [activePointer,snapPointer]){
+    if(id===null)continue;
+    try{if(canvasEl.hasPointerCapture(id))canvasEl.releasePointerCapture(id);}catch{ /* pointer already removed by OS */ }
+  }
+}
+function interruptInputs(reason:InterruptionReason):void{
+  const gesture:ActiveGesture=snapDragging?'snap':drawing?'stroke':'none';
+  const plan=interruptionEffect(mode,gesture,snapEditing,phase()==='running',reason);
+  if(gesture!=='none')releaseActivePointers();
+  if(plan.discardDraft){draft=[];route=null;}
+  if(plan.preserveLiveRoute){liveInputReleased=true;liveError='Touch interrupted. Resume, then rejoin at the mint tip.';}
+  drawing=false;activePointer=null;snapDragging=false;snapPointer=null;
+  if(plan.cancelSnapEdit)cancelEdit(false); // keeps runner paused; never spends the snap.
+  if(plan.pauseRun&&run?.phase==='running'){
+    run={...run,phase:'paused'};
+    pauseNote=reason==='manual-pause'?'Press Resume to continue from this position.':
+      'App or touch interrupted. Press Resume to continue safely.';
+  }else if(plan.cancelSnapEdit&&run?.phase==='paused'){
+    pauseNote='Snap interrupted; press Resume, or try SNAP again after resuming.';
+  }
+  accumulator=0;
+  refresh();
+}
 function newCourse(id:string,clearAttempts=true):void{
+  releaseActivePointers();
   course=COURSES.find(x=>x.id===id&&isAccessibleCourse(mode,id))??firstCourse(mode);
   draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;
-  liveComplete=false;liveWaitingTicks=0;liveError=null;liveInputReleased=false;if(clearAttempts)attempts=0;
+  liveComplete=false;liveWaitingTicks=0;liveError=null;liveInputReleased=false;pauseNote=null;if(clearAttempts)attempts=0;
   const eligible=coursesForMode(mode);
   // Rebuild the selector for every mode: static P6.2 options cannot represent 8 courses.
   sel.replaceChildren();
@@ -118,6 +148,7 @@ function pointFromEvent(e:PointerEvent):Vec{
 }
 function beginStroke(e:PointerEvent):void{
   if(mode==='c'){
+    if(phase()==='paused')return; // Do not modify the trail behind a pause/help overlay.
     if(e.pointerType==='mouse'&&e.button!==0)return;
     if(drawing||activePointer!==null||liveComplete||phase()==='lost'||phase()==='won')return;
     const pos=pointFromEvent(e);
@@ -154,7 +185,7 @@ function applyLivePoint(position:Vec):void{
   if(!result.ok){liveError=result.reason;refresh();return;}
   if(route && result.route.length<=route.length+1e-7)return;
   route=result.route;liveComplete=result.completed;liveError=null;
-  if(!run && route.length>=LIVE_LAUNCH_LENGTH){run=beginRun(route,course);attempts++;accumulator=0;liveWaitingTicks=0;}
+  if(!run && route.length>=LIVE_LAUNCH_LENGTH){run=beginRun(route,course);attempts++;accumulator=0;liveWaitingTicks=0;pauseNote=null;}
   else if(run){run=adoptLiveRoute(run,route);liveWaitingTicks=0;}
   refresh();
 }
@@ -200,7 +231,7 @@ function endStroke(e:PointerEvent):void{
         snapHistory.push(event);
         route=snapPreview.route;
         run={...snapPreview.run,phase:'running'};
-        snapSpent=true;cancelEdit(false);refresh();e.preventDefault();return;
+        pauseNote=null;snapSpent=true;cancelEdit(false);refresh();e.preventDefault();return;
       }
       refresh();e.preventDefault();return;
     }
@@ -219,17 +250,19 @@ function endStroke(e:PointerEvent):void{
 canvasEl.addEventListener('pointerdown',beginStroke);
 canvasEl.addEventListener('pointermove',moveStroke);
 canvasEl.addEventListener('pointerup',endStroke);
-canvasEl.addEventListener('pointercancel',endStroke);
+canvasEl.addEventListener('pointercancel',e=>{
+  if(e.pointerId!==activePointer&&e.pointerId!==snapPointer)return;
+  interruptInputs('pointer-cancel');e.preventDefault();
+});
 canvasEl.addEventListener('lostpointercapture',e=>{
-  if(mode==='c')return;
-  if(snapDragging&&snapPointer===e.pointerId){snapDragging=false;snapPointer=null;snapTarget=snapPlan?.anchor??null;snapPreview=null;refresh();}
-  if(drawing&&activePointer===e.pointerId){drawing=false;activePointer=null;draft=[];route=null;message('Input interrupted.','Try another stroke.');refresh();}
+  // A normal pointerup already cleared the active pointer; only unplanned loss matters.
+  if(e.pointerId===activePointer||e.pointerId===snapPointer)interruptInputs('capture-lost');
 });
 btnGo.addEventListener('click',()=>{
   if(!route||phase()!=='ready')return;
   const checked=validateRoute(route.points,course);
   if(!checked.ok){message('Invalid route.',checked.reason);return;}
-  attempts++;run=beginRun(checked.route,course);accumulator=0;refresh();
+  attempts++;run=beginRun(checked.route,course);accumulator=0;pauseNote=null;refresh();
 });
 buttonSnap.addEventListener('click',()=>{
   if(mode!=='b'||snapSpent||!run)return;
@@ -248,16 +281,16 @@ buttonC.addEventListener('click',()=>selectMode('c'));
 btnReset.addEventListener('click',()=>newCourse(course.id,false));
 btnPause.addEventListener('click',()=>{
   if(snapEditing)return;
-  if(run?.phase==='running'){run={...run,phase:'paused'};accumulator=0;}
-  else if(run?.phase==='paused'){run={...run,phase:'running'};accumulator=0;}
-  refresh();
+  if(run?.phase==='running')interruptInputs('manual-pause');
+  else if(run?.phase==='paused'){run={...run,phase:'running'};accumulator=0;pauseNote=null;refresh();}
 });
 
 sel.addEventListener('change',()=>newCourse(sel.value));
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden&&run?.phase==='running'){run={...run,phase:'paused'};accumulator=0;refresh();}
+  if(document.hidden)interruptInputs('page-hidden');
   lastTime=performance.now();
 });
+window.addEventListener('blur',()=>{interruptInputs('window-blur');lastTime=performance.now();});
 function loop(now:number){
   const delta=lastTime===0?0:Math.min(.05,Math.max(0,(now-lastTime)/1000));lastTime=now;
   if(run?.phase==='running'){
@@ -281,7 +314,7 @@ function loop(now:number){
 }
 newCourse(course.id);requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),liveComplete,liveWaitingTicks,liveError,liveInputReleased,runnerPosition:run?.position,runDistance:run?.distance,tutorialPrompted})});
+Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),drawing,activePointer,pauseNote,liveComplete,liveWaitingTicks,liveError,liveInputReleased,runnerPosition:run?.position,runDistance:run?.distance,tutorialPrompted})});
 
 // P2.1 Pulse Grid refinement: one owner-selected theme, actual app flow and truthful live metrics.
 type AppView='home'|'courses'|'game'|'result';
@@ -298,9 +331,9 @@ const guideFromCourses=document.querySelector<HTMLButtonElement>('#courseGuideBt
 if(!guideKicker||!guideTitle||!guideTagline||!guideSteps||!guideGo||!guideSkip||!guideFromCourses)throw new Error('Mode guides controls missing');
 let guideReturnFocus:HTMLElement|null=null;
 function openModeGuide(origin:HTMLElement|null):void{
-  if(run?.phase==='running'){
-    run={...run,phase:'paused'};accumulator=0;refresh();
-  }
+  // Help must revoke any captured finger before freezing the simulation.
+  // Otherwise a late pointerup can append an invisible segment behind the dialog.
+  if(run?.phase==='running'||drawing||snapEditing)interruptInputs('manual-pause');
   const copy=MODE_GUIDES[mode];
   guideKicker!.textContent=copy.label;
   guideTitle!.textContent=copy.title;
@@ -322,6 +355,7 @@ function closeModeGuide(choice:GuideChoice):void{
   guideReturnFocus=null;
 }
 function showView(view:AppView):void{
+  if(view!=='game')interruptInputs('navigate');
   appView=view;
   if(view!=='game')howto!.hidden=true;
   document.body.dataset.view=view;
@@ -369,6 +403,8 @@ function showCourseMenu():void{
   courseHeading!.textContent=MODE_COPY[mode].name;
   guideFromCourses!.setAttribute('aria-label',`How to play ${MODE_COPY[mode].name}`);
   courseSummary!.textContent=`${completedInMode(progress,mode)} / ${coursesForMode(mode).length} cleared locally`;
+  const storageNote=document.querySelector<HTMLElement>('#storageNote');
+  if(storageNote)storageNote.textContent=localStore?'Progress is stored by this browser when storage is permitted.':'Storage unavailable: progress lasts only for this session.';
   courseList!.replaceChildren();
   for(const [index,entry] of coursesForMode(mode).entries()){
     const button=document.createElement('button');button.type='button';button.className='course-card';

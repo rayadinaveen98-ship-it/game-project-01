@@ -1,9 +1,9 @@
 {
   "name": "snapline-sprint",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "private": true,
   "type": "module",
-  "description": "Snapline Sprint P6.3: eight deterministic authored courses across A/B/C, with Pulse Grid visual identity and mode-isolated progress",
+  "description": "Snapline Sprint P6.4: hardened Android/browser gesture interruption, pause integrity and clear progress storage messaging",
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/prepare.mjs",
     "test": "node --test tests/*.test.mjs",

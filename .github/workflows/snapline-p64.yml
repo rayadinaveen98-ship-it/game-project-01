@@ -1,0 +1,44 @@
+name: Snapline P6.4 — Input and Pause Safety
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p64.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p64.yml'
+jobs:
+  p64-safety:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript
+        run: npm install --no-audit --no-fund
+      - name: Compile and run all 59 regression and interruption tests
+        run: npm run check
+      - name: Ensure interruption handlers and storage messaging are present
+        run: |
+          grep -q 'interruptionEffect' src/main.ts
+          grep -q 'pointercancel' src/main.ts
+          grep -q 'lostpointercapture' src/main.ts
+          grep -q 'Storage unavailable' src/main.ts
+          grep -q 'openModeGuide' src/main.ts
+      - name: Rebuild and compare offline HTML
+        run: |
+          node scripts/make-single-html.mjs
+          git diff --exit-code -- standalone.html
+      - name: Save P6.4 offline reviewer build
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p64-reliability-alpha
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error
