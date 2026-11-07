@@ -1,0 +1,42 @@
+name: Snapline P4 — Practice and QA
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p4.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p4.yml'
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Compile and run deterministic tests
+        run: npm run check
+      - name: Ensure at least 22 named test cases
+        run: test "$(grep -h '^test(' tests/*.test.mjs | wc -l)" -ge 22
+      - name: Rebuild standalone prototype
+        run: node scripts/make-single-html.mjs
+      - name: Compare built HTML with committed HTML
+        run: git diff --exit-code -- standalone.html
+      - name: Confirm practice course is present
+        run: |
+          grep -q 'snaplab' standalone.html
+          grep -q '03 SNAP PRACTICE' standalone.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p4-browser-prototype
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error

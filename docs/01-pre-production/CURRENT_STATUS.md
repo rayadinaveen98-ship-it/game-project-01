@@ -92,3 +92,11 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - A Plan & Run and B Snap & Redirect (one paused forward anchor correction) are playable via `prototypes/snapline/pulse-grid/standalone.html`.
 - **P3 hardware acceptance remains pending** despite successful synthetic-touch browser emulation. No APK, live Pages deployment, external playtest, monetization, production visual expansion or final mechanics choice claimed.
 - Track remaining P3 work in [Issue #10](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/10).
+
+## Snapline P4 practice and QA — November 7, 2026
+- The owner reviewed P3 and replied "all good bro continue"; treat this as positive owner feedback, not instrumented device performance or independent user-testing evidence.
+- **P4 code implemented on feature branch**: optional **Course 03 / Patrol Crossing** in Mode B only. Guide route intentionally collides with the moving patrol if unchanged, while a deterministic, timely rightward snap rescues the same route.
+- Original scored A/B comparison Courses 01 and 02 and approved Pulse Grid visual treatment remain unchanged. Mode A cannot access Course 03.
+- Added seven tests (22 total): guided collision, timely rescue, late-snap failure, invalid edits, seeded 480-target fuzz, deterministic replay and baseline parity.
+- Locally passed strict TS/Node 22/22 and real Chromium desktop + 360/390/412 mobile **emulation** interactive B correction; A baseline regression passed separately. P4 physical-device approval and independent playtesting still pending.
+- **No Live Drawing C, monetization, APK or full-game production approved.** [P4 technical report](../06-technical-design/snapline_P4_implementation_report.md).
