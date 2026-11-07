@@ -1,29 +1,28 @@
-# Game Project 01
+# Game Project 01 — Pre-production
 
-Professional game-development workspace — **pre-production**.
+**Objective:** equal weight for creative quality and commercial viability. **Status:** concept discovery; no concept, genre, visual style or engine approved.
 
-## Current state
-- Project goal: balance creative quality and commercial viability.
-- Final game concept, genre, title, visual style, engine and platform: **not yet approved**.
-- No gameplay implementation or release APK is claimed.
-- Research and concept lab documents exist in a separate pre-production package.
+## Start here
+1. [Current status](docs/01-pre-production/CURRENT_STATUS.md)
+2. [v0.4 documentation index](docs/01-pre-production/baseline-v0.4/README.md)
+3. [Concept Lab experiment brief](docs/01-pre-production/baseline-v0.4/22_Concept_Lab_Brief_v0.4.md)
+4. [Decision log](docs/01-pre-production/baseline-v0.4/07_Decisions.csv)
+5. [Risk register](docs/01-pre-production/baseline-v0.4/08_Risks.csv)
+6. [Competitor audit](docs/01-pre-production/baseline-v0.4/17_Competitor_Audit_2026-11-07.md)
 
-## Repository privacy
-**This repository is currently public.** Unpublished concept briefs, original research, player-study materials and internal decision records will be imported only after the owner changes the repository visibility to **private** or explicitly approves publication.
+## Current work
+We have three **experimental** mechanic families:
+- P: coupled light/water resource allocation puzzle
+- D: evidence-based contradiction mystery
+- M: film-montage interpretation experiment
 
-## Working principles
-- Version-controlled decisions, design specifications, risks and evidence.
-- No feature marked complete without testing.
-- No full production before concept validation and scope approval.
-- No secrets, API keys, or signing keystores in Git.
+These are research hypotheses **not** approved products. No real human test results exist. Do not claim any APK or functioning game engine build.
 
-## Planned structure
-`docs/` design, research, decisions and production records  
-`research/` competitor audits and source register  
-`prototypes/` experimental mechanics  
-`game/` eventual source project  
-`assets/` licensed and approved game assets  
-`tests/` validation and automated tests  
-`.github/` development workflow templates
+## Repository workflow
+- `main`: review-approved baseline.
+- `docs/*`, `experiment/*`, `feature/*`, `fix/*`: bounded changes.
+- Decision IDs, test results, and provenance are mandatory.
+- No secrets, signing keys, or unlicensed assets in Git.
 
-*Initial repository scaffold. Strategic documentation import is awaiting the repository privacy gate.*
+## Asset status
+The original printable PDFs and versioned ZIP backups are **not yet included in the GitHub text import**. Their source rule sets, research documents and tests are included. See CURRENT_STATUS.md.

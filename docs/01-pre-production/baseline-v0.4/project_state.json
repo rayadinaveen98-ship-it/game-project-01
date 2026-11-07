@@ -1,0 +1,92 @@
+{
+  "project_id": "GP-01",
+  "version": "0.4.0",
+  "as_of": "2026-11-07",
+  "stage": "P0_CONCEPT_DISCOVERY",
+  "concept": "UNDECIDED",
+  "genre": "UNDECIDED",
+  "engine": {
+    "status": "PROPOSED",
+    "candidate": "Godot 4.7.2 stable"
+  },
+  "platform": {
+    "status": "PROPOSED",
+    "candidate": "Android-first"
+  },
+  "budget": "UNDECIDED",
+  "game_source_code_exists": false,
+  "game_repository_exists": false,
+  "apk_exists": false,
+  "remote_android_build_proven": false,
+  "workspace_tools_detected": {
+    "java": true,
+    "javac": true,
+    "godot": false,
+    "sdkmanager": false,
+    "gradle": false,
+    "adb": false
+  },
+  "next_gate": "P0_REAL_HUMAN_COMPREHENSION_AND_PAPER_PLAY_VALIDATION",
+  "open_risks": [
+    "R-001",
+    "R-002",
+    "R-003",
+    "R-004",
+    "R-005",
+    "R-006",
+    "R-007",
+    "R-008",
+    "R-009",
+    "R-010",
+    "R-011",
+    "R-012",
+    "R-013",
+    "R-014",
+    "R-015",
+    "R-016",
+    "R-017",
+    "R-018"
+  ],
+  "approved_decisions": [
+    "DEC-001",
+    "DEC-009",
+    "DEC-010",
+    "DEC-018"
+  ],
+  "product_objectives": {
+    "creative_quality_weight": 0.5,
+    "commercial_viability_weight": 0.5,
+    "status": "APPROVED"
+  },
+  "discovery": {
+    "market_research": "INITIAL_PASS_COMPLETED",
+    "genre_comparison": "INITIAL_PASS_COMPLETED",
+    "candidate_hypotheses": 8,
+    "concept_chosen": false,
+    "concept_scorecard_scored": false,
+    "five_direct_comparators_per_finalist": false,
+    "first_time_player_tests": false,
+    "concept_originality_verified": false,
+    "competitor_audit": "19_LISTING_LEVEL_PUBLIC_AUDITS_FIRST_PASS",
+    "competitor_listing_count": 19,
+    "families_audited": [
+      "puzzle",
+      "mystery",
+      "tycoon"
+    ],
+    "concept_name_collisions_detected": [
+      "C01",
+      "C02",
+      "C03 (near name and feature overlap)",
+      "C04",
+      "C06"
+    ],
+    "full_competitor_hands_on_tests": false,
+    "novelty_validated": false,
+    "paper_stimuli": "THREE_ORIGINAL_FAMILIES_PREPARED",
+    "puzzle_board_solver_check": "TWO_EXHAUSTIVE_EXAMPLE_BOARDS_PASS",
+    "detective_cases_written": 3,
+    "film_storyboard_schematic_sets": 3,
+    "real_human_player_tests_completed": 0
+  }
+}
