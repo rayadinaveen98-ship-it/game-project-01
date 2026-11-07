@@ -190,3 +190,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Mode and course geometry, selected Pulse Grid visual identity, tutorial preferences and local completion storage schema are unchanged. Course list text no longer promises durable progress unconditionally when browser storage is restricted.
 - Local strict build, **59/59 Node tests** (48 existing, 11 new), Chromium A/B/C interruption/recovery and browser/mobile-emulated regression tests pass; C real run after rejoin completes, B new left-snap rescue still wins.
 - **Not verified:** physical Android input/background behavior, actual browser-origin localStorage across reopen (environment blocks external/local navigation), FPS, screen-reader accessibility, outside-player study, native APK or commercial viability. See [P6.4 QA](../06-technical-design/snapline_P64_reliability_QA.md).
+
+## P6.4 verified merge and user QA handoff — November 7, 2026
+- [PR #28](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/28) **merged to main** as `b58e8df0ed291bde0981b8d495dcb2327228e3aa` after **10/10 GitHub Actions workflows passed**.
+- Implemented deterministic interruption safety for A/B planned strokes, B one-snap preview, C append-only trail, hidden/blurred tab, and Help during captured input. Active run now pauses on OS/browser interruption, requiring explicit resume; existing runner position, collision system and 8 courses unchanged.
+- **59/59 Node/TypeScript tests**, Chromium desktop interruption checks, CDP synthetic-touch cancel and baseline A/B/C regressions locally pass. Screenshot evidence captured from actual browser.
+- `prototypes/snapline/pulse-grid/standalone.html` is current P6.4 offline playable in main; no external network dependency.
+- Pending [Issue #27](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/27): physical Android touch/notification/background test, measured frame pacing, actual browser-owned progress persistence between sessions, screen reader/keyboard experience and first-time player results. Do **not** imply P6.4 production acceptance from emulation alone.
