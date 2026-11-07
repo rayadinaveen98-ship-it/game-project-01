@@ -161,3 +161,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Limitations:** real browser-origin persistence across physical close/reopen unverified; browser test uses storage shim due sandbox navigation restrictions. Combined multi-device harness stalled during extra teardown after individual passes; no external player study or physical Android FPS.
 - **P6.2 owner screen and physical-device approval pending**; five new mode-specific courses P6.3 have not yet been implemented.
 - [Mode guide source & QA](../../prototypes/snapline/pulse-grid/README_P62.md) · [P6.2 visual review](../05-art-direction/snapline/P6_2_MODE_GUIDES_REVIEW.md).
+
+## Snapline P6.2 merge verified — November 7, 2026
+- [PR #24](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/24) **merged to main** as `abe9f46bd257dc3ee7e59643987b448e510a3bcc`. All **8/8 independent GitHub workflows passed** (P6.2, P6.1, P5, P4, P3, P2, P1, documentation).
+- Three mode-specific, short, first-use tutorials and contextual HOW TO PLAY integrated. Read/skip preferences are isolated per mode from actual win/progress values; help during a run pauses it.
+- `prototypes/snapline/pulse-grid/standalone.html` on main is the current offline browser playable. 40 Node tests pass.
+- Remaining P6.2 owner acceptance: real phone interaction and screen review, physical performance, actual browser-owned local storage after reopening, accessibility/first-time-user feedback. Do not claim them complete from emulator evidence.
+- **Next proposed content milestone:** [P6.3 five new mode-specific courses](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/25). Not implemented yet. Other game/IP ideas retained for later.
