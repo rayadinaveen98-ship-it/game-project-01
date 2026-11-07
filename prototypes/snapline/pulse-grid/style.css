@@ -105,3 +105,24 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 .course-bottom button{height:39px;border:1px solid var(--divider);color:var(--muted)!important;background:transparent;border-radius:9px;font-size:10px;font-weight:850;letter-spacing:.1em}
 .course-bottom>span{font-size:9px;color:var(--muted);line-height:1.5}
 @media(max-width:400px){.course-screen{padding:19px 21px 19px}.course-intro{padding:9px 0 12px}.course-intro h2{font-size:43px}.course-intro p{margin:11px 0 0}.course-card{min-height:92px;padding:11px 14px;gap:6px}.course-cards{gap:9px;padding-bottom:10px}.course-bottom{padding-top:10px;gap:6px}.course-bottom button{height:36px}.course-bottom>span{font-size:9px}}
+
+/* P6.2 — concise guides, one visual system, no extra gameplay HUD clutter. */
+.mode-learn-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.course-intro .mode-learn-row p{margin:0;font-size:10px;letter-spacing:.12em}
+.mode-learn-btn{border:1px solid var(--divider);background:var(--surface);border-radius:9px;min-height:44px;padding:0 12px;color:var(--mint)!important;font-size:9px;font-weight:850;letter-spacing:.065em;white-space:nowrap}
+.mode-learn-btn:hover,.mode-learn-btn:focus-visible{border-color:var(--mint)}
+.mode-learn-btn span{margin-left:4px}
+.howto-overlay{overscroll-behavior:contain;padding:14px}
+.howto-card{padding:23px 22px;border-radius:18px;max-height:calc(100% - 12px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.howto-card h2{margin:12px 0 7px;font-size:35px;line-height:1.06;letter-spacing:-.06em}
+.howto-card p.guide-tagline{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
+.guide-preview{display:block;width:100%;height:auto;aspect-ratio:290/96;background:var(--board);border:1px solid var(--divider);border-radius:11px;margin:0 0 16px;max-height:96px}
+.guide-steps{list-style:none;padding:0;margin:0;counter-reset:guide;display:flex;flex-direction:column;gap:12px}
+.guide-steps li{counter-increment:guide;position:relative;padding:0 0 0 34px;font-size:12px;line-height:1.55;color:var(--text)}
+.guide-steps li::before{content:counter(guide,decimal-leading-zero);position:absolute;left:0;top:0;color:var(--mint);font-size:10px;font-weight:900;letter-spacing:.04em}
+.guide-actions{display:flex;flex-direction:column;gap:5px;margin-top:18px}
+.guide-actions .home-cta{margin:0;min-height:52px;height:52px;font-size:11px}
+.guide-actions .guide-skip{margin:0;min-height:44px;border:0;background:transparent;color:var(--muted)!important;font-size:10px;font-weight:850;letter-spacing:.09em}
+.guide-actions .guide-skip:hover{color:var(--text)!important}
+@media(max-width:400px){.course-intro .mode-learn-row{margin-top:6px}.course-intro .mode-learn-row p{font-size:9px}.mode-learn-btn{min-height:44px;padding:0 11px}.howto-card{padding:19px 18px}.howto-card h2{font-size:32px}.guide-preview{max-height:81px}.guide-steps{gap:10px}}
+@media(max-height:725px){.howto-card{max-height:calc(100% - 8px);padding:16px}.howto-card h2{margin:7px 0 5px;font-size:29px}.guide-preview{max-height:65px;margin-bottom:9px}.guide-steps{gap:6px}.guide-steps li{font-size:11px}.guide-actions{margin-top:10px}}
