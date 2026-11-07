@@ -1,0 +1,48 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.tmp
+*.log
+
+# Credentials / local environment
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+local.properties
+credentials.json
+secrets.json
+
+# Godot (candidate engine, not yet selected)
+.godot/
+.android/
+*.translation
+
+# Unity (if selected)
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Build output (release artifacts belong in releases, not git)
+*.apk
+*.aab
+*.ipa
+*.app/
+dist/
+out/
+__pycache__/
+.pytest_cache/
+node_modules/
+
+# Keep original research source docs and licensed game source assets tracked.
