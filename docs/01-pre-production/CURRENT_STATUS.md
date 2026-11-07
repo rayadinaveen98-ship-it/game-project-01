@@ -115,3 +115,9 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Local verification:** 28/28 TypeScript/Node tests pass; desktop + 360/390/412 Chromium mobile-emulated interactive C runs passed; partial-stroke continuation and tip-timeout passed. Separate prior A and B interactive regressions passed. Physical P5 phone QA still pending.
 - No mode chosen as the final game, no external player study, no APK, no deployed Pages demo or monetization.
 - [P5 mechanics/QA report](../06-technical-design/snapline_P5_live_drawing_review.md).
+
+## P5 merge confirmed — November 7, 2026
+- **Snapline P5 with Modes A/B/C is on `main`** from [PR #18](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/18) at merge commit `c291c5cb004c9570aeea9a8d4dbaea9dfbc25a4f`.
+- **6/6 GitHub workflows passed** before merge (P5, P4, P3, P2, P1, docs). The offline playable file is `prototypes/snapline/pulse-grid/standalone.html`.
+- P5 C mode uses an automatically moving runner, append-only trail, join-a-new-stroke support, and fixed-step line-tip grace with real moving hazard collision.
+- **Not complete:** owner's physical phone C controls QA, first-time player comparison A/B/C, final mechanic choice, hardware FPS, and any APK / launch. No commercial or retention evidence.
