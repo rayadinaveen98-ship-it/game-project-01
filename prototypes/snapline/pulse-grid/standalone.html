@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P4 QA</title>
+  <title>Snapline Sprint — Pulse Grid P6.1 Progress</title>
   <style>
 /* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -92,6 +92,28 @@ body[data-mode="c"] .game-buttons .icon-btn{max-width:none}
 body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 @media(max-width:400px){.mode-picker button{font-size:8.3px;padding:6px 3px;min-height:44px}.mode-picker strong{margin-bottom:3px}.home-copy{line-height:1.45;margin-top:10px}}
 
+/* P6.1 — real mode-aware course catalog. Preserve approved Pulse Grid tokens. */
+.course-screen{display:flex;flex-direction:column;gap:0}
+.course-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:17px;border-bottom:1px solid var(--divider)}
+.course-top span{font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:850}
+.course-back{font-size:11px;font-weight:900;letter-spacing:.08em;border:0;background:transparent;color:var(--mint)!important;padding:10px 0;min-height:44px}
+.course-intro{padding:21px 0 14px}
+.course-intro .home-tag{margin:0 0 15px}
+.course-intro h2{font-size:53px;letter-spacing:-.075em;line-height:.94;margin:0;font-weight:920}
+.course-intro h2 em{font-style:normal;color:var(--mint)}
+.course-intro p{font-size:11px;letter-spacing:.15em;color:var(--accent);font-weight:850;margin:19px 0 0}
+.course-cards{display:flex;flex-direction:column;gap:11px;overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;padding:4px 2px 18px}
+.course-card{text-align:left;color:var(--text)!important;background:var(--surface);border:1px solid var(--divider);border-radius:15px;padding:15px 17px;display:flex;flex-direction:column;gap:7px;min-height:107px;width:100%;flex-shrink:0}
+.course-card:hover,.course-card:focus-visible{border-color:var(--mint);background:#1a3546}
+.course-card small{font-size:9px;font-weight:880;letter-spacing:.13em;color:var(--mint)}
+.course-card strong{font-size:19px;letter-spacing:-.04em;font-weight:850}
+.course-card span{font-size:10px;font-weight:720;letter-spacing:.035em;color:var(--muted)}
+.course-bottom{padding-top:13px;border-top:1px solid var(--divider);display:flex;flex-direction:column;gap:8px}
+.course-bottom p{font-size:12px;font-weight:800;color:var(--mint);margin:0}
+.course-bottom button{height:39px;border:1px solid var(--divider);color:var(--muted)!important;background:transparent;border-radius:9px;font-size:10px;font-weight:850;letter-spacing:.1em}
+.course-bottom>span{font-size:9px;color:var(--muted);line-height:1.5}
+@media(max-width:400px){.course-screen{padding:19px 21px 19px}.course-intro{padding:9px 0 12px}.course-intro h2{font-size:43px}.course-intro p{margin:11px 0 0}.course-card{min-height:92px;padding:11px 14px;gap:6px}.course-cards{gap:9px;padding-bottom:10px}.course-bottom{padding-top:10px;gap:6px}.course-bottom button{height:36px}.course-bottom>span{font-size:9px}}
+
 </style>
 </head>
 <body data-theme="pulse" data-view="home">
@@ -116,7 +138,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
     </section>
 
     <section class="presentation" aria-label="Phone-scale visual preview">
-      <div class="presentation-label"><span>LIVE HTML/CANVAS RENDER</span><span id="styleName">PULSE GRID / LOCKED</span></div>
+      <div class="presentation-label"><span>LIVE HTML/CANVAS RENDER</span><span id="styleName">PULSE GRID / APPROVED</span></div>
       <div class="phone" id="phone">
         <div class="notch" aria-hidden="true"></div>
         <div class="game-screen" id="gameScreen">
@@ -136,7 +158,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
         </div>
 
         <div class="home-screen overlay-screen" id="homeScreen" hidden>
-          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">THREE GAMEPLAY EXPERIMENTS</span></div>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">THREE DISTINCT MODES</span></div>
           <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
           <h2>Make<br>your own<br><em>way.</em></h2>
           <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and compare three ways to create your own route.</p>
@@ -149,7 +171,14 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
             <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
             <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
           </svg>
-          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button><button type="button" id="modeC" aria-pressed="false"><strong>C</strong> LIVE DRAWING</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+          <div class="home-bottom"><span class="home-metadata">CHOOSE A GAME MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button><button type="button" id="modeC" aria-pressed="false"><strong>C</strong> LIVE DRAWING</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+        </div>
+
+        <div class="course-screen overlay-screen" id="courseScreen" hidden>
+          <div class="course-top"><button type="button" id="courseBack" class="course-back">← MODES</button><span>YOUR COURSES</span></div>
+          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><p id="courseModeHeading">PLAN & RUN</p></div>
+          <div class="course-cards" id="courseCards" aria-label="Available levels"></div>
+          <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Your completed courses stay on this device.</span></div>
         </div>
 
         <div class="result-screen overlay-screen" id="resultScreen" hidden>
@@ -170,7 +199,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
           <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>Three modes.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>In mode <b>C</b>, start drawing from S: the runner launches while you draw. Stay ahead of the runner. If it reaches the tip, you have 0.75 seconds to extend the trail; join a new stroke at the mint tip. GO is automatic.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P5 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.1 BUILD</span></div>
     </section>
   </main>
   <script>
@@ -517,6 +546,44 @@ function replayWithSnap(initial, course, event, maxTicks = 30000) {
 Object.defineProperty(exports, "__esModule", { value: true });
 
 },
+"src/game/catalog.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MODE_COPY = exports.MODES = void 0;
+exports.supportsMode = supportsMode;
+exports.coursesForMode = coursesForMode;
+exports.isAccessibleCourse = isAccessibleCourse;
+exports.nextCourse = nextCourse;
+exports.firstCourse = firstCourse;
+const courses_js_1 = require("./courses.js");
+/** Mode identity is stable across course navigation and progress keys. */
+exports.MODES = ['a', 'b', 'c'];
+exports.MODE_COPY = {
+    a: { name: 'PLAN & RUN', verb: 'THINK', summary: 'Draw your route. Press GO. Perfect the plan.' },
+    b: { name: 'SNAP & REDIRECT', verb: 'ADAPT', summary: 'Plan ahead. Make one careful mid-run correction.' },
+    c: { name: 'LIVE DRAWING', verb: 'REACT', summary: 'Keep drawing as your runner moves along the line.' }
+};
+function supportsMode(course, mode) {
+    return course.supportedModes.includes(mode);
+}
+function coursesForMode(mode) {
+    return courses_js_1.COURSES.filter(course => supportsMode(course, mode));
+}
+function isAccessibleCourse(mode, id) {
+    return coursesForMode(mode).some(course => course.id === id);
+}
+function nextCourse(mode, id) {
+    const available = coursesForMode(mode), index = available.findIndex(course => course.id === id);
+    return index >= 0 ? available[index + 1] ?? null : null;
+}
+function firstCourse(mode) {
+    const course = coursesForMode(mode)[0];
+    if (!course)
+        throw new Error(`No courses for mode ${mode}`);
+    return course;
+}
+
+},
 "src/game/courses.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -528,20 +595,20 @@ exports.BOARD_WIDTH = 360, exports.BOARD_HEIGHT = 640, exports.RUNNER_RADIUS = 9
 exports.SNAP_LAB_GUIDE = [{ x: 38, y: 555 }, { x: 255, y: 550 }, { x: 319, y: 87 }];
 exports.COURSES = [
     {
-        id: 'detour', title: '01 · Static Detour',
+        id: 'detour', supportedModes: ['a', 'b', 'c'], family: 'shared', title: '01 · Static Detour',
         hint: 'Draw around the two solid blocks. Keep within your ink budget.',
         start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 850, runnerSpeed: 160,
         walls: [{ x: 93, y: 305, w: 170, h: 75 }, { x: 177, y: 152, w: 70, h: 82 }], moving: []
     },
     {
-        id: 'timing', title: '02 · Moving Hazard',
+        id: 'timing', supportedModes: ['a', 'b', 'c'], family: 'shared', title: '02 · Moving Hazard',
         hint: 'The circular hazard moves on a predictable cycle. Choose a safer route.',
         start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 865, runnerSpeed: 160,
         walls: [{ x: 94, y: 385, w: 95, h: 54 }, { x: 205, y: 180, w: 62, h: 49 }],
         moving: [{ center: { x: 182, y: 303 }, radius: 23, amplitude: 92, phase: 0, angularSpeed: 1.7, axis: 'y' }]
     },
     {
-        id: 'snaplab', title: '03 · Patrol Crossing (B Practice)',
+        id: 'snaplab', supportedModes: ['b'], family: 'practice', title: '03 · Patrol Crossing (B Practice)',
         hint: 'Trace guide, press GO, then SNAP right.',
         start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 870, runnerSpeed: 160,
         walls: [{ x: 100, y: 393, w: 90, h: 50 }, { x: 105, y: 158, w: 65, h: 70 }],
@@ -580,9 +647,107 @@ function appendStroke(points, next, spacing = 8) {
 }
 
 },
+"src/game/progress.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PROGRESS_KEY = void 0;
+exports.progressId = progressId;
+exports.parseProgress = parseProgress;
+exports.readProgress = readProgress;
+exports.recordWin = recordWin;
+exports.writeProgress = writeProgress;
+exports.clearProgress = clearProgress;
+exports.completedInMode = completedInMode;
+const catalog_js_1 = require("./catalog.js");
+exports.PROGRESS_KEY = 'snapline-pulse-progress-v1';
+function isMode(value) {
+    return catalog_js_1.MODES.some(mode => mode === value);
+}
+function progressId(mode, courseId) { return `${mode}:${courseId}`; }
+function validResult(data) {
+    if (!data || typeof data !== 'object')
+        return false;
+    const v = data;
+    return Number.isSafeInteger(v.wins) && v.wins >= 1 && v.wins <= 1000000 &&
+        Number.isSafeInteger(v.bestTimeTicks) && v.bestTimeTicks >= 1 && v.bestTimeTicks <= 10000000 &&
+        typeof v.bestInk === 'number' && Number.isFinite(v.bestInk) && v.bestInk > 0 && v.bestInk <= 100000;
+}
+/** Unknown keys, wrong versions, and corrupted records never enter the app state. */
+function parseProgress(raw) {
+    if (!raw || raw.length > 30000)
+        return {};
+    try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
+            return {};
+        const obj = parsed;
+        if (obj.version !== 1 || !obj.results || typeof obj.results !== 'object' || Array.isArray(obj.results))
+            return {};
+        const results = Object.create(null);
+        for (const [key, record] of Object.entries(obj.results)) {
+            const [mode, id, ...rest] = key.split(':');
+            if (!mode || !id || rest.length || !isMode(mode) || !(0, catalog_js_1.isAccessibleCourse)(mode, id) || !validResult(record))
+                continue;
+            results[key] = { wins: record.wins, bestTimeTicks: record.bestTimeTicks, bestInk: record.bestInk };
+        }
+        return results;
+    }
+    catch {
+        return {};
+    }
+}
+function readProgress(storage) {
+    try {
+        return parseProgress(storage?.getItem(exports.PROGRESS_KEY) ?? null);
+    }
+    catch {
+        return {};
+    }
+}
+/** Only actual won runs should call this function. It does not accept a game phase. */
+function recordWin(progress, mode, courseId, timeTicks, ink) {
+    if (!(0, catalog_js_1.isAccessibleCourse)(mode, courseId) || !Number.isSafeInteger(timeTicks) || timeTicks <= 0 || !Number.isFinite(ink) || ink <= 0)
+        return progress;
+    const key = progressId(mode, courseId), old = progress[key];
+    const result = {
+        wins: Math.min(1000000, (old?.wins ?? 0) + 1),
+        bestTimeTicks: Math.min(old?.bestTimeTicks ?? Infinity, timeTicks),
+        bestInk: Math.min(old?.bestInk ?? Infinity, ink)
+    };
+    return { ...progress, [key]: result };
+}
+function writeProgress(storage, progress) {
+    if (!storage)
+        return false;
+    try {
+        storage.setItem(exports.PROGRESS_KEY, JSON.stringify({ version: 1, results: progress }));
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+function clearProgress(storage) {
+    if (!storage)
+        return false;
+    try {
+        storage.removeItem(exports.PROGRESS_KEY);
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+function completedInMode(progress, mode) {
+    return Object.keys(progress).filter(key => key.startsWith(mode + ':') && (0, catalog_js_1.isAccessibleCourse)(mode, key.slice(2))).length;
+}
+
+},
 "src/main.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const catalog_js_1 = require("./game/catalog.js");
+const progress_js_1 = require("./game/progress.js");
 const geometry_js_1 = require("./core/geometry.js");
 const simulation_js_1 = require("./core/simulation.js");
 const courses_js_1 = require("./game/courses.js");
@@ -606,6 +771,13 @@ let course = courses_js_1.COURSES[0];
 let draft = [], route = null, run = null;
 let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0, tutorialPrompted = false;
 let mode = 'a';
+const localStore = (() => { try {
+    return window.localStorage;
+}
+catch {
+    return null;
+} })();
+let progress = (0, progress_js_1.readProgress)(localStore);
 let liveComplete = false, liveWaitingTicks = 0, liveError = null, liveInputReleased = false;
 let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
 let snapPlan = null, snapTarget = null, snapPreview = null;
@@ -687,7 +859,7 @@ function refresh() {
         message('Draw a line from S to F.', course.hint);
 }
 function newCourse(id, clearAttempts = true) {
-    course = courses_js_1.COURSES.find(x => x.id === id && (x.id !== 'snaplab' || mode === 'b')) ?? courses_js_1.COURSES[0];
+    course = courses_js_1.COURSES.find(x => x.id === id && (0, catalog_js_1.isAccessibleCourse)(mode, id)) ?? (0, catalog_js_1.firstCourse)(mode);
     draft = [];
     route = null;
     run = null;
@@ -704,14 +876,15 @@ function newCourse(id, clearAttempts = true) {
     liveInputReleased = false;
     if (clearAttempts)
         attempts = 0;
-    const practice = sel.querySelector('option[value="snaplab"]');
-    if (practice) {
-        practice.hidden = mode !== 'b';
-        practice.disabled = mode !== 'b';
+    for (const opt of Array.from(sel.options)) {
+        const allowed = (0, catalog_js_1.isAccessibleCourse)(mode, opt.value);
+        opt.hidden = !allowed;
+        opt.disabled = !allowed;
     }
     sel.value = course.id;
-    const ordinal = course.id === 'detour' ? '01' : course.id === 'timing' ? '02' : '03';
-    const max = mode === 'b' ? '03' : '02';
+    const eligible = (0, catalog_js_1.coursesForMode)(mode);
+    const ordinal = String(eligible.findIndex(c => c.id === course.id) + 1).padStart(2, '0');
+    const max = String(eligible.length).padStart(2, '0');
     const label = document.querySelector('#courseLabel');
     if (label)
         label.textContent = course.id === 'detour' ? '01 STATIC DETOUR' : course.id === 'timing' ? '02 MOVING HAZARD' : '03 SNAP PRACTICE';
@@ -988,7 +1161,7 @@ buttonSnap.addEventListener('click', () => {
 });
 function selectMode(next) {
     mode = next;
-    newCourse('detour');
+    newCourse((0, catalog_js_1.firstCourse)(mode).id);
     refresh();
 }
 buttonA.addEventListener('click', () => selectMode('a'));
@@ -1060,7 +1233,7 @@ if (!howto)
 function showView(view) {
     appView = view;
     document.body.dataset.view = view;
-    for (const [name, id] of [['home', 'homeScreen'], ['game', 'gameScreen'], ['result', 'resultScreen']]) {
+    for (const [name, id] of [['home', 'homeScreen'], ['courses', 'courseScreen'], ['game', 'gameScreen'], ['result', 'resultScreen']]) {
         const element = document.getElementById(id);
         if (element)
             element.hidden = name !== view;
@@ -1079,7 +1252,8 @@ function showEarnedResult() {
     if (run?.phase !== 'won' || !route || appView !== 'game')
         return;
     assignText('resultEyebrow', 'RUN COMPLETED');
-    assignText('resultSequence', course.id === 'detour' ? '01 / 02' : course.id === 'timing' ? '02 / 02' : '03 / 03');
+    const eligible = (0, catalog_js_1.coursesForMode)(mode), ordinal = eligible.findIndex(c => c.id === course.id) + 1;
+    assignText('resultSequence', `${String(ordinal).padStart(2, '0')} / ${String(eligible.length).padStart(2, '0')}`);
     assignText('resultOverline', 'ROUTE COMPLETE');
     const headline = document.getElementById('resultHeadline');
     if (headline)
@@ -1090,14 +1264,59 @@ function showEarnedResult() {
     assignText('resultInk', String(Math.round(route.length)));
     assignText('resultTime', (run.ticks * simulation_js_1.FIXED_STEP).toFixed(2));
     assignText('resultAttempts', String(attempts));
-    assignText('resultDetail', mode === 'b' ? (snapSpent ? 'Snap & Redirect • 1 correction used' : 'Snap & Redirect • no correction used') : mode === 'c' ? 'Live Drawing • continuous route • genuine gameplay metrics.' : 'Plan & Run • live gameplay metrics.');
+    progress = (0, progress_js_1.recordWin)(progress, mode, course.id, run.ticks, route.length);
+    const persisted = (0, progress_js_1.writeProgress)(localStore, progress);
+    const best = progress[(0, progress_js_1.progressId)(mode, course.id)];
+    assignText('resultDetail', `${catalog_js_1.MODE_COPY[mode].name} • ${best?.wins ?? 1} clear${(best?.wins ?? 1) === 1 ? '' : 's'} • best ${((best?.bestTimeTicks ?? run.ticks) * simulation_js_1.FIXED_STEP).toFixed(2)}s${persisted ? '' : ' • this session only'}`);
     const next = document.querySelector('#nextDemo');
     if (next)
-        next.innerHTML = (course.id === 'detour' || (course.id === 'timing' && mode === 'b')) ? 'NEXT COURSE <span>➜</span>' : 'PLAY COURSE 01 <span>➜</span>';
+        next.innerHTML = (0, catalog_js_1.nextCourse)(mode, course.id) ? 'NEXT COURSE <span>➜</span>' : 'COURSE SELECT <span>➜</span>';
     showView('result');
 }
-document.getElementById('startDemo')?.addEventListener('click', () => { newCourse('detour'); showView('game'); });
-document.getElementById('nextDemo')?.addEventListener('click', () => { newCourse(course.id === 'detour' ? 'timing' : course.id === 'timing' && mode === 'b' ? 'snaplab' : 'detour'); showView('game'); });
+const courseList = document.getElementById('courseCards');
+const courseHeading = document.getElementById('courseModeHeading');
+const courseSummary = document.getElementById('courseSummary');
+if (!courseList || !courseHeading || !courseSummary)
+    throw new Error('P6.1 course catalog missing');
+function showCourseMenu() {
+    courseHeading.textContent = catalog_js_1.MODE_COPY[mode].name;
+    courseSummary.textContent = `${(0, progress_js_1.completedInMode)(progress, mode)} / ${(0, catalog_js_1.coursesForMode)(mode).length} cleared locally`;
+    courseList.replaceChildren();
+    for (const [index, entry] of (0, catalog_js_1.coursesForMode)(mode).entries()) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'course-card';
+        const saved = progress[(0, progress_js_1.progressId)(mode, entry.id)];
+        const overline = document.createElement('small');
+        overline.textContent = `COURSE ${String(index + 1).padStart(2, '0')}  ·  ${entry.family === 'practice' ? 'PRACTICE' : 'CHALLENGE'}`;
+        const title = document.createElement('strong');
+        title.textContent = entry.title.slice(5).replace(' (B Practice)', '');
+        const details = document.createElement('span');
+        details.textContent = saved ? `✓ CLEARED · ${saved.wins} WIN${saved.wins === 1 ? '' : 'S'} · BEST ${(saved.bestTimeTicks * simulation_js_1.FIXED_STEP).toFixed(2)}s` : 'NOT YET CLEARED';
+        button.append(overline, title, details);
+        button.addEventListener('click', () => { newCourse(entry.id); showView('game'); });
+        courseList.append(button);
+    }
+    showView('courses');
+}
+document.getElementById('startDemo')?.addEventListener('click', showCourseMenu);
+document.getElementById('courseBack')?.addEventListener('click', () => showView('home'));
+document.getElementById('resetProgress')?.addEventListener('click', () => {
+    if (!window.confirm('Clear saved course results for all three modes on this device?'))
+        return;
+    progress = {};
+    (0, progress_js_1.clearProgress)(localStore);
+    showCourseMenu();
+});
+document.getElementById('nextDemo')?.addEventListener('click', () => {
+    const next = (0, catalog_js_1.nextCourse)(mode, course.id);
+    if (next) {
+        newCourse(next.id);
+        showView('game');
+    }
+    else
+        showCourseMenu();
+});
 document.getElementById('retryResult')?.addEventListener('click', () => { newCourse(course.id, false); showView('game'); });
 document.getElementById('resultHome')?.addEventListener('click', () => showView('home'));
 document.getElementById('backToHome')?.addEventListener('click', () => showView('home'));
@@ -1109,7 +1328,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !howto.hid
 } });
 showView('home');
 selectMode('a');
-Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, liveComplete, liveWaitingTicks, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }) });
+Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, liveComplete, liveWaitingTicks, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }),
+    __p61Snapshot: () => ({ view: appView, mode, course: course.id, available: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), cleared: (0, progress_js_1.completedInMode)(progress, mode), progress: JSON.parse(JSON.stringify(progress)) }) });
 
 },
 "src/ui/render.js":function(require,module,exports){
