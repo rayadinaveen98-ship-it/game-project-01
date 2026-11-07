@@ -71,3 +71,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 **P2.1 refinement implemented for review** in `prototypes/snapline/pulse-grid/`: actual Home→Game→Result flow, accurate run length/time/attempt values (not mock-up figures), Help overlay, next/retry/home actions, responsive Pulse Grid layout and preserved P1 collision simulation. No final screen-level sign-off yet.
 
 **Tests:** original 10/10 unit tests pass; Chromium desktop Home→Game→draw→GO→Result passes; 360, 390 and 412 width mobile **emulation** runs pass with actual finger trace and Next Course. Physical device P2.1 test and approved layout/screenshots remain pending. See [art bible](../05-art-direction/snapline/PULSE_GRID_ART_BIBLE_v0.1.md) and [visual refinement report](../05-art-direction/snapline/P2_1_VISUAL_REVIEW.md).
+
+## Snapline P2.1 visual acceptance and P3 planning — November 7, 2026
+- Owner described the refined Pulse Grid implementation as "premium enough and simple" and asked for the next step. This is documented as [DEC-023](../decision-log/DEC-023-pulse-grid-p2-1-visual-acceptance.md).
+- Pulse Grid P2.1 PR #14 passed all three GitHub workflows and was merged into `main` as `3cf50709fea660d00f93e6f47a8f702b52069793`.
+- **Active next milestone (proposed):** implement and fairly compare B **Snap & Redirect** with the proven A **Plan & Run** baseline. The third, C **Live Drawing**, remains an option for a later separate experiment.
+- See [P3 mechanical plan](../04-game-design/snapline/P3_SNAP_REDIRECT_PLAN_v0.7.md) and [P3 checklist](../08-production-roadmap/SNAPLINE_P3_CHECKLIST.md).
+- P3 code has **not started**. No external playtest, physical-device performance certification, native APK or commercial monetization approved.

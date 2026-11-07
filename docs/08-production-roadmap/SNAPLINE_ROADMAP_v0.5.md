@@ -36,3 +36,13 @@ The product owner reported the P1 collisions and movement worked perfectly and a
 - [ ] Owner signs off final P2.1 screen treatment after viewing screenshots and testing on physical phone.
 - [ ] B/C mechanic experiments, art production, hardware profiling and independent playtesting remain pending.
 This does NOT authorize full-game production or native APK work.
+
+## November 7, 2026 — P2.1 accepted and next technical gate scoped
+- [x] Owner confirmed the refined Pulse Grid visual as sufficiently premium and simple (DEC-023).
+- [x] Merge P2.1 implementation and art bible to main after all CI checks passed (PR #14).
+- [ ] Start P3 experimental B Snap & Redirect prototype while preserving A.
+- [ ] Verify continuity when changing a forward anchor without teleporting the runner.
+- [ ] Cross-check geometric route visualization, ink budget, and seeded replay.
+- [ ] Capture actual desktop and phone-emulated browser evidence; perform physical phone QA.
+- [ ] Evaluate B against A, then revisit C if necessary.
+[P3 technical plan](../04-game-design/snapline/P3_SNAP_REDIRECT_PLAN_v0.7.md) · [Checklist](SNAPLINE_P3_CHECKLIST.md).
