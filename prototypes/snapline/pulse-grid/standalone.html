@@ -199,7 +199,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
           <div class="course-top"><button type="button" id="courseBack" class="course-back">← MODES</button><span>YOUR COURSES</span></div>
           <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><div class="mode-learn-row"><p id="courseModeHeading">PLAN & RUN</p><button type="button" id="courseGuideBtn" class="mode-learn-btn">HOW TO PLAY <span aria-hidden="true">↗</span></button></div></div>
           <div class="course-cards" id="courseCards" aria-label="Available levels"></div>
-          <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Your completed courses stay on this device.</span></div>
+          <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Progress is stored by this browser when storage is permitted.</span></div>
         </div>
 
         <div class="result-screen overlay-screen" id="resultScreen" hidden>
@@ -233,7 +233,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
           </div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.3 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.4 QA</span></div>
     </section>
   </main>
   <script>
@@ -722,6 +722,21 @@ function appendStroke(points, next, spacing = 8) {
 }
 
 },
+"src/game/interruption.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.interruptionEffect = interruptionEffect;
+function interruptionEffect(mode, gesture, snapEditing, running, reason) {
+    const external = reason === 'page-hidden' || reason === 'window-blur' || reason === 'navigate' || reason === 'manual-pause';
+    return {
+        discardDraft: gesture === 'stroke' && mode !== 'c',
+        preserveLiveRoute: gesture === 'stroke' && mode === 'c',
+        cancelSnapEdit: snapEditing && (external || gesture === 'snap'),
+        pauseRun: running && (external || (mode === 'c' && gesture === 'stroke'))
+    };
+}
+
+},
 "src/game/onboarding.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -886,6 +901,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const catalog_js_1 = require("./game/catalog.js");
 const progress_js_1 = require("./game/progress.js");
 const onboarding_js_1 = require("./game/onboarding.js");
+const interruption_js_1 = require("./game/interruption.js");
 const geometry_js_1 = require("./core/geometry.js");
 const simulation_js_1 = require("./core/simulation.js");
 const courses_js_1 = require("./game/courses.js");
@@ -908,6 +924,7 @@ const canvasEl = canvas, btnGo = goBtn, btnReset = resetBtn, btnPause = pauseBtn
 let course = courses_js_1.COURSES[0];
 let draft = [], route = null, run = null;
 let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0, tutorialPrompted = false;
+let pauseNote = null;
 let mode = 'a';
 const localStore = (() => { try {
     return window.localStorage;
@@ -939,6 +956,8 @@ function cancelEdit(resume) {
     snapTarget = null;
     snapPreview = null;
     accumulator = 0;
+    if (resume)
+        pauseNote = null;
 }
 // Audio is deliberately absent from this P1 mechanical proof.
 function phase() { return run?.phase ?? 'ready'; }
@@ -971,7 +990,7 @@ function refresh() {
             message('Live trail interrupted.', run?.failure ?? 'Reset and draw ahead.');
         }
         else if (p === 'paused')
-            message('Live run paused.', 'Resume to keep the runner moving.');
+            message('Live run paused.', pauseNote ?? 'Press Resume to keep the runner moving.');
         else if (p === 'running')
             message(liveError ?? (liveWaitingTicks > 0 ? 'DRAW AHEAD — runner at the tip' : 'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length ?? 0)} / ${course.maxInk} • ${Math.max(0, Math.round((live_js_1.LIVE_GRACE_TICKS - liveWaitingTicks) / 120 * 10) / 10)}s tip grace`);
         else
@@ -991,13 +1010,56 @@ function refresh() {
     else if (p === 'running')
         message('Running route…', course.id === 'snaplab' ? 'Tap SNAP while climbing; drag the ring right.' : course.id === 'snapchoice' ? 'Tap SNAP while climbing; move the ring left.' : 'Watch the runner and the moving hazard.');
     else if (p === 'paused')
-        message('Paused.', 'Press Resume to continue from the same simulation tick.');
+        message('Paused.', pauseNote ?? 'Press Resume to continue from the same simulation tick.');
     else if (route)
         message('Route ready. Press GO.', `${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
     else if (!drawing)
         message('Draw a line from S to F.', course.hint);
 }
+/** Safe when reset, Android gestures, the tab switcher, or focus loss cancels input. */
+function releaseActivePointers() {
+    for (const id of [activePointer, snapPointer]) {
+        if (id === null)
+            continue;
+        try {
+            if (canvasEl.hasPointerCapture(id))
+                canvasEl.releasePointerCapture(id);
+        }
+        catch { /* pointer already removed by OS */ }
+    }
+}
+function interruptInputs(reason) {
+    const gesture = snapDragging ? 'snap' : drawing ? 'stroke' : 'none';
+    const plan = (0, interruption_js_1.interruptionEffect)(mode, gesture, snapEditing, phase() === 'running', reason);
+    if (gesture !== 'none')
+        releaseActivePointers();
+    if (plan.discardDraft) {
+        draft = [];
+        route = null;
+    }
+    if (plan.preserveLiveRoute) {
+        liveInputReleased = true;
+        liveError = 'Touch interrupted. Resume, then rejoin at the mint tip.';
+    }
+    drawing = false;
+    activePointer = null;
+    snapDragging = false;
+    snapPointer = null;
+    if (plan.cancelSnapEdit)
+        cancelEdit(false); // keeps runner paused; never spends the snap.
+    if (plan.pauseRun && run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        pauseNote = reason === 'manual-pause' ? 'Press Resume to continue from this position.' :
+            'App or touch interrupted. Press Resume to continue safely.';
+    }
+    else if (plan.cancelSnapEdit && run?.phase === 'paused') {
+        pauseNote = 'Snap interrupted; press Resume, or try SNAP again after resuming.';
+    }
+    accumulator = 0;
+    refresh();
+}
 function newCourse(id, clearAttempts = true) {
+    releaseActivePointers();
     course = courses_js_1.COURSES.find(x => x.id === id && (0, catalog_js_1.isAccessibleCourse)(mode, id)) ?? (0, catalog_js_1.firstCourse)(mode);
     draft = [];
     route = null;
@@ -1013,6 +1075,7 @@ function newCourse(id, clearAttempts = true) {
     liveWaitingTicks = 0;
     liveError = null;
     liveInputReleased = false;
+    pauseNote = null;
     if (clearAttempts)
         attempts = 0;
     const eligible = (0, catalog_js_1.coursesForMode)(mode);
@@ -1042,6 +1105,8 @@ function pointFromEvent(e) {
 }
 function beginStroke(e) {
     if (mode === 'c') {
+        if (phase() === 'paused')
+            return; // Do not modify the trail behind a pause/help overlay.
         if (e.pointerType === 'mouse' && e.button !== 0)
             return;
         if (drawing || activePointer !== null || liveComplete || phase() === 'lost' || phase() === 'won')
@@ -1132,6 +1197,7 @@ function applyLivePoint(position) {
         attempts++;
         accumulator = 0;
         liveWaitingTicks = 0;
+        pauseNote = null;
     }
     else if (run) {
         run = (0, live_js_1.adoptLiveRoute)(run, route);
@@ -1205,6 +1271,7 @@ function endStroke(e) {
                 snapHistory.push(event);
                 route = snapPreview.route;
                 run = { ...snapPreview.run, phase: 'running' };
+                pauseNote = null;
                 snapSpent = true;
                 cancelEdit(false);
                 refresh();
@@ -1245,25 +1312,16 @@ function endStroke(e) {
 canvasEl.addEventListener('pointerdown', beginStroke);
 canvasEl.addEventListener('pointermove', moveStroke);
 canvasEl.addEventListener('pointerup', endStroke);
-canvasEl.addEventListener('pointercancel', endStroke);
-canvasEl.addEventListener('lostpointercapture', e => {
-    if (mode === 'c')
+canvasEl.addEventListener('pointercancel', e => {
+    if (e.pointerId !== activePointer && e.pointerId !== snapPointer)
         return;
-    if (snapDragging && snapPointer === e.pointerId) {
-        snapDragging = false;
-        snapPointer = null;
-        snapTarget = snapPlan?.anchor ?? null;
-        snapPreview = null;
-        refresh();
-    }
-    if (drawing && activePointer === e.pointerId) {
-        drawing = false;
-        activePointer = null;
-        draft = [];
-        route = null;
-        message('Input interrupted.', 'Try another stroke.');
-        refresh();
-    }
+    interruptInputs('pointer-cancel');
+    e.preventDefault();
+});
+canvasEl.addEventListener('lostpointercapture', e => {
+    // A normal pointerup already cleared the active pointer; only unplanned loss matters.
+    if (e.pointerId === activePointer || e.pointerId === snapPointer)
+        interruptInputs('capture-lost');
 });
 btnGo.addEventListener('click', () => {
     if (!route || phase() !== 'ready')
@@ -1276,6 +1334,7 @@ btnGo.addEventListener('click', () => {
     attempts++;
     run = (0, simulation_js_1.beginRun)(checked.route, course);
     accumulator = 0;
+    pauseNote = null;
     refresh();
 });
 buttonSnap.addEventListener('click', () => {
@@ -1313,25 +1372,22 @@ btnReset.addEventListener('click', () => newCourse(course.id, false));
 btnPause.addEventListener('click', () => {
     if (snapEditing)
         return;
-    if (run?.phase === 'running') {
-        run = { ...run, phase: 'paused' };
-        accumulator = 0;
-    }
+    if (run?.phase === 'running')
+        interruptInputs('manual-pause');
     else if (run?.phase === 'paused') {
         run = { ...run, phase: 'running' };
         accumulator = 0;
+        pauseNote = null;
+        refresh();
     }
-    refresh();
 });
 sel.addEventListener('change', () => newCourse(sel.value));
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden && run?.phase === 'running') {
-        run = { ...run, phase: 'paused' };
-        accumulator = 0;
-        refresh();
-    }
+    if (document.hidden)
+        interruptInputs('page-hidden');
     lastTime = performance.now();
 });
+window.addEventListener('blur', () => { interruptInputs('window-blur'); lastTime = performance.now(); });
 function loop(now) {
     const delta = lastTime === 0 ? 0 : Math.min(.05, Math.max(0, (now - lastTime) / 1000));
     lastTime = now;
@@ -1367,7 +1423,7 @@ function loop(now) {
 newCourse(course.id);
 requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
+Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), drawing, activePointer, pauseNote, liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
 let appView = 'home';
 const howto = document.querySelector('#howtoOverlay');
 if (!howto)
@@ -1383,11 +1439,10 @@ if (!guideKicker || !guideTitle || !guideTagline || !guideSteps || !guideGo || !
     throw new Error('Mode guides controls missing');
 let guideReturnFocus = null;
 function openModeGuide(origin) {
-    if (run?.phase === 'running') {
-        run = { ...run, phase: 'paused' };
-        accumulator = 0;
-        refresh();
-    }
+    // Help must revoke any captured finger before freezing the simulation.
+    // Otherwise a late pointerup can append an invisible segment behind the dialog.
+    if (run?.phase === 'running' || drawing || snapEditing)
+        interruptInputs('manual-pause');
     const copy = onboarding_js_1.MODE_GUIDES[mode];
     guideKicker.textContent = copy.label;
     guideTitle.textContent = copy.title;
@@ -1417,6 +1472,8 @@ function closeModeGuide(choice) {
     guideReturnFocus = null;
 }
 function showView(view) {
+    if (view !== 'game')
+        interruptInputs('navigate');
     appView = view;
     if (view !== 'game')
         howto.hidden = true;
@@ -1476,6 +1533,9 @@ function showCourseMenu() {
     courseHeading.textContent = catalog_js_1.MODE_COPY[mode].name;
     guideFromCourses.setAttribute('aria-label', `How to play ${catalog_js_1.MODE_COPY[mode].name}`);
     courseSummary.textContent = `${(0, progress_js_1.completedInMode)(progress, mode)} / ${(0, catalog_js_1.coursesForMode)(mode).length} cleared locally`;
+    const storageNote = document.querySelector('#storageNote');
+    if (storageNote)
+        storageNote.textContent = localStore ? 'Progress is stored by this browser when storage is permitted.' : 'Storage unavailable: progress lasts only for this session.';
     courseList.replaceChildren();
     for (const [index, entry] of (0, catalog_js_1.coursesForMode)(mode).entries()) {
         const button = document.createElement('button');
