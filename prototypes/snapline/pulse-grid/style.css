@@ -56,3 +56,19 @@ body[data-theme="pulse"]{--screen:#0b1321;--text:#f3fbfc;--muted:#98b1c1;--mint:
 
 /* Legibility refinements: important metadata must not rely on 8px type. */
 .micro-line{font-size:9px}.home-build{font-size:9px}.result-card-title,.result-metrics small{font-size:10px}.result-detail{font-size:11px}.home-footer{font-size:9px}
+
+/* P3 Gameplay expansion: approved Pulse Grid tokens, compact one-finger correction controls. */
+.mode-picker{display:grid;grid-template-columns:1fr 1.18fr;gap:7px;margin:0 0 12px}
+.mode-picker button{background:#122538;border:1px solid #385266;border-radius:12px;color:#a6c6d3;font-size:9px;letter-spacing:.015em;font-weight:850;padding:12px 5px;white-space:nowrap;min-height:44px}
+.mode-picker button[aria-pressed="true"]{background:#163b42;color:#98fff0;border-color:#72f3d8;box-shadow:0 0 0 1px #72f3d855 inset}
+.mode-picker strong{color:#fa977c;margin-right:4px}
+.snap-action{font-size:10px!important;letter-spacing:.03em!important;background:#15343a!important;color:#86f8e3!important;border:1px solid #499d97!important;border-radius:12px!important;min-width:0;padding:0 3px;font-weight:950!important}
+.snap-action:disabled{opacity:.44}
+body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(57px,.68fr) 39px 39px 39px;gap:5px}
+body[data-mode="b"] .game-buttons .action-btn{padding:0 10px}
+body[data-mode="b"] .game-buttons button{height:48px}
+body[data-mode="b"] .bottom-rail span{color:#77edda}
+.home-art{height:224px;top:396px}
+.home-bottom{bottom:21px}
+@media(max-width:400px){.home-art{height:24%;top:42%}.home-bottom{bottom:15px}.mode-picker{margin-bottom:8px}.home-metadata{margin-bottom:8px}.home-footer{margin-top:10px}.game-buttons{gap:5px}body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(59px,.7fr) 38px 38px 38px;gap:4px}}
+@media(max-width:355px){body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) 58px 35px 35px 35px;gap:3px}.game-screen{padding-left:12px!important;padding-right:12px!important}}

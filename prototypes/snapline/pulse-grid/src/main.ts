@@ -1,9 +1,11 @@
 import type {Course,Route,Run,Vec} from './core/types.js';
-import {distance,lengthOf} from './core/geometry.js';
+import {distance,lengthOf,pointAtDistance} from './core/geometry.js';
 import {validateRoute,beginRun,advanceRun,FIXED_STEP,START_ZONE} from './core/simulation.js';
 import {COURSES,BOARD_WIDTH,BOARD_HEIGHT} from './game/courses.js';
 import {appendStroke} from './game/drawing.js';
 import {render} from './ui/render.js';
+import {createSnapPlan,previewSnap} from './core/snap.js';
+import type {SnapPlan,SnapCheck,SnapEvent} from './core/snap.js';
 
 const canvas=document.querySelector<HTMLCanvasElement>('#courseCanvas');
 const goBtn=document.querySelector<HTMLButtonElement>('#goBtn');
@@ -20,18 +22,45 @@ const canvasEl=canvas,btnGo=goBtn,btnReset=resetBtn,btnPause=pauseBtn,btnHelp=he
 let course:Course=COURSES[0]!;
 let draft:Vec[]=[],route:Route|null=null,run:Run|null=null;
 let drawing=false,activePointer:number|null=null,lastTime=0,accumulator=0,attempts=0;
+type GameMode='a'|'b';
+let mode:GameMode='a';
+let snapSpent=false,snapEditing=false,snapDragging=false,snapPointer:number|null=null;
+let snapPlan:SnapPlan|null=null,snapTarget:Vec|null=null,snapPreview:SnapCheck|null=null;
+const snapHistory:SnapEvent[]=[];
+const btnSnap=document.querySelector<HTMLButtonElement>('#snapBtn');
+const modeA=document.querySelector<HTMLButtonElement>('#modeA');
+const modeB=document.querySelector<HTMLButtonElement>('#modeB');
+const modeDescription=document.querySelector<HTMLElement>('#modeDescription');
+if(!btnSnap||!modeA||!modeB||!modeDescription)throw new Error('P3 controls missing');
+const buttonSnap=btnSnap,buttonA=modeA,buttonB=modeB,modeInfo=modeDescription;
+function cancelEdit(resume:boolean):void{
+  if(snapEditing&&run?.phase==='paused'&&resume)run={...run,phase:'running'};
+  snapEditing=false;snapDragging=false;snapPointer=null;snapPlan=null;snapTarget=null;snapPreview=null;
+  accumulator=0;
+}
+
 // Audio is deliberately absent from this P1 mechanical proof.
 function phase(){return run?.phase??'ready';}
 function message(top:string,bottom:string){txt.textContent=top;hint.textContent=bottom;}
 function refresh():void{
   const p=phase();
   btnGo.disabled=!route||p!=='ready';
-  btnPause.disabled=p!=='running'&&p!=='paused';
+  buttonSnap.hidden=mode==='a';
+  buttonSnap.disabled=mode==='a'||snapSpent||(!snapEditing&&p!=='running');
+  buttonSnap.textContent=snapEditing?'CANCEL':snapSpent?'USED':'SNAP';
+  buttonSnap.setAttribute('aria-label',snapEditing?'Cancel route correction':snapSpent?'Snap already used':'Pause to adjust your route once');
+  document.body.dataset.mode=mode;
+  buttonA.setAttribute('aria-pressed',String(mode==='a'));
+  buttonB.setAttribute('aria-pressed',String(mode==='b'));
+  modeInfo.textContent=mode==='b'?'Draw • Run • Snap once':'Draw • Run • Improve';
+  btnPause.disabled=snapEditing||(p!=='running'&&p!=='paused');
   btnPause.textContent=p==='paused'?'▶':'Ⅱ';
   btnPause.setAttribute('aria-label',p==='paused'?'Resume run':'Pause run');
-  sel.disabled=p==='running'||p==='paused';
+  sel.disabled=snapEditing||p==='running'||p==='paused';
   resultEl.hidden=p!=='won'&&p!=='lost';
-  if(p==='won'){
+  if(snapEditing){
+    message('SNAP PAUSED — move mint anchor',snapPreview?.ok?`Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink`:snapPreview&&!snapPreview.ok?snapPreview.reason:'Drag the ring on your route. One edit only.');
+  } else if(p==='won'){
     resultEl.textContent=`✓ FINISHED — ${((run?.ticks??0)*FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts===1?'':'s'}`;
     message('Completed successfully.', 'Try a shorter or safer route, or switch courses.');
   }else if(p==='lost'){
@@ -44,7 +73,7 @@ function refresh():void{
 }
 function newCourse(id:string,clearAttempts=true):void{
   course=COURSES.find(x=>x.id===id)??COURSES[0]!;
-  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;if(clearAttempts)attempts=0;
+  draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;snapHistory.length=0;if(clearAttempts)attempts=0;
   sel.value=course.id;const label=document.querySelector<HTMLElement>('#courseLabel');if(label)label.textContent=course.id==='detour'?'01 STATIC DETOUR':'02 MOVING HAZARD';
   const progress=document.querySelector<HTMLElement>('#courseProgress');if(progress)progress.innerHTML=course.id==='detour'?'01 <span>/</span> 02':'02 <span>/</span> 02';
   refresh();
@@ -55,6 +84,15 @@ function pointFromEvent(e:PointerEvent):Vec{
           y:Math.max(0,Math.min(BOARD_HEIGHT,(e.clientY-rect.top)*BOARD_HEIGHT/rect.height))};
 }
 function beginStroke(e:PointerEvent):void{
+  if(snapEditing){
+    if(!snapPlan||!run||snapDragging)return;
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    const pos=pointFromEvent(e);
+    if(distance(pos,snapTarget??snapPlan.anchor)>42){message('Touch the mint anchor ring.','Drag the highlighted circle to a safer position.');return;}
+    snapDragging=true;snapPointer=e.pointerId;snapTarget=pos;
+    snapPreview=previewSnap(run,course,snapPlan,pos);
+    canvasEl.setPointerCapture(e.pointerId);refresh();e.preventDefault();return;
+  }
   if(phase()!=='ready'||drawing)return;
   if(e.pointerType==='mouse'&&e.button!==0)return;
   const pos=pointFromEvent(e);
@@ -64,6 +102,10 @@ function beginStroke(e:PointerEvent):void{
   canvasEl.setPointerCapture(e.pointerId);txt.textContent='Drawing…';hint.textContent='Keep dragging towards the finish circle.';refresh();e.preventDefault();
 }
 function moveStroke(e:PointerEvent):void{
+  if(snapDragging&&e.pointerId===snapPointer&&snapPlan&&run){
+    snapTarget=pointFromEvent(e);snapPreview=previewSnap(run,course,snapPlan,snapTarget);
+    refresh();e.preventDefault();return;
+  }
   if(!drawing||e.pointerId!==activePointer)return;
   const samples=e.getCoalescedEvents?.()??[];
   for(const event of samples){if(event.pointerId===activePointer)draft=appendStroke(draft,pointFromEvent(event));}
@@ -74,6 +116,26 @@ function moveStroke(e:PointerEvent):void{
   e.preventDefault();
 }
 function endStroke(e:PointerEvent):void{
+  if(snapDragging&&e.pointerId===snapPointer){
+    snapDragging=false;snapPointer=null;
+    if(canvasEl.hasPointerCapture(e.pointerId))canvasEl.releasePointerCapture(e.pointerId);
+    if(e.type!=='pointerup'){
+      snapTarget=snapPlan?.anchor??null;snapPreview=null;
+      message('Snap gesture interrupted.','Drag the mint anchor again or press CANCEL.');refresh();return;
+    }
+    if(snapPlan&&run){
+      snapTarget=pointFromEvent(e);
+      snapPreview=previewSnap(run,course,snapPlan,snapTarget);
+      if(snapPreview.ok){
+        const event={tick:snapPlan.atTick,target:{...snapTarget}};
+        snapHistory.push(event);
+        route=snapPreview.route;
+        run={...snapPreview.run,phase:'running'};
+        snapSpent=true;cancelEdit(false);refresh();e.preventDefault();return;
+      }
+      refresh();e.preventDefault();return;
+    }
+  }
   if(!drawing||e.pointerId!==activePointer)return;
   if(e.type==='pointerup')draft=appendStroke(draft,pointFromEvent(e));
   drawing=false;activePointer=null;
@@ -90,6 +152,7 @@ canvasEl.addEventListener('pointermove',moveStroke);
 canvasEl.addEventListener('pointerup',endStroke);
 canvasEl.addEventListener('pointercancel',endStroke);
 canvasEl.addEventListener('lostpointercapture',e=>{
+  if(snapDragging&&snapPointer===e.pointerId){snapDragging=false;snapPointer=null;snapTarget=snapPlan?.anchor??null;snapPreview=null;refresh();}
   if(drawing&&activePointer===e.pointerId){drawing=false;activePointer=null;draft=[];route=null;message('Input interrupted.','Try another stroke.');refresh();}
 });
 btnGo.addEventListener('click',()=>{
@@ -98,8 +161,22 @@ btnGo.addEventListener('click',()=>{
   if(!checked.ok){message('Invalid route.',checked.reason);return;}
   attempts++;run=beginRun(checked.route,course);accumulator=0;refresh();
 });
+buttonSnap.addEventListener('click',()=>{
+  if(mode!=='b'||snapSpent||!run)return;
+  if(snapEditing){cancelEdit(true);refresh();return;}
+  if(run.phase!=='running')return;
+  const plan=createSnapPlan(run);
+  if(!plan){message('Snap no longer available.','Use the correction while more route remains ahead.');return;}
+  run={...run,phase:'paused'};snapPlan=plan;snapTarget={...plan.anchor};snapPreview=null;snapEditing=true;accumulator=0;refresh();
+});
+function selectMode(next:GameMode):void{
+  mode=next;newCourse('detour');refresh();
+}
+buttonA.addEventListener('click',()=>selectMode('a'));
+buttonB.addEventListener('click',()=>selectMode('b'));
 btnReset.addEventListener('click',()=>newCourse(course.id,false));
 btnPause.addEventListener('click',()=>{
+  if(snapEditing)return;
   if(run?.phase==='running'){run={...run,phase:'paused'};accumulator=0;}
   else if(run?.phase==='paused'){run={...run,phase:'running'};accumulator=0;}
   refresh();
@@ -120,12 +197,13 @@ function loop(now:number){
     }
     if(run.phase!=='running'){refresh();if(run.phase==='won')showEarnedResult();}
   }
-  render(canvasEl,{course,draft,route,run,inkUsed:route?.length??lengthOf(draft),invalid:!route&&lengthOf(draft)>course.maxInk,drawing});
+  render(canvasEl,{course,draft,route,run,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
+    snap:snapEditing&&snapPlan?{anchor:snapTarget??snapPlan.anchor,original:snapPlan.anchor,lead:pointAtDistance(run!.route.points,snapPlan.leadDistance),tail:pointAtDistance(run!.route.points,snapPlan.tailDistance),preview:snapPreview?.ok?snapPreview.route:null,valid:snapPreview===null?true:snapPreview.ok}:undefined});
   requestAnimationFrame(loop);
 }
 newCourse(course.id);requestAnimationFrame(loop);
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
-Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null})});
+Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x}))})});
 
 // P2.1 Pulse Grid refinement: one owner-selected theme, actual app flow and truthful live metrics.
 type AppView='home'|'game'|'result';
@@ -138,6 +216,7 @@ function showView(view:AppView):void{
   for(const [name,id] of [['home','homeScreen'],['game','gameScreen'],['result','resultScreen']] as const){
     const element=document.getElementById(id);if(element)element.hidden=name!==view;
   }
+  if(view!=='game'&&snapEditing)cancelEdit(false);
   if(view!=='game'&&run?.phase==='running'){
     run={...run,phase:'paused'};accumulator=0;refresh();
   }
@@ -155,7 +234,7 @@ function showEarnedResult():void{
   assignText('resultInk',String(Math.round(route.length)));
   assignText('resultTime',(run.ticks*FIXED_STEP).toFixed(2));
   assignText('resultAttempts',String(attempts));
-  assignText('resultDetail','Live results from your completed route — not demo values.');
+  assignText('resultDetail',mode==='b'?(snapSpent?'Snap & Redirect • 1 correction used':'Snap & Redirect • no correction used'):'Plan & Run • live gameplay metrics.');
   const next=document.querySelector<HTMLButtonElement>('#nextDemo');if(next){next.innerHTML=course.id==='detour'?'NEXT COURSE <span>➜</span>':'PLAY COURSE 01 <span>➜</span>';}
   showView('result');
 }
@@ -167,5 +246,5 @@ document.getElementById('backToHome')?.addEventListener('click',()=>showView('ho
 btnHelp.addEventListener('click',()=>{howto.hidden=false;document.getElementById('closeHowto')?.focus();});
 document.getElementById('closeHowto')?.addEventListener('click',()=>{howto.hidden=true;btnHelp.focus();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!howto.hidden){howto.hidden=true;btnHelp.focus();}});
-showView('home');
-Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null})});
+showView('home');selectMode('a');
+Object.assign(window,{__p2Refine:()=>({view:appView,course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),attempts,mode,snapSpent,resultDuration:run?.ticks?Number((run.ticks*FIXED_STEP).toFixed(2)):null})});

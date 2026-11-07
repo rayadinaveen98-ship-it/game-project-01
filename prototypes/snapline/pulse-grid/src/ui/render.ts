@@ -4,6 +4,7 @@ import {hazardPosition,BOARD_WIDTH,BOARD_HEIGHT,RUNNER_RADIUS} from '../game/cou
 export interface VisualState {
   course:Course;draft:readonly Vec[];route:Route|null;run:Run|null;
   inkUsed:number;invalid:boolean;drawing:boolean;
+  snap?:{anchor:Vec;original:Vec;lead:Vec;tail:Vec;preview:Route|null;valid:boolean};
 }
 type ThemeKey='pulse'|'ink'|'micro';
 interface Palette{bg:string;grid:string;major:string;ink:string;inkSoft:string;wall:string;edge:string;text:string;muted:string;mint:string;accent:string;moving:string;runner:string;barBack:string}
@@ -95,11 +96,26 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
   if(theme==='micro'){dot(ctx,{x:329,y:26},11,'#ffffffaa');dot(ctx,{x:329,y:26},4,p.accent)}
   for(const wall of s.course.walls)drawWall(ctx,wall,theme,p);
   drawMoving(ctx,s,theme,p);
-  const pts=s.route?.points??s.draft;
+  const pts=s.snap?.preview?.points??s.route?.points??s.draft;
   if(pts.length>1){
     if(theme==='pulse'){ctx.save();ctx.shadowColor=s.invalid?p.accent:p.ink;ctx.shadowBlur=11;stroke(ctx,pts,s.invalid?p.accent:p.ink,7);ctx.restore();stroke(ctx,pts,'#eefffa',2)}
     else if(theme==='ink'){stroke(ctx,pts,s.invalid?p.accent:p.inkSoft,10);stroke(ctx,pts,s.invalid?p.accent:p.ink,4.6)}
     else {stroke(ctx,pts,s.invalid?p.accent:'#ffffff90',13);stroke(ctx,pts,s.invalid?p.accent:p.ink,6)}
+  }
+  if(s.snap){
+    const a=s.snap;
+    if(!a.preview){
+      ctx.save();ctx.globalAlpha=.7;ctx.setLineDash([5,6]);ctx.lineWidth=3;ctx.strokeStyle=a.valid?p.mint:p.accent;
+      ctx.beginPath();ctx.moveTo(a.lead.x,a.lead.y);ctx.lineTo(a.anchor.x,a.anchor.y);ctx.lineTo(a.tail.x,a.tail.y);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    }
+    dot(ctx,a.original,6,'#7b9eb080');
+    ctx.save();ctx.shadowBlur=19;ctx.shadowColor=a.valid?p.mint:p.accent;
+    dot(ctx,a.anchor,17,a.valid?'#102c38':'#4d2432');ctx.shadowBlur=0;
+    ctx.strokeStyle=a.valid?p.mint:p.accent;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(a.anchor.x,a.anchor.y,17,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle=a.valid?p.mint:p.accent;ctx.beginPath();ctx.arc(a.anchor.x,a.anchor.y,6,0,Math.PI*2);ctx.fill();ctx.restore();
+    ctx.font='900 11px system-ui';ctx.textAlign='center';ctx.fillStyle=a.valid?p.mint:p.accent;
+    ctx.fillText('DRAG',Math.min(324,Math.max(36,a.anchor.x)),a.anchor.y-29);
   }
   drawTerminal(ctx,s.course.start,16,p.mint,'S',theme,p);drawTerminal(ctx,s.course.finish,18,p.accent,'F',theme,p);
   drawRunner(ctx,s,theme,p);
