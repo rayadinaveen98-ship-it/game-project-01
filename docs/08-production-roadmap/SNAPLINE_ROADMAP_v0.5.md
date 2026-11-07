@@ -57,3 +57,13 @@ This does NOT authorize full-game production or native APK work.
 - [ ] External uninformed A/B player comparisons and B-specific tutorial refinement.
 - [ ] Live Drawing C experiment, a potential alternative, not implemented yet.
 The work is an alpha mechanics prototype; do not claim production completion.
+
+## November 7, 2026 — P4 focused extension
+- [x] Preserve P3 A/B implementation and approved Pulse Grid visuals.
+- [x] Implement optional B-only practice Course 03 with a clearly meaningful snap rescue and traceable guide.
+- [x] Add seven automated tests (22/22 pass locally), deterministic collision/late rescue comparisons and 480 seeded target checks.
+- [x] Run interactive Chromium desktop + 360/390/412 emulated-touch exercise and separate A regression.
+- [ ] Inspect independent GitHub CI and merge P4.
+- [ ] Owner physical phone acceptance of P4 and any touch/guide refinements.
+- [ ] Independent first-time A/B game-feel evaluation and C/Live Drawing decision.
+The practice course is **not** included in A/B comparison scores. See [P4 report](../06-technical-design/snapline_P4_implementation_report.md).
