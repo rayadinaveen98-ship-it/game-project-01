@@ -144,3 +144,11 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Important QA limit:** the local browser administrator blocks navigation to localhost/file URLs, so the browser tests use an in-memory storage shim rather than proving actual origin-owned storage persistence. Physical Android P6.1 testing, real browser navigation/storage test and FPS metrics remain pending.
 - Existing **three course definitions** only (detour, timing, B-only patrol), not the five future levels proposed for P6.2/P6.3. No native APK, monetization or external player study.
 - [P6.1 source and QA report](../../prototypes/snapline/pulse-grid/README_P61.md) · [active P6 plan](../08-production-roadmap/SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).
+
+## P6.1 merge confirmed — November 7, 2026
+- **Merged and verified on `main`:** [PR #23](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/23), squash commit `ab9d8bd62f45d0a985b69535336a4f762c8b2e96`.
+- **7/7 GitHub checks passed:** P6.1, P5, P4, P3, P2.1, P1 and Documentation Gate.
+- Built three-mode course list, filtered eligibility, mode-specific local progress and scoped reset. 34/34 automated tests pass. Offline runnable `prototypes/snapline/pulse-grid/standalone.html` present on main.
+- **Pending:** owner physical-phone P6.1 approval; actual browser-managed persistent storage across reopens; real-device FPS/input latency. Current local browser test used a storage shim because file/localhost navigation was prohibited.
+- **Not implemented yet:** five more P6 content definitions, true mode-specific first-time tutorials, full native APK, ads or commercial release.
+- [P6.1 QA report](../../prototypes/snapline/pulse-grid/QA_REPORT_P61.md) · [remaining issue #22](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/22).
