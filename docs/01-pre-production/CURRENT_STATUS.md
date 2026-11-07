@@ -78,3 +78,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Active next milestone (proposed):** implement and fairly compare B **Snap & Redirect** with the proven A **Plan & Run** baseline. The third, C **Live Drawing**, remains an option for a later separate experiment.
 - See [P3 mechanical plan](../04-game-design/snapline/P3_SNAP_REDIRECT_PLAN_v0.7.md) and [P3 checklist](../08-production-roadmap/SNAPLINE_P3_CHECKLIST.md).
 - P3 code has **not started**. No external playtest, physical-device performance certification, native APK or commercial monetization approved.
+
+## Snapline P3 Snap & Redirect alpha — November 7, 2026
+**Implemented on P3 feature branch for review:** approved Pulse Grid browser prototype now supports A Plan & Run and B Snap & Redirect. One pause-and-drag forward anchor per B run, validated wall clearance and ink budget, deterministic event tick replay, and the existing 2 comparable courses. Baseline P1 collisions and P2.1 Home/Result remain intact.
+
+**Local QA:** 15/15 Node/TypeScript tests pass. Desktop Chromium mouse B draw→GO→snap→win and baseline A draw→GO→win pass. Chromium mobile **emulation** 360×800, 390×844, 412×915 with synthetic touch drawing and anchor drag passed. The user has not yet run this P3 version on a physical phone; real-world player preference and P3 acceptance remain pending.
+
+[Technical implementation report](../06-technical-design/snapline_P3_implementation_report.md) · [Offline playable prototype](../../prototypes/snapline/pulse-grid/standalone.html). No APK, monetization, hosted Pages URL or commercial concept approval.

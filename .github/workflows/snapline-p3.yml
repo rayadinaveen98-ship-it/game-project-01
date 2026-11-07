@@ -1,0 +1,37 @@
+name: Snapline P3 — Snap and Redirect Alpha
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p3.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p3.yml'
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned compiler
+        working-directory: prototypes/snapline/pulse-grid
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Type check and test all 15 deterministic cases
+        working-directory: prototypes/snapline/pulse-grid
+        run: npm run check
+      - name: Rebuild standalone offline HTML
+        working-directory: prototypes/snapline/pulse-grid
+        run: node scripts/make-single-html.mjs
+      - name: Confirm checked-in playable HTML matches source
+        run: git diff --exit-code -- prototypes/snapline/pulse-grid/standalone.html
+      - name: Upload browser demo artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p3-browser-alpha
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error

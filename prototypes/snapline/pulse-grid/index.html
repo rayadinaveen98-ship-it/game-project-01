@@ -4,28 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P2.1</title>
+  <title>Snapline Sprint — Pulse Grid P3 Alpha</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body data-theme="pulse" data-view="home">
   <main class="review-studio">
     <section class="review-rail" aria-label="Prototype guidance">
       <div class="rail-top">
-        <div class="rail-eyebrow"><span class="led"></span> GP—01 / VISUAL REFINEMENT</div>
+        <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>One chosen direction. One working route engine. This is the actual interactive browser prototype, with refined screens and a real result flow.</p>
-        <span class="lab-tag">P2.1 • REVIEW BUILD</span>
+        <p>Approved Pulse Grid style. Now test a single mid-run route correction without losing fair collisions.</p>
+        <span class="lab-tag">P3 • SNAP & REDIRECT ALPHA</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
-        <p class="rail-note"><strong>1.</strong> Start a course.<br><strong>2.</strong> Drag one line from S to F.<br><strong>3.</strong> Press GO.<br><strong>4.</strong> Try again, or complete the course and see your real result.</p>
+        <p class="rail-note"><strong>1.</strong> Start a course.<br><strong>2.</strong> Drag one line from S to F.<br><strong>3.</strong> Press GO.<br><strong>4.</strong> In mode B, tap SNAP and drag the glowing anchor.<br><strong>5.</strong> Reach F and compare results.</p>
       </div>
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Your P2 selection is recorded. UI polish remains reviewable; no final art/assets are implied.</p>
+        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. Snap correction is experimental, not the final mechanic.</p>
       </div>
-      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. Home and results now respond to real play.</p></div>
+      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A and B share the same route and collision engine.</p></div>
     </section>
 
     <section class="presentation" aria-label="Phone-scale visual preview">
@@ -44,15 +44,15 @@
           <div class="board-frame"><canvas id="courseCanvas" width="360" height="640" aria-label="Interactive route course: drag one stroke from S to F, avoid the obstacles." tabindex="0"></canvas></div>
           <div class="hud-status" role="status" aria-live="polite"><div class="status-glyph" aria-hidden="true">↗</div><div><strong id="status">Draw a line from S to F.</strong><span id="substatus">Trace one continuous path.</span></div></div>
           <div id="result" class="inline-result" hidden></div>
-          <div class="game-buttons"><button id="goBtn" class="action-btn" disabled>GO <span>➜</span></button><button id="resetBtn" class="icon-btn" aria-label="Reset route" title="Reset route">↻</button><button id="pauseBtn" class="icon-btn pause-btn" aria-label="Pause route" disabled title="Pause">Ⅱ</button><button id="helpBtn" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button></div>
-          <div class="bottom-rail"><button id="backToHome" class="text-link" aria-label="Back to Home">← HOME</button><span>ONE LINE. ONE CHANCE.</span></div>
+          <div class="game-buttons"><button id="goBtn" class="action-btn" disabled>GO <span>➜</span></button><button id="snapBtn" class="snap-action" hidden disabled title="One route correction">SNAP</button><button id="resetBtn" class="icon-btn" aria-label="Reset route" title="Reset route">↻</button><button id="pauseBtn" class="icon-btn pause-btn" aria-label="Pause route" disabled title="Pause">Ⅱ</button><button id="helpBtn" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button></div>
+          <div class="bottom-rail"><button id="backToHome" class="text-link" aria-label="Back to Home">← HOME</button><span id="modeDescription">DRAW • RUN • IMPROVE</span></div>
         </div>
 
         <div class="home-screen overlay-screen" id="homeScreen" hidden>
           <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">TWO TEST COURSES</span></div>
           <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
           <h2>Make<br>your own<br><em>way.</em></h2>
-          <p class="home-copy">The shortest route isn't always the safest. Draw your route, dodge the hazards, and find a way through.</p>
+          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and test a single mid-run correction.</p>
           <svg class="home-art" viewBox="0 0 340 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs><linearGradient id="homeGlow" x1="0" y1="1" x2="1" y2="0"><stop stop-color="var(--mint)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
             <g opacity=".36" stroke="var(--grid)" stroke-width="1"><path d="M0 50H340 M0 100H340 M0 150H340 M0 200H340 M0 250H340 M50 0V270 M100 0V270 M150 0V270 M200 0V270 M250 0V270 M300 0V270"/></g>
@@ -62,7 +62,7 @@
             <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
             <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
           </svg>
-          <div class="home-bottom"><span class="home-metadata">DRAW • RUN • IMPROVE</span><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
         </div>
 
         <div class="result-screen overlay-screen" id="resultScreen" hidden>
@@ -80,10 +80,10 @@
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
         <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One run.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. The line is a route, not a bridge.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One snap.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P2.1</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P3 ALPHA</span></div>
     </section>
   </main>
   <script type="module" src="./src/main.js"></script>
