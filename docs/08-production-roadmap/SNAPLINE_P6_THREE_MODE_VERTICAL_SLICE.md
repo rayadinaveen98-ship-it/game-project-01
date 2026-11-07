@@ -129,3 +129,14 @@ P5 3-mode prototype: IMPLEMENTED. P6 architecture/content expansion: NOT STARTED
 - [ ] P6.4 accessibility, input/pause/resume and real-device performance polish.
 - [ ] P6.5 unfamiliar-player feedback, monetization feasibility and go/no-go.
 **Do not call the entire vertical slice completed** until physical-device acceptance and user study gates are considered. [P6.3 QA report](../06-technical-design/snapline_P63_course_qa_report.md).
+
+## P6.4 input reliability implementation — November 7, 2026
+- [x] Pure typed interruption policy and 11 new unit tests; 59/59 automated Node tests including prior P1–P6.3 pass.
+- [x] Android-browser pointercancel and unexpected lost capture recovery; A/B planned draft discarded, C validated live trail preserved and runner paused.
+- [x] B preview edit cancelled when tab loses focus without spending the one SNAP; frozen runner resumes from the same tick.
+- [x] Help while actively drawing revokes pointer capture; late pointerup cannot add a hidden segment.
+- [x] Browser mouse and synthetic mobile-touch interruption regressions, C rejoin-to-win, A blur pause-to-win and prior A/B/C gameplay regression passed locally.
+- [x] Clarify browser-local storage caveat in the course menu; existing results untouched.
+- [ ] Independent GitHub CI and merge.
+- [ ] Physical Android background, touch input and FPS validation, authentic browser-origin progress persistence, accessibility QA and owner acceptance.
+No additional course content, art redesign, accounts or monetization. [P6.4 QA report](../06-technical-design/snapline_P64_reliability_QA.md).
