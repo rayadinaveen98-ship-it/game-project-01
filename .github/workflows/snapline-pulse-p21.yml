@@ -1,0 +1,43 @@
+name: Snapline — Pulse Grid P2.1
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-pulse-p21.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-pulse-p21.yml'
+jobs:
+  pulse-grid-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript
+        run: npm install --no-audit --no-fund
+      - name: Type-check, compile, and run simulation tests
+        run: npm run check
+      - name: Rebuild self-contained HTML
+        run: node scripts/make-single-html.mjs
+      - name: Verify actual UI states and content integrity
+        run: |
+          test -s standalone.html
+          grep -q 'id="homeScreen"' standalone.html
+          grep -q 'id="gameScreen"' standalone.html
+          grep -q 'id="resultScreen"' standalone.html
+          grep -q 'id="resultInk"' standalone.html
+          grep -q 'id="helpBtn"' standalone.html
+          git diff --exit-code -- standalone.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapline-pulse-grid-p2-1
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error
