@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0e1019" />
+  <title>Snapline Sprint — P2 Visual Direction Lab</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body data-theme="pulse" data-view="game">
+  <main class="review-studio">
+    <section class="review-rail" aria-label="Visual review controls">
+      <div class="rail-top">
+        <div class="rail-eyebrow"><span class="led"></span> GP—01 / DESIGN STUDIO</div>
+        <h1>Snapline<br><em>visual lab.</em></h1>
+        <p>One course. Three original art directions. Same working P1 mechanics. No final visual selection.</p>
+        <span class="lab-tag">P2 • FOR OWNER REVIEW</span>
+      </div>
+      <div class="rail-section">
+        <h2><span>01</span> Choose a direction</h2>
+        <button class="theme-choice active" data-set-theme="pulse" aria-pressed="true"><span class="theme-swatch pulse-swatch"><i></i></span><span><strong>A. Pulse Grid</strong><small>Precise · luminous · restrained</small></span><span class="checkmark">✓</span></button>
+        <button class="theme-choice" data-set-theme="ink" aria-pressed="false"><span class="theme-swatch ink-swatch"><i></i></span><span><strong>B. Ink Trail</strong><small>Warm · crafted · tactile</small></span><span class="checkmark">✓</span></button>
+        <button class="theme-choice" data-set-theme="micro" aria-pressed="false"><span class="theme-swatch micro-swatch"><i></i></span><span><strong>C. Micro Runner</strong><small>Playful · bright · dimensional</small></span><span class="checkmark">✓</span></button>
+      </div>
+      <div class="rail-section">
+        <h2><span>02</span> Inspect the same screens</h2>
+        <div class="view-tabs" role="group" aria-label="Screen mockup">
+          <button data-set-view="home" aria-pressed="false">Home</button>
+          <button data-set-view="game" class="active" aria-pressed="true">Game</button>
+          <button data-set-view="result" aria-pressed="false">Result</button>
+        </div>
+        <p class="rail-note">The <b>Game</b> view retains the P1 interaction: draw from S to F, press GO, and test collisions. Home and Result are design-state previews only.</p>
+      </div>
+      <div class="rail-footer"><span class="tiny-square"></span><strong>Not approved artwork</strong><p>Pick a direction after inspecting all three; the chosen reference becomes our P2 art bible. This is a browser-rendered design proposal, not a fabricated Android screenshot.</p></div>
+    </section>
+
+    <section class="presentation" aria-label="Phone-scale visual preview">
+      <div class="presentation-label"><span>LIVE HTML/CANVAS RENDER</span><span id="styleName">PULSE GRID / A</span></div>
+      <div class="phone" id="phone">
+        <div class="notch" aria-hidden="true"></div>
+        <div class="game-screen" id="gameScreen">
+          <header class="screen-top">
+            <div class="game-logo"><div class="mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div>
+            <div class="head-right"><span class="tiny-label">WORLD</span><strong>01 <span>/</span> 02</strong></div>
+          </header>
+          <div class="level-header">
+            <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>
+            <label class="sr-only" for="courseSelect">Course</label><select id="courseSelect" aria-label="Select test course"><option value="detour">01</option><option value="timing">02</option></select>
+          </div>
+          <div class="board-frame"><canvas id="courseCanvas" width="360" height="640" aria-label="Interactive route course: drag one stroke from S to F, avoid the obstacles." tabindex="0"></canvas></div>
+          <div class="hud-status" role="status" aria-live="polite"><div class="status-glyph" aria-hidden="true">↗</div><div><strong id="status">Draw a line from S to F.</strong><span id="substatus">Trace one continuous path.</span></div></div>
+          <div id="result" class="inline-result" hidden></div>
+          <div class="game-buttons"><button id="goBtn" class="action-btn" disabled>RUN <span>➜</span></button><button id="resetBtn" class="icon-btn" aria-label="Reset route" title="Reset">↻</button><button id="pauseBtn" class="icon-btn pause-btn" disabled title="Pause">Ⅱ</button><button id="muteBtn" class="icon-btn mute-btn" disabled aria-label="Audio unavailable">♬</button></div>
+          <div class="bottom-rail"><span>MADE FOR THE MOMENT</span><span>● ● ○ ○</span></div>
+        </div>
+
+        <div class="home-screen overlay-screen" id="homeScreen" hidden>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">CHAPTER 01</span></div>
+          <div class="home-tag"><span class="beacon"></span> ONE LINE CHANGES EVERYTHING</div>
+          <h2>Make<br>your own<br><em>way.</em></h2>
+          <p class="home-copy">The shortest route isn't always the safest. Draw smart. Move bold. Try again.</p>
+          <svg class="home-art" viewBox="0 0 340 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs><linearGradient id="homeGlow" x1="0" y1="1" x2="1" y2="0"><stop stop-color="var(--mint)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+            <g opacity=".36" stroke="var(--grid)" stroke-width="1"><path d="M0 50H340 M0 100H340 M0 150H340 M0 200H340 M0 250H340 M50 0V270 M100 0V270 M150 0V270 M200 0V270 M250 0V270 M300 0V270"/></g>
+            <rect x="118" y="140" width="91" height="36" rx="9" fill="var(--hazard)" stroke="var(--hazard-edge)" stroke-width="3"/><rect x="221" y="65" width="59" height="34" rx="8" fill="var(--hazard)" stroke="var(--hazard-edge)" stroke-width="3"/>
+            <path d="M38 232 L58 219 L62 87 Q63 34 112 34 L290 34" stroke="var(--mint)" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".12"/>
+            <path d="M38 232 L58 219 L62 87 Q63 34 112 34 L290 34" stroke="url(#homeGlow)" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
+            <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
+          </svg>
+          <div class="home-bottom"><span class="home-metadata">01 — THE DETOUR <span>·</span> TWO TEST COURSES</span><button id="startDemo" class="home-cta">START DRAWING <span>➜</span></button><div class="home-footer">ONE GESTURE. ENDLESS WAYS FORWARD.</div></div>
+        </div>
+
+        <div class="result-screen overlay-screen" id="resultScreen" hidden>
+          <div class="result-top"><span>THE JOURNEY CONTINUES</span><span>01 / 02</span></div>
+          <div class="result-hero"><div class="star-burst" aria-hidden="true"><span>✦</span><i></i><i></i></div><p class="result-overline">ROUTE COMPLETE</p><h2>Beautifully<br><em>done.</em></h2><p>Every good line starts with a daring first move.</p></div>
+          <div class="result-card"><div class="result-card-title">COURSE 01 <span>THE DETOUR</span></div><div class="result-metrics"><div><small>YOUR ROUTE</small><strong>747 <span>px</span></strong></div><div><small>INK LIMIT</small><strong>850 <span>px</span></strong></div><div><small>STATUS</small><strong>✓ <span>CLEARED</span></strong></div></div><div class="mockup-warning">Illustrative completion values — not player statistics.</div></div>
+          <div class="result-bottom"><button id="nextDemo" class="home-cta">PLAY THE COURSE <span>➜</span></button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
+        </div>
+      </div>
+      <div class="presentation-foot"><span>390 × 844 PORTRAIT REFERENCE</span><span>NO FINAL ART LOCK</span></div>
+    </section>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
