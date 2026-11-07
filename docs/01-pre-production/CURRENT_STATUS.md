@@ -175,3 +175,11 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Dynamic four-course selectors, mode-specific order, text/result labels, next-course navigation and progress keys remain in shared Pulse Grid application. Original A/B/C mechanics and two shared + B-only original course geometry unchanged.
 - **Local QA:** TypeScript strict build + **48/48 Node tests passed**, including A/C solvability, C live-trail real-simulation finishing, new B patrol no-snap loss/timed-left-snap deterministic win, eligibility and saved progress isolation. Actual desktop Chromium A/C four new courses and B new snap win passed; mobile emulation 360 A, 390 B/C, 412 C passed.
 - **No P6.3 physical phone acceptance, browser-origin storage persistence benchmark, first-time-player difficulty study, FPS benchmark, APK or monetization yet.** [Technical QA](../06-technical-design/snapline_P63_course_qa_report.md).
+
+## P6.3 verified merge — November 7, 2026
+- **On main:** [PR #26](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/26) merged as `3f6a1d5f9f1069c3a94ad360f89831ec45e634a2` after **9/9 GitHub CI workflows passed** (P6.3, P6.2, P6.1, P5, P4, P3, P2.1, P1, Docs).
+- Five authored levels plus original three give eight unique course definitions and twelve mode-course combinations. A/B/C each have four correctly ordered courses; dynamic HUD/result/title/nav use mode-specific numbering.
+- **48/48 Node tests** passed. Desktop and touchscreen mobile-emulated browser interactions passed, including new B leftward one-snap rescue. Original shared and B practice course geometry remains.
+- The legacy P4 CI step that expected a fixed `03 SNAP PRACTICE` label was updated to assert practice's stable ID and name; it then passed on PR #26.
+- Offline playable is `prototypes/snapline/pulse-grid/standalone.html`. **Owner physical Android P6.3 testing, browser-owned persistent storage on real navigation, measured device performance, accessibility and outside-player difficulty evaluation remain pending**.
+- [P6.3 owner acceptance issue](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/25) · [P6.4 hardening issue](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/27).
