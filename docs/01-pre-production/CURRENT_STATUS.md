@@ -85,3 +85,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 **Local QA:** 15/15 Node/TypeScript tests pass. Desktop Chromium mouse B draw→GO→snap→win and baseline A draw→GO→win pass. Chromium mobile **emulation** 360×800, 390×844, 412×915 with synthetic touch drawing and anchor drag passed. The user has not yet run this P3 version on a physical phone; real-world player preference and P3 acceptance remain pending.
 
 [Technical implementation report](../06-technical-design/snapline_P3_implementation_report.md) · [Offline playable prototype](../../prototypes/snapline/pulse-grid/standalone.html). No APK, monetization, hosted Pages URL or commercial concept approval.
+
+## Snapline P3 merge and CI confirmation — November 7, 2026
+- The P3 **engineering alpha is now on `main`**, merged from PR #16 as commit `8c5d3c1b9c75f9d6be4ac957e145c85c65e5d746`.
+- The P3, P2.1, P1 and documentation GitHub Actions checks all **passed** before merge.
+- A Plan & Run and B Snap & Redirect (one paused forward anchor correction) are playable via `prototypes/snapline/pulse-grid/standalone.html`.
+- **P3 hardware acceptance remains pending** despite successful synthetic-touch browser emulation. No APK, live Pages deployment, external playtest, monetization, production visual expansion or final mechanics choice claimed.
+- Track remaining P3 work in [Issue #10](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/10).
