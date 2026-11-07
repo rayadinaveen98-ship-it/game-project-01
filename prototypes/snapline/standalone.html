@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#181d21" />
+  <title>Snapline Sprint | P1 Mechanics Test</title>
+  <style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#e8edf0;background:#0c1013;font-synthesis:none}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;overscroll-behavior-y:contain}button,select{font:inherit}
+.app{max-width:540px;margin:0 auto;padding:13px 16px 14px;display:flex;flex-direction:column;gap:10px;min-height:100dvh}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow{font-size:10px;font-weight:750;color:#9ba7b0;letter-spacing:.14em}.dot{margin:0 4px;color:#587079}
+h1{font-size:clamp(21px,5vw,27px);font-weight:750;letter-spacing:-.045em;margin:2px 0 0}
+.chip{font-size:9px;letter-spacing:.08em;font-weight:750;padding:7px 9px;border:1px solid #526068;border-radius:6px;color:#aeb8bf;text-align:center}
+.stage{background:#181e22;border:1px solid #39444b;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.stagebar{display:flex;justify-content:space-between;align-items:center;width:100%;gap:10px}.stagebar label{font-size:12px;font-weight:600;color:#aeb9bd}select{width:min(69%,230px);font-size:12px;background:#282f35;color:#e6eeee;border:1px solid #4c5b65;border-radius:7px;padding:8px 9px;outline-offset:2px}
+.canvaswrap{width:min(100%,calc((100dvh - 265px) * .5625),365px);min-width:240px;aspect-ratio:9/16;border:1px solid #4f626d;border-radius:7px;overflow:hidden;touch-action:none;user-select:none;align-self:center;background:#12161a}
+canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.statusbox{display:flex;flex-direction:column;gap:3px;align-self:stretch;min-height:38px}.statusbox strong{font-size:13px}.statusbox span{font-size:11px;color:#a2afb5;line-height:1.3}
+.result{align-self:stretch;background:#303f43;border:1px solid #647f80;border-radius:6px;padding:7px 10px;font-size:12px;font-weight:650}
+.controls{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:7px;width:100%}
+button{min-height:39px;border-radius:7px;background:#2b343a;border:1px solid #56636d;color:#dce6e8;font-size:12px;font-weight:650;cursor:pointer;padding:6px 5px;touch-action:manipulation}
+button.primary{background:#85cdd0;color:#0b2225;border-color:#a4e2e3;font-weight:850;font-size:13px}
+button:disabled{opacity:.38;cursor:not-allowed}button:focus-visible,select:focus-visible{outline:2px solid #91d1d4;outline-offset:2px}
+footer{text-align:center;color:#77868f;font-size:10px;line-height:1.45;padding:0 8px}
+@media (min-height:940px){.canvaswrap{width:min(100%,365px)}}
+@media (max-height:660px){.app{gap:7px;padding-top:6px}.stage{gap:4px;padding:6px}.canvaswrap{width:min(100%,calc((100dvh - 225px) * .5625))}.controls button{min-height:34px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+
+</style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div><div class="eyebrow">GAME PROJECT 01 <span class="dot">·</span> BUILD P1</div><h1>Snapline Sprint</h1></div>
+      <div class="chip" title="Engineering-only prototype">MECHANICS LAB</div>
+    </header>
+    <section class="stage" aria-label="Draw a course for the runner">
+      <div class="stagebar"><label for="courseSelect">Course</label>
+        <select id="courseSelect" aria-label="Select test course">
+          <option value="detour">01 — Static Detour</option>
+          <option value="timing">02 — Moving Hazard</option>
+        </select>
+      </div>
+      <div class="canvaswrap"><canvas id="courseCanvas" width="360" height="640" role="img" aria-label="Interactive course with S start, F finish and gray obstacles. Drag one stroke from start to finish."></canvas></div>
+      <div class="statusbox" role="status" aria-live="polite">
+        <strong id="status">Draw from start to finish.</strong>
+        <span id="substatus">Trace one path around the obstacles.</span>
+      </div>
+      <div id="result" class="result" hidden></div>
+      <div class="controls">
+        <button id="goBtn" class="primary" disabled>GO <span aria-hidden="true">▶</span></button>
+        <button id="resetBtn">↺ Reset</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="muteBtn" disabled title="P1 contains no audio">Audio off</button>
+      </div>
+    </section>
+    <footer>TEST BUILD ONLY <span aria-hidden="true">·</span> No final character, UI style, animation or APK approved.</footer>
+  </main>
+  <script>
+(()=>{const modules={"src/core/geometry.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isValidVec = exports.lerpPoint = exports.clamp = exports.distance = void 0;
+exports.lengthOf = lengthOf;
+exports.pointAtDistance = pointAtDistance;
+exports.segmentHitsRect = segmentHitsRect;
+exports.pointSegmentDistanceSq = pointSegmentDistanceSq;
+exports.movingCircleHitsSegment = movingCircleHitsSegment;
+const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+exports.distance = distance;
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+exports.clamp = clamp;
+const lerpPoint = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+exports.lerpPoint = lerpPoint;
+const isValidVec = (p) => Number.isFinite(p.x) && Number.isFinite(p.y);
+exports.isValidVec = isValidVec;
+/** Distance along connected segments; no curve smoothing or hidden alteration. */
+function lengthOf(points) {
+    let sum = 0;
+    for (let i = 1; i < points.length; i++)
+        sum += (0, exports.distance)(points[i - 1], points[i]);
+    return sum;
+}
+function pointAtDistance(points, d) {
+    if (!points.length)
+        throw new Error('empty route');
+    if (points.length === 1 || d <= 0)
+        return { ...points[0] };
+    let left = d;
+    for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1], b = points[i], len = (0, exports.distance)(a, b);
+        if (len === 0)
+            continue;
+        if (left <= len)
+            return (0, exports.lerpPoint)(a, b, (0, exports.clamp)(left / len, 0, 1));
+        left -= len;
+    }
+    return { ...points[points.length - 1] };
+}
+/** Exact segment-vs-inflated AABB (swept circle). Edges count as collision. */
+function segmentHitsRect(a, b, rect, radius = 0) {
+    const loX = rect.x - radius, hiX = rect.x + rect.w + radius;
+    const loY = rect.y - radius, hiY = rect.y + rect.h + radius;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    let t0 = 0, t1 = 1;
+    const pairs = [[-dx, a.x - loX], [dx, hiX - a.x], [-dy, a.y - loY], [dy, hiY - a.y]];
+    for (const [p, q] of pairs) {
+        if (Math.abs(p) < 1e-12) {
+            if (q < 0)
+                return false;
+            continue;
+        }
+        const t = q / p;
+        if (p < 0) {
+            t0 = Math.max(t0, t);
+        }
+        else {
+            t1 = Math.min(t1, t);
+        }
+        if (t0 > t1)
+            return false;
+    }
+    return t0 <= t1;
+}
+/** Squared distance of segment from stationary circle centre. */
+function pointSegmentDistanceSq(c, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y, lenSq = dx * dx + dy * dy;
+    const t = lenSq > 0 ? (0, exports.clamp)(((c.x - a.x) * dx + (c.y - a.y) * dy) / lenSq, 0, 1) : 0;
+    const x = a.x + dx * t - c.x, y = a.y + dy * t - c.y;
+    return x * x + y * y;
+}
+/** Moving circle swept in relative coordinates against runner segment. */
+function movingCircleHitsSegment(runnerFrom, runnerTo, centreFrom, centreTo, combinedRadius) {
+    const a = { x: runnerFrom.x - centreFrom.x, y: runnerFrom.y - centreFrom.y };
+    const b = { x: runnerTo.x - centreTo.x, y: runnerTo.y - centreTo.y };
+    return pointSegmentDistanceSq({ x: 0, y: 0 }, a, b) <= combinedRadius * combinedRadius;
+}
+
+},
+"src/core/simulation.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GOAL_ZONE = exports.START_ZONE = exports.FIXED_STEP = void 0;
+exports.validateRoute = validateRoute;
+exports.beginRun = beginRun;
+exports.advanceRun = advanceRun;
+exports.simulateToEnd = simulateToEnd;
+const geometry_js_1 = require("./geometry.js");
+const courses_js_1 = require("../game/courses.js");
+exports.FIXED_STEP = 1 / 120;
+exports.START_ZONE = 28, exports.GOAL_ZONE = 32;
+const MAX_POINTS = 5000;
+function validateRoute(points, course) {
+    if (points.length < 2)
+        return { ok: false, reason: 'Draw a route from START to FINISH.' };
+    if (points.length > MAX_POINTS)
+        return { ok: false, reason: 'Too many points. Use one smoother stroke.' };
+    if (points.some(p => !(0, geometry_js_1.isValidVec)(p) || p.x < 0 || p.y < 0 || p.x > 360 || p.y > 640))
+        return { ok: false, reason: 'Route must stay inside the course.' };
+    if ((0, geometry_js_1.distance)(points[0], course.start) > exports.START_ZONE)
+        return { ok: false, reason: 'Begin your line inside the START circle.' };
+    if ((0, geometry_js_1.distance)(points[points.length - 1], course.finish) > exports.GOAL_ZONE)
+        return { ok: false, reason: 'End your line inside the FINISH circle.' };
+    const total = (0, geometry_js_1.lengthOf)(points);
+    if (total < 20)
+        return { ok: false, reason: 'Your route is too short.' };
+    if (total > course.maxInk + 1e-7)
+        return { ok: false, reason: `Ink exceeded by ${Math.ceil(total - course.maxInk)} units.` };
+    return { ok: true, route: { points: points.map(p => ({ x: p.x, y: p.y })), length: total } };
+}
+function beginRun(route, course) {
+    if (route.points.length < 2 || route.length <= 0)
+        throw new Error('route not valid');
+    return { phase: 'running', route, distance: 0, ticks: 0, position: { ...route.points[0] }, failure: null, courseId: course.id };
+}
+function advanceRun(run, course, dt = exports.FIXED_STEP) {
+    if (run.phase !== 'running')
+        return run;
+    if (run.courseId !== course.id)
+        throw new Error('course changed during attempt');
+    if (Math.abs(dt - exports.FIXED_STEP) > 1e-12)
+        throw new Error('use fixed timestep');
+    const prev = run.position, nd = Math.min(run.distance + dt * course.runnerSpeed, run.route.length);
+    const next = (0, geometry_js_1.pointAtDistance)(run.route.points, nd);
+    const t0 = run.ticks * dt, t1 = (run.ticks + 1) * dt;
+    for (const wall of course.walls) {
+        if ((0, geometry_js_1.segmentHitsRect)(prev, next, wall, courses_js_1.RUNNER_RADIUS))
+            return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Hit a solid obstacle.' };
+    }
+    for (const h of course.moving) {
+        if ((0, geometry_js_1.movingCircleHitsSegment)(prev, next, (0, courses_js_1.hazardPosition)(h, t0), (0, courses_js_1.hazardPosition)(h, t1), courses_js_1.RUNNER_RADIUS + h.radius))
+            return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Hit the moving hazard.' };
+    }
+    if (nd >= run.route.length - 1e-8) {
+        if ((0, geometry_js_1.distance)(next, course.finish) <= exports.GOAL_ZONE)
+            return { ...run, phase: 'won', position: next, distance: nd, ticks: run.ticks + 1, failure: null };
+        return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Missed the finish zone.' };
+    }
+    return { ...run, position: next, distance: nd, ticks: run.ticks + 1 };
+}
+function simulateToEnd(route, course, maxTicks = 30000) {
+    let run = beginRun(route, course);
+    for (let i = 0; i < maxTicks && run.phase === 'running'; i++)
+        run = advanceRun(run, course);
+    return run;
+}
+
+},
+"src/core/types.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+},
+"src/game/courses.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.COURSES = exports.RUNNER_RADIUS = exports.BOARD_HEIGHT = exports.BOARD_WIDTH = void 0;
+exports.hazardPosition = hazardPosition;
+exports.getCourse = getCourse;
+exports.BOARD_WIDTH = 360, exports.BOARD_HEIGHT = 640, exports.RUNNER_RADIUS = 9;
+exports.COURSES = [
+    {
+        id: 'detour', title: '01 · Static Detour',
+        hint: 'Draw around the two solid blocks. Keep within your ink budget.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 850, runnerSpeed: 160,
+        walls: [{ x: 93, y: 305, w: 170, h: 75 }, { x: 177, y: 152, w: 70, h: 82 }], moving: []
+    },
+    {
+        id: 'timing', title: '02 · Moving Hazard',
+        hint: 'The circular hazard moves on a predictable cycle. Choose a safer route.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 865, runnerSpeed: 160,
+        walls: [{ x: 94, y: 385, w: 95, h: 54 }, { x: 205, y: 180, w: 62, h: 49 }],
+        moving: [{ center: { x: 182, y: 303 }, radius: 23, amplitude: 92, phase: 0, angularSpeed: 1.7, axis: 'y' }]
+    }
+];
+function hazardPosition(h, seconds) {
+    const offset = Math.sin(seconds * h.angularSpeed + h.phase) * h.amplitude;
+    return h.axis === 'y' ? { x: h.center.x, y: h.center.y + offset } : { x: h.center.x + offset, y: h.center.y };
+}
+function getCourse(id) {
+    const found = exports.COURSES.find(c => c.id === id);
+    if (!found)
+        throw new Error('missing course ' + id);
+    return found;
+}
+
+},
+"src/game/drawing.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.appendStroke = appendStroke;
+const geometry_js_1 = require("../core/geometry.js");
+/** Capture the literal input stroke, inserting collinear samples for consistent stroke spacing. */
+function appendStroke(points, next, spacing = 8) {
+    if (!points.length)
+        return [next];
+    const previous = points[points.length - 1], d = (0, geometry_js_1.distance)(previous, next);
+    if (d < 1)
+        return [...points];
+    const added = [...points];
+    const count = Math.ceil(d / spacing);
+    for (let i = 1; i <= count; i++)
+        added.push((0, geometry_js_1.lerpPoint)(previous, next, i / count));
+    return added;
+}
+
+},
+"src/main.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const geometry_js_1 = require("./core/geometry.js");
+const simulation_js_1 = require("./core/simulation.js");
+const courses_js_1 = require("./game/courses.js");
+const drawing_js_1 = require("./game/drawing.js");
+const render_js_1 = require("./ui/render.js");
+const canvas = document.querySelector('#courseCanvas');
+const goBtn = document.querySelector('#goBtn');
+const resetBtn = document.querySelector('#resetBtn');
+const pauseBtn = document.querySelector('#pauseBtn');
+const muteBtn = document.querySelector('#muteBtn');
+const select = document.querySelector('#courseSelect');
+const banner = document.querySelector('#status');
+const sub = document.querySelector('#substatus');
+const result = document.querySelector('#result');
+if (!canvas || !goBtn || !resetBtn || !pauseBtn || !muteBtn || !select || !banner || !sub || !result)
+    throw new Error('UI element missing');
+const canvasEl = canvas, btnGo = goBtn, btnReset = resetBtn, btnPause = pauseBtn, btnMute = muteBtn, sel = select, txt = banner, hint = sub, resultEl = result;
+const baseStates = ['ready', 'running', 'paused', 'won', 'lost'];
+let course = courses_js_1.COURSES[0];
+let draft = [], route = null, run = null;
+let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0;
+// Audio is deliberately absent from this P1 mechanical proof.
+function phase() { return run?.phase ?? 'ready'; }
+function message(top, bottom) { txt.textContent = top; hint.textContent = bottom; }
+function refresh() {
+    const p = phase();
+    btnGo.disabled = !route || p !== 'ready';
+    btnPause.disabled = p !== 'running' && p !== 'paused';
+    btnPause.textContent = p === 'paused' ? 'Resume' : 'Pause';
+    sel.disabled = p === 'running' || p === 'paused';
+    resultEl.hidden = p !== 'won' && p !== 'lost';
+    if (p === 'won') {
+        resultEl.textContent = `✓ FINISHED — ${((run?.ticks ?? 0) * simulation_js_1.FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts === 1 ? '' : 's'}`;
+        message('Completed successfully.', 'Try a shorter or safer route, or switch courses.');
+    }
+    else if (p === 'lost') {
+        resultEl.textContent = `✕ ${run?.failure ?? 'Attempt failed'}`;
+        message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
+    }
+    else if (p === 'running')
+        message('Running route…', 'Watch the runner and the moving hazard.');
+    else if (p === 'paused')
+        message('Paused.', 'Press Resume to continue from the same simulation tick.');
+    else if (route)
+        message('Route ready. Press GO.', `${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
+    else if (!drawing)
+        message('Draw a line from S to F.', course.hint);
+}
+function newCourse(id) {
+    course = courses_js_1.COURSES.find(x => x.id === id) ?? courses_js_1.COURSES[0];
+    draft = [];
+    route = null;
+    run = null;
+    drawing = false;
+    activePointer = null;
+    accumulator = 0;
+    attempts = 0;
+    sel.value = course.id;
+    refresh();
+}
+function pointFromEvent(e) {
+    const rect = canvasEl.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(courses_js_1.BOARD_WIDTH, (e.clientX - rect.left) * courses_js_1.BOARD_WIDTH / rect.width)),
+        y: Math.max(0, Math.min(courses_js_1.BOARD_HEIGHT, (e.clientY - rect.top) * courses_js_1.BOARD_HEIGHT / rect.height)) };
+}
+function beginStroke(e) {
+    if (phase() !== 'ready' || drawing)
+        return;
+    if (e.pointerType === 'mouse' && e.button !== 0)
+        return;
+    const pos = pointFromEvent(e);
+    if ((0, geometry_js_1.distance)(pos, course.start) > simulation_js_1.START_ZONE) {
+        message('Start inside the circle marked S.', 'Touch or click S, then drag to F in one gesture.');
+        return;
+    }
+    if (activePointer !== null)
+        return;
+    drawing = true;
+    activePointer = e.pointerId;
+    draft = [pos];
+    route = null;
+    accumulator = 0;
+    canvasEl.setPointerCapture(e.pointerId);
+    txt.textContent = 'Drawing…';
+    hint.textContent = 'Keep dragging towards the finish circle.';
+    refresh();
+    e.preventDefault();
+}
+function moveStroke(e) {
+    if (!drawing || e.pointerId !== activePointer)
+        return;
+    const samples = e.getCoalescedEvents?.() ?? [];
+    for (const event of samples) {
+        if (event.pointerId === activePointer)
+            draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(event));
+    }
+    draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(e));
+    const used = (0, geometry_js_1.lengthOf)(draft);
+    txt.textContent = used > course.maxInk ? 'Over ink limit — simplify route.' : 'Drawing route…';
+    hint.textContent = `Ink: ${Math.round(used)} / ${course.maxInk}`;
+    e.preventDefault();
+}
+function endStroke(e) {
+    if (!drawing || e.pointerId !== activePointer)
+        return;
+    if (e.type === 'pointerup')
+        draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(e));
+    drawing = false;
+    activePointer = null;
+    if (canvasEl.hasPointerCapture(e.pointerId))
+        canvasEl.releasePointerCapture(e.pointerId);
+    if (e.type !== 'pointerup') {
+        draft = [];
+        route = null;
+        message('Stroke interrupted.', 'Try drawing again from the start.');
+        refresh();
+        return;
+    }
+    const check = (0, simulation_js_1.validateRoute)(draft, course);
+    if (check.ok) {
+        route = check.route;
+        draft = [];
+        refresh();
+    }
+    else {
+        route = null;
+        message('Route not accepted.', `${check.reason} Draw again from S.`);
+    }
+}
+canvasEl.addEventListener('pointerdown', beginStroke);
+canvasEl.addEventListener('pointermove', moveStroke);
+canvasEl.addEventListener('pointerup', endStroke);
+canvasEl.addEventListener('pointercancel', endStroke);
+canvasEl.addEventListener('lostpointercapture', e => {
+    if (drawing && activePointer === e.pointerId) {
+        drawing = false;
+        activePointer = null;
+        draft = [];
+        route = null;
+        message('Input interrupted.', 'Try another stroke.');
+        refresh();
+    }
+});
+btnGo.addEventListener('click', () => {
+    if (!route || phase() !== 'ready')
+        return;
+    const checked = (0, simulation_js_1.validateRoute)(route.points, course);
+    if (!checked.ok) {
+        message('Invalid route.', checked.reason);
+        return;
+    }
+    attempts++;
+    run = (0, simulation_js_1.beginRun)(checked.route, course);
+    accumulator = 0;
+    refresh();
+});
+btnReset.addEventListener('click', () => newCourse(course.id));
+btnPause.addEventListener('click', () => {
+    if (run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        accumulator = 0;
+    }
+    else if (run?.phase === 'paused') {
+        run = { ...run, phase: 'running' };
+        accumulator = 0;
+    }
+    refresh();
+});
+sel.addEventListener('change', () => newCourse(sel.value));
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        accumulator = 0;
+        refresh();
+    }
+    lastTime = performance.now();
+});
+function loop(now) {
+    const delta = lastTime === 0 ? 0 : Math.min(.05, Math.max(0, (now - lastTime) / 1000));
+    lastTime = now;
+    if (run?.phase === 'running') {
+        accumulator += delta;
+        let safety = 0;
+        while (accumulator >= simulation_js_1.FIXED_STEP && run.phase === 'running' && safety < 8) {
+            run = (0, simulation_js_1.advanceRun)(run, course);
+            accumulator -= simulation_js_1.FIXED_STEP;
+            safety++;
+        }
+        if (run.phase !== 'running')
+            refresh();
+    }
+    (0, render_js_1.render)(canvasEl, { course, draft, route, run, inkUsed: route?.length ?? (0, geometry_js_1.lengthOf)(draft), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing });
+    requestAnimationFrame(loop);
+}
+newCourse(course.id);
+requestAnimationFrame(loop);
+// A read-only debugging snapshot for automated browser checks; never includes personal data.
+Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null }) });
+
+},
+"src/ui/render.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.render = render;
+const courses_js_1 = require("../game/courses.js");
+const C = { bg: '#12161a', grid: '#222a2e', gridMajor: '#2e3940', wall: '#52585d', wallEdge: '#9aa2a5', white: '#ecf0f0', muted: '#9fa8ac', line: '#75ced3', bad: '#efaa84', good: '#b8deaa', moving: '#e2c78f' };
+const rounded = (ctx, x, y, w, h, r) => {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+};
+function ring(ctx, p, r, c, label) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = C.bg;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = c;
+    ctx.stroke();
+    ctx.font = '700 10px ui-sans-serif, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = c;
+    ctx.fillText(label, p.x, p.y);
+}
+function obstacle(ctx, r) {
+    rounded(ctx, r.x, r.y, r.w, r.h, 5);
+    ctx.fillStyle = C.wall;
+    ctx.fill();
+    ctx.strokeStyle = C.wallEdge;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#ffffff2b';
+    for (let x = r.x + 12; x < r.x + r.w - 5; x += 16) {
+        ctx.beginPath();
+        ctx.moveTo(x, r.y + 8);
+        ctx.lineTo(x, r.y + r.h - 8);
+        ctx.stroke();
+    }
+}
+function line(ctx, pts, color, width) {
+    if (pts.length < 2)
+        return;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++)
+        ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+}
+function render(canvas, s) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx)
+        return;
+    const dpr = Math.min(2.5, Math.max(1, window.devicePixelRatio || 1));
+    const cw = Math.round(courses_js_1.BOARD_WIDTH * dpr), ch = Math.round(courses_js_1.BOARD_HEIGHT * dpr);
+    if (canvas.width !== cw || canvas.height !== ch) {
+        canvas.width = cw;
+        canvas.height = ch;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    ctx.lineWidth = .7;
+    for (let x = 0; x <= courses_js_1.BOARD_WIDTH; x += 20) {
+        ctx.strokeStyle = x % 100 === 0 ? C.gridMajor : C.grid;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, courses_js_1.BOARD_HEIGHT);
+        ctx.stroke();
+    }
+    for (let y = 0; y <= courses_js_1.BOARD_HEIGHT; y += 20) {
+        ctx.strokeStyle = y % 100 === 0 ? C.gridMajor : C.grid;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(courses_js_1.BOARD_WIDTH, y);
+        ctx.stroke();
+    }
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = '700 11px ui-sans-serif, system-ui';
+    ctx.fillStyle = C.muted;
+    ctx.fillText('P1  /  MECHANICS ONLY', 15, 24);
+    ctx.font = '500 10px ui-sans-serif, system-ui';
+    ctx.fillText(s.course.id === 'detour' ? 'STATIC DETOUR' : 'MOVING HAZARD', 15, 41);
+    for (const r of s.course.walls)
+        obstacle(ctx, r);
+    const elapsed = s.run ? s.run.ticks / 120 : 0;
+    for (const h of s.course.moving) {
+        // Ghosted travel envelope communicates motion even while the run is stopped.
+        const from = h.axis === 'y' ? { x: h.center.x, y: h.center.y - h.amplitude } : { x: h.center.x - h.amplitude, y: h.center.y };
+        const to = h.axis === 'y' ? { x: h.center.x, y: h.center.y + h.amplitude } : { x: h.center.x + h.amplitude, y: h.center.y };
+        ctx.setLineDash([5, 8]);
+        line(ctx, [from, to], '#e2c78f77', 2);
+        ctx.setLineDash([]);
+        const pos = (0, courses_js_1.hazardPosition)(h, elapsed);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, h.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#e2c78f50';
+        ctx.fill();
+        ctx.strokeStyle = C.moving;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.strokeStyle = C.moving;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pos.x - h.radius + 5, pos.y);
+        ctx.lineTo(pos.x + h.radius - 5, pos.y);
+        ctx.stroke();
+    }
+    const drawPts = s.route?.points ?? s.draft;
+    if (drawPts.length > 1) {
+        line(ctx, drawPts, s.invalid ? C.bad : C.line, 4);
+        // explicit center stroke matches collision route; avoids a blurred 'hitbox' impression.
+        line(ctx, drawPts, s.invalid ? '#efaa8444' : '#75ced333', 10);
+    }
+    ring(ctx, s.course.start, 17, C.good, 'S');
+    ring(ctx, s.course.finish, 19, C.line, 'F');
+    if (s.run) {
+        ctx.beginPath();
+        ctx.arc(s.run.position.x, s.run.position.y, courses_js_1.RUNNER_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = s.run.phase === 'lost' ? C.bad : s.run.phase === 'won' ? C.good : C.white;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = C.bg;
+        ctx.stroke();
+        if (s.run.phase === 'lost') {
+            ctx.beginPath();
+            ctx.moveTo(s.run.position.x - 11, s.run.position.y - 11);
+            ctx.lineTo(s.run.position.x + 11, s.run.position.y + 11);
+            ctx.moveTo(s.run.position.x + 11, s.run.position.y - 11);
+            ctx.lineTo(s.run.position.x - 11, s.run.position.y + 11);
+            ctx.strokeStyle = C.bad;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    }
+    rounded(ctx, 16, 602, 328, 22, 6);
+    ctx.fillStyle = '#222b30';
+    ctx.fill();
+    const frac = Math.min(1, s.inkUsed / s.course.maxInk);
+    rounded(ctx, 19, 605, 322 * frac, 16, 4);
+    ctx.fillStyle = s.invalid ? C.bad : C.line;
+    ctx.fill();
+    ctx.fillStyle = C.white;
+    ctx.font = '700 10px ui-sans-serif, system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(`INK  ${Math.round(s.inkUsed)} / ${s.course.maxInk}`, 180, 616);
+}
+
+}};const cache={};function load(id){if(cache[id])return cache[id].exports;const fn=modules[id];if(!fn)throw Error('Module not found: '+id);const mod={exports:{}};cache[id]=mod;const localReq=(spec)=>{if(!spec.startsWith('.'))throw Error('External dependency refused: '+spec);const arr=id.split('/').slice(0,-1);for(const part of spec.split('/')){if(part==='..')arr.pop();else if(part!=='.')arr.push(part)}return load(arr.join('/'))};fn(localReq,mod,mod.exports);return mod.exports}load('src/main.js')})();
+</script>
+</body>
+</html>

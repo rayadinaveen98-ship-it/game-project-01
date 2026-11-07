@@ -21,3 +21,6 @@ C09 young-girl puzzle adventure remains saved in `docs/03-game-concepts/`; not c
 C02-R detective also remains a concept.
 
 No release date or APK claim. Do not broaden the prototype midstream.
+
+## P1 implementation addendum — November 7, 2026
+**Engineering build achieved:** TypeScript/Canvas browser prototype, Plan & Run A, 2 courses, collision detection and route input, 10 automated tests passed. Desktop and emulated touch Chromium smoke passed. **Owner's physical Android test is outstanding**, so P1 is **implemented / partially verified**, not formally accepted. P2/P3 remain not started. See [implementation evidence](../06-technical-design/snapline_P1_implementation_report.md).

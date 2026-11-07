@@ -50,3 +50,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - [Snapline prototype brief](../04-game-design/snapline/PROTOTYPE_BRIEF_v0.5.md)
 - [Snapline visual approval gate](../05-art-direction/snapline/VISUAL_REVIEW_GATE_v0.5.md)
 - [Prototype roadmap](../08-production-roadmap/SNAPLINE_ROADMAP_v0.5.md)
+
+## Snapline P1 implementation — November 7, 2026
+- **Built:** C08 Snapline Sprint browser mechanics variant **A / Plan & Run**. Two course fixtures, static + moving hazards, deterministic fixed-step collisions, direct visual route, one-finger stroke capture.
+- **Tested locally:** strict TypeScript build, 10/10 Node unit tests, desktop Chromium smoke, Android-viewport mobile **emulation** with synthetic finger drag and GO tap on both courses. Browser JavaScript exceptions: none observed in successful smoke.
+- **Distributed:** self-contained offline `prototypes/snapline/standalone.html` and reproducible source build. **Real phone test still pending.** Hosted Pages link is not yet verified.
+- **Remaining:** physical Android smoke test, mockup visual approval P2, variant B/C comparison, wider QA, real user playtest, APK/market proof.
+- **Important:** initial P1 mechanic code does not authorize a complete game, final art style, or product launch. [Engineering report](../06-technical-design/snapline_P1_implementation_report.md).
