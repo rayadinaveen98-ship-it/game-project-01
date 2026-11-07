@@ -49,10 +49,10 @@
         </div>
 
         <div class="home-screen overlay-screen" id="homeScreen" hidden>
-          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">TWO COURSES + B PRACTICE</span></div>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">THREE GAMEPLAY EXPERIMENTS</span></div>
           <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
           <h2>Make<br>your own<br><em>way.</em></h2>
-          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and test a single mid-run correction.</p>
+          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and compare three ways to create your own route.</p>
           <svg class="home-art" viewBox="0 0 340 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs><linearGradient id="homeGlow" x1="0" y1="1" x2="1" y2="0"><stop stop-color="var(--mint)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
             <g opacity=".36" stroke="var(--grid)" stroke-width="1"><path d="M0 50H340 M0 100H340 M0 150H340 M0 200H340 M0 250H340 M50 0V270 M100 0V270 M150 0V270 M200 0V270 M250 0V270 M300 0V270"/></g>
@@ -62,7 +62,7 @@
             <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
             <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
           </svg>
-          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+          <div class="home-bottom"><span class="home-metadata">CHOOSE A TEST MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button><button type="button" id="modeC" aria-pressed="false"><strong>C</strong> LIVE DRAWING</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
         </div>
 
         <div class="result-screen overlay-screen" id="resultScreen" hidden>
@@ -80,10 +80,10 @@
           <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
         </div>
         <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" hidden>
-          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>One snap.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
+          <div class="howto-card"><span class="howto-small">QUICK GUIDE</span><h2 id="howtoTitle">One line.<br><em>Three modes.</em></h2><p>Touch the glowing <b>S</b> and drag your finger to <b>F</b> without lifting. Avoid coral blocks and watch the ink budget.</p><p>Tap <b>GO</b> to run. In mode <b>B</b>, press <b>SNAP</b> during the run, then drag the mint ring. Simulation pauses while you edit. Each run gets one correction.</p><p>In mode <b>C</b>, start drawing from S: the runner launches while you draw. Stay ahead of the runner. If it reaches the tip, you have 0.75 seconds to extend the trail; join a new stroke at the mint tip. GO is automatic.</p><p>For <b>Course 03</b>, trace the faint route. Mid-run, press SNAP and drag the anchor <b>right</b> to avoid the crossing patrol. Course 03 is B-only training, excluded from A/B scores.</p><button class="home-cta" id="closeHowto">GOT IT <span>✓</span></button></div>
         </div>
       </div>
-      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P4 BUILD</span></div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P5 BUILD</span></div>
     </section>
   </main>
   <script type="module" src="./src/main.js"></script>

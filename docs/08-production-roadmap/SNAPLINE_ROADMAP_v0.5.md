@@ -67,3 +67,16 @@ The work is an alpha mechanics prototype; do not claim production completion.
 - [ ] Owner physical phone acceptance of P4 and any touch/guide refinements.
 - [ ] Independent first-time A/B game-feel evaluation and C/Live Drawing decision.
 The practice course is **not** included in A/B comparison scores. See [P4 report](../06-technical-design/snapline_P4_implementation_report.md).
+
+## P5 Live Drawing comparison alpha — November 7, 2026
+- [x] Owner reported P4 good and authorized continued prototype work (DEC-024).
+- [x] Add Mode C Live Drawing while retaining approved Pulse Grid design and existing A/B.
+- [x] Implement fixed-step moving runner, append-only trail, wall/ink validation and deterministic 0.75s tip grace.
+- [x] Add 6 new automated live-geometry/time tests (28/28 total passed).
+- [x] Browser test mouse and 360/390/412 CSS-pixel emulated touch; pass.
+- [x] Regression test existing A and B modes, pass in automated browser.
+- [ ] GitHub PR/CI verification and final merge.
+- [ ] P5 physical-phone control and comfort approval.
+- [ ] Independent unfamiliar-player comparison for A/B/C, counterbalanced where possible.
+- [ ] Product/visual continuity review before expanding to content or monetization.
+See [P5 review](../06-technical-design/snapline_P5_live_drawing_review.md).

@@ -1,9 +1,9 @@
 {
   "name": "snapline-pulse-grid-p3",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
-  "description": "GP-01 Snapline Sprint P4 Snap & Redirect course training and QA hardening in approved Pulse Grid visual direction",
+  "description": "GP-01 Snapline Sprint P5 Live Drawing mechanic experimental comparison in approved Pulse Grid visual direction",
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/prepare.mjs",
     "test": "node --test tests/*.test.mjs",

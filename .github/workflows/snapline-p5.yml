@@ -1,0 +1,42 @@
+name: Snapline P5 — Live Drawing Regression
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p5.yml'
+  push:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-p5.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install exact compiler
+        run: npm install --no-audit --no-fund
+      - name: Compile and verify P1–P5 deterministic suite
+        run: npm run check
+      - name: Produce standalone HTML
+        run: node scripts/make-single-html.mjs
+      - name: Assert three modes, live core and offline self-contained artifact
+        run: |
+          test -s standalone.html
+          grep -q 'id="modeA"' standalone.html
+          grep -q 'id="modeB"' standalone.html
+          grep -q 'id="modeC"' standalone.html
+          grep -q 'LIVE_GRACE_TICKS' src/core/live.ts
+          grep -q 'function advanceLiveRun' src/core/live.ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p5-offline-three-modes
+          path: prototypes/snapline/pulse-grid/standalone.html
+          if-no-files-found: error
