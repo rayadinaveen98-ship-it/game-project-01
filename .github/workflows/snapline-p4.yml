@@ -31,10 +31,10 @@ jobs:
         run: node scripts/make-single-html.mjs
       - name: Compare built HTML with committed HTML
         run: git diff --exit-code -- standalone.html
-      - name: Confirm practice course is present
+      - name: Confirm original B practice remains in mode-aware catalog
         run: |
           grep -q 'snaplab' standalone.html
-          grep -q '03 SNAP PRACTICE' standalone.html
+          grep -q 'Patrol Crossing' standalone.html
       - uses: actions/upload-artifact@v4
         with:
           name: snapline-p4-browser-prototype
