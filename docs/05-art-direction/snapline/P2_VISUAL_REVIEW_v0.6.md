@@ -37,3 +37,6 @@ Each option includes Home, Gameplay and Result presentations. Gameplay uses an a
 
 ## Scope guard
 No final visuals or game title approved; gameplay B/C variants, monetization, APK and release are still separate gates.
+
+## Subsequent owner decision — DEC-022
+The owner selected **A / Pulse Grid** on 2026-11-07. The side-by-side A/B/C lab remains a historical comparison, not the current style decision. The live screen refinement is in [Pulse Grid P2.1](P2_1_VISUAL_REVIEW.md); do not read this original P2 report as pending direction selection anymore. Final screen-level visual review remains open.
