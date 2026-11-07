@@ -135,3 +135,12 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - The proposed first vertical slice targets **8 distinct authored courses total / 12 mode-course combinations**: 2 shared existing courses across all 3 modes; 3 existing/new mode tutorials; and 3 mode-specific signature challenges. Three course definitions already exist; five more are proposed, **not yet built**.
 - See [DEC-025](../decision-log/DEC-025-snapline-three-distinct-modes.md) and [active P6 plan](../08-production-roadmap/SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).
 - P6 implementation, physical device profiling, independent user studies, commercial model and APK remain pending.
+
+## P6.1 course catalog and local progress implementation — November 7, 2026
+- Owner explicitly chose all three gameplay modes as separate choices (DEC-025), not a single-mechanic winner.
+- **Built on P6.1 feature branch:** one Pulse Grid Home with A/B/C mode choice, a dedicated course-list screen filtered by each mode, and mode+course-isolated local completion progress. B-only Patrol Crossing is never selectable in A or C. Navigation preserves the selected mode; Next Course no longer loops silently.
+- Progress: device-local `localStorage`, storing wins, best time ticks and best route length independently per mode/course; unknown/invalid data safely ignored; explicit reset removes only the game progress key. If browser storage is unavailable, runs work but cannot persist.
+- **Local verification:** TypeScript strict compile + **34/34 Node tests passed** (28 earlier + six new catalog/progress tests). Actual Chromium page tests using inline HTML and storage shim: 360×800 (B), 390×844 (A), 412×915 (C) and desktop A all win, report progress, and show it after simulated document reload; separate real B snap correction passes. No browser JS exceptions and no horizontal overflow observed.
+- **Important QA limit:** the local browser administrator blocks navigation to localhost/file URLs, so the browser tests use an in-memory storage shim rather than proving actual origin-owned storage persistence. Physical Android P6.1 testing, real browser navigation/storage test and FPS metrics remain pending.
+- Existing **three course definitions** only (detour, timing, B-only patrol), not the five future levels proposed for P6.2/P6.3. No native APK, monetization or external player study.
+- [P6.1 source and QA report](../../prototypes/snapline/pulse-grid/README_P61.md) · [active P6 plan](../08-production-roadmap/SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).

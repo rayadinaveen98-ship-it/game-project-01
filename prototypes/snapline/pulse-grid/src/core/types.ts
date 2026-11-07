@@ -1,3 +1,4 @@
+export type GameMode = 'a' | 'b' | 'c';
 export interface Vec { readonly x: number; readonly y: number }
 export interface Rect { readonly x: number; readonly y: number; readonly w: number; readonly h: number }
 export interface MovingHazard {
@@ -10,6 +11,8 @@ export interface MovingHazard {
 }
 export interface Course {
   readonly id: 'detour' | 'timing' | 'snaplab';
+  readonly supportedModes: readonly GameMode[];
+  readonly family: 'shared' | 'practice';
   readonly title: string;
   readonly hint: string;
   readonly start: Vec;

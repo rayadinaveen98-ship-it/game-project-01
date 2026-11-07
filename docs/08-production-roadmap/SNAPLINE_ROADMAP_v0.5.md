@@ -85,3 +85,13 @@ See [P5 review](../06-technical-design/snapline_P5_live_drawing_review.md).
 **APPROVED by owner (DEC-025):** A Plan & Run, B Snap & Redirect, and C Live Drawing all remain separately selectable in the ONE Snapline Sprint game. Do not choose or delete a winner as directed by the earlier P6 selection proposal. Preserve approved Pulse Grid design, shared collision engine and existing three-mode P5 baseline.
 
 **New vertical-slice target, pending implementation:** 8 distinct courses total (2 shared across all modes + 6 mode-only, yielding 12 playable mode-course combinations), 5 new course definitions beyond the 3 already present; mode-specific onboarding, local progress, actual phone QA, and small player study. New features and paid systems excluded. [Detailed active P6 plan](SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md).
+
+## November 7, 2026 — P6.1 built (pending owner acceptance)
+- [x] Stable mode IDs and type-checked course eligibility (A/B/C share 01/02; practice 03 B-only).
+- [x] Equal-status mode picker leads to dedicated course list; preserve mode on navigation.
+- [x] Best results/win counters stored by mode+course in local browser storage, safe corrupted-data handling and clear results control.
+- [x] Actual offline HTML and source; 34 Node tests passing and desktop/mobile-emulated UI smoke with storage shim. Original B snap correction passes.
+- [ ] Independent GitHub CI before merging.
+- [ ] Owner physical phone test of course navigation, snapping, result and persistent local progress after reopening. Browser-owned storage across real navigation unverified by local environment.
+- [ ] P6.2/P6.3 five new course definitions, tutorials and extra content; **not implemented**.
+- [ ] External player feedback, physical FPS and Play Store release checks.
