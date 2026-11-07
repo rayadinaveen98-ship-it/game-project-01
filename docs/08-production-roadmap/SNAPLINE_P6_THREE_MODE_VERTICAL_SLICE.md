@@ -116,3 +116,16 @@ P5 3-mode prototype: IMPLEMENTED. P6 architecture/content expansion: NOT STARTED
 - [ ] True origin-owned storage and screen-reader acceptance checks.
 - [ ] Five new course definitions in P6.3 and expanded content QA.
 **Status:** P6.2 implemented for review, not an approved final release; no new levels beyond original three.
+
+## P6.3 code milestone — November 7, 2026
+- [x] Built A Planning Basics and A Efficient Detour.
+- [x] Built B Second-Chance Timing with a distinct hazard and an authentic leftward snap rescue solution.
+- [x] Built C Keep Ahead and C Continuous Flow with continuous-live-trail tested solutions.
+- [x] Eight unique course definitions and twelve mode-course assignments with explicit ordering and navigation.
+- [x] All old results use the same local progress key; new results scoped by mode and course.
+- [x] Local TypeScript and 48/48 Node regression tests; desktop and touch-emulated browser interaction runs pass on new content.
+- [ ] Independent GitHub workflow verification/merge.
+- [ ] Physical Android owner testing, touch comfort and progression/difficulty feedback for the five added courses.
+- [ ] P6.4 accessibility, input/pause/resume and real-device performance polish.
+- [ ] P6.5 unfamiliar-player feedback, monetization feasibility and go/no-go.
+**Do not call the entire vertical slice completed** until physical-device acceptance and user study gates are considered. [P6.3 QA report](../06-technical-design/snapline_P63_course_qa_report.md).
