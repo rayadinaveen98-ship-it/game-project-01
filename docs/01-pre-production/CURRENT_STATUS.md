@@ -152,3 +152,12 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - **Pending:** owner physical-phone P6.1 approval; actual browser-managed persistent storage across reopens; real-device FPS/input latency. Current local browser test used a storage shim because file/localhost navigation was prohibited.
 - **Not implemented yet:** five more P6 content definitions, true mode-specific first-time tutorials, full native APK, ads or commercial release.
 - [P6.1 QA report](../../prototypes/snapline/pulse-grid/QA_REPORT_P61.md) · [remaining issue #22](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/22).
+
+## Snapline P6.2 mode-specific onboarding — November 7, 2026
+- Owner reported P6.1 was good and authorized continuing (DEC-026). This is not a measured hardware benchmark.
+- **Implemented on P6.2 branch:** A/B/C contextual three-step guide shown on first course entry per mode; read/skip independently saved in browser storage, permanently accessible from Course HOW TO PLAY and Game ? buttons.
+- Opening Help mid-run pauses rather than continuing simulation behind a modal; dismissal does not falsely count tutorial mastery. All 3 modes, collision logic, prior course results and approved Pulse Grid design remain.
+- **Local verification:** strict TypeScript build and 40/40 Node tests pass; actual Chromium A/B/C guide-to-win and guide reopening flows pass in 360/390/412 phone emulation and desktop B. Separate B SNAP full regression and cross-mode preference isolation pass. Screenshots captured.
+- **Limitations:** real browser-origin persistence across physical close/reopen unverified; browser test uses storage shim due sandbox navigation restrictions. Combined multi-device harness stalled during extra teardown after individual passes; no external player study or physical Android FPS.
+- **P6.2 owner screen and physical-device approval pending**; five new mode-specific courses P6.3 have not yet been implemented.
+- [Mode guide source & QA](../../prototypes/snapline/pulse-grid/README_P62.md) · [P6.2 visual review](../05-art-direction/snapline/P6_2_MODE_GUIDES_REVIEW.md).
