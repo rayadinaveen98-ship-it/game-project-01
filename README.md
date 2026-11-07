@@ -39,3 +39,6 @@ The original printable PDFs and versioned ZIP backups are **not yet included in 
 
 ## Current gameplay direction (DEC-025)
 Snapline Sprint is planned as **one game with three selectable modes:** A Plan & Run, B Snap & Redirect, C Live Drawing. The existing P5 browser prototype has all three working. The owner chose to keep them all; no single winner should be selected. [P6 bounded three-mode vertical-slice plan](docs/08-production-roadmap/SNAPLINE_P6_THREE_MODE_VERTICAL_SLICE.md). The broader game, 8-level content slice, native APK and monetization are **not implemented**.
+
+## P6.5 user-research tool (separate from game)
+The existing Snapline Sprint P6.4 prototype remains the standard playable game. [P6.5 Offline Playtest Lab](playtests/snapline-p65/README.md) embeds that game in an optional, offline facilitator instrument for anonymous real-player feedback with local CSV/JSON export. It has **not** yet collected actual player data; no artificial results or market validation are claimed. Do not mistake the lab for a new gameplay mode or production UI redesign.

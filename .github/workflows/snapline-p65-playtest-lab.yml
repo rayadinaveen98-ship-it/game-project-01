@@ -1,0 +1,45 @@
+name: Snapline P6.5 — Offline Playtest Lab
+on:
+  pull_request:
+    paths:
+      - 'playtests/snapline-p65/**'
+      - '.github/workflows/snapline-p65-playtest-lab.yml'
+      - 'prototypes/snapline/pulse-grid/standalone.html'
+  push:
+    paths:
+      - 'playtests/snapline-p65/**'
+      - '.github/workflows/snapline-p65-playtest-lab.yml'
+      - 'prototypes/snapline/pulse-grid/standalone.html'
+permissions:
+  contents: read
+jobs:
+  study-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate study data behavior — no fake people
+        run: node --test playtests/snapline-p65/tests/*.test.cjs
+      - name: Regenerate self-contained offline playtest lab
+        run: node playtests/snapline-p65/build.mjs
+      - name: Verify exact checked-in offline lab and embedded game
+        run: |
+          git diff --exit-code -- playtests/snapline-p65/dist/Snapline_Sprint_P65_Playtest_Lab.html
+          python3 - <<'PY'
+          from pathlib import Path
+          page=Path('playtests/snapline-p65/dist/Snapline_Sprint_P65_Playtest_Lab.html').read_text(encoding='utf-8')
+          assert 'id="game"' in page
+          assert 'sandbox="allow-scripts"' in page
+          assert 'window.__p65Snapshot' not in page or '__p65Snapshot' in page
+          assert '__snaplineSnapshot' in page
+          assert 'No human sessions recorded' in page
+          assert 'src="https://' not in page.lower()
+          assert '/*__EMBED_GAME__*/null' not in page
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapline-p65-offline-playtest-lab
+          path: playtests/snapline-p65/dist/Snapline_Sprint_P65_Playtest_Lab.html
+          if-no-files-found: error

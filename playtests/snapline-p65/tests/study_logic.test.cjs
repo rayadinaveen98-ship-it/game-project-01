@@ -1,0 +1,18 @@
+const test=require('node:test');const assert=require('node:assert/strict');const S=require('../src/study_logic.cjs');
+const sample=(over={})=>({understood:'yes',hints:0,wins:1,retried:false,fun:4,comfort:4,fairness:5,problem:'',quote:'',...over});
+test('six distinct orders cover every mode once',()=>{assert.equal(new Set(Array.from({length:6},(_,i)=>S.orderForIndex(i).join(''))).size,6);for(let i=0;i<12;i++)assert.deepEqual([...S.orderForIndex(i)].sort(),['a','b','c'])});
+test('next six sessions repeat counterbalance order',()=>assert.deepEqual(S.orderForIndex(0),S.orderForIndex(6)));
+test('invalid session index rejected',()=>assert.throws(()=>S.makeSession(-1),RangeError));
+test('new session has no fabricated observations',()=>{const s=S.makeSession(0,'2026-11-07T12:00:00.000Z');assert.equal(Object.keys(s.observations).length,0);assert.equal(s.sessionId,'S01');assert.equal(S.studySummary([]).sessions,0)});
+test('records per-mode observations without leaking',()=>{const s=S.recordObservation(S.makeSession(1),'a',sample());assert.equal(Object.keys(s.observations).length,1);assert.equal(s.observations.b,undefined);assert.equal(s.order.join(''),'bca')});
+test('observations must identify valid mode',()=>assert.throws(()=>S.recordObservation(S.makeSession(0),'d',sample()),RangeError));
+test('out-of-range ratings rejected',()=>assert.throws(()=>S.validateObservation('a',sample({fun:6})),RangeError));
+test('hints and wins bounded',()=>{assert.throws(()=>S.validateObservation('a',sample({hints:21})),RangeError);assert.throws(()=>S.validateObservation('a',sample({wins:3})),RangeError)});
+test('undecided comprehension allowed, empty rating allowed',()=>assert.equal(S.validateObservation('c',sample({understood:'unsure',comfort:null})).comfort,null));
+test('finish requires real observation',()=>assert.throws(()=>S.finalizeSession(S.makeSession(0),'a'),RangeError));
+test('partial sessions labeled explicitly',()=>{const x=S.finalizeSession(S.recordObservation(S.makeSession(0),'b',sample()),'b','',null);assert.equal(x.status,'partial')});
+test('complete sessions are three observations',()=>{let x=S.makeSession(0);for(const m of S.MODES)x=S.recordObservation(x,m,sample());assert.equal(S.finalizeSession(x,'none','',null).status,'complete')});
+test('study summary counts only collected entries',()=>{let x=S.makeSession(0);x=S.recordObservation(x,'a',sample({retried:true,fun:5}));x=S.finalizeSession(x,'undecided','',null);const sum=S.studySummary([x]);assert.deepEqual(sum.observations,{a:1,b:0,c:0});assert.equal(sum.meanFun.a,5);assert.equal(sum.meanFun.b,null);assert.equal(sum.preferred.undecided,1)});
+test('free text is trimmed and bounded',()=>assert.equal(S.validateObservation('a',sample({quote:'    '+'x'.repeat(600)})).quote.length,500));
+test('CSV safely escapes notes with commas and quotes',()=>{let x=S.recordObservation(S.makeSession(0),'a',sample({problem:'Tap, then "GO"'}));x=S.finalizeSession(x,'a','comment',null);const csv=S.toCSV([x]);assert.match(csv,/"Tap, then ""GO"""/);assert.equal(csv.split('\r\n').filter(Boolean).length,2)});
+test('JSON export has empty set until real data explicitly saved',()=>{const json=JSON.parse(S.toJSON([]));assert.deepEqual(json.sessions,[]);assert.equal(json.schema,'snapline-p65-observation-v1')});

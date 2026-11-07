@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+const root=path.dirname(fileURLToPath(import.meta.url));
+const source=readFileSync(path.join(root,'src','shell.html'),'utf8');
+const logic=readFileSync(path.join(root,'src','study_logic.cjs'),'utf8');
+const gamePath=path.resolve(root,'../../prototypes/snapline/pulse-grid/standalone.html');
+const game=readFileSync(gamePath,'utf8');
+if(!game.includes('__snaplineSnapshot')||!game.includes('Snapline'))throw Error('Missing real Snapline game');
+const escapedGame=JSON.stringify(game).replace(/<\/script/ig,'<\\/script');
+const out=source.replace('/*__STUDY_LOGIC__*/',logic).replace('/*__EMBED_GAME__*/null',escapedGame);
+if(out===source||out.includes('/*__STUDY_LOGIC__*/')||out.includes('/*__EMBED_GAME__*/'))throw Error('Study bundle markers unresolved');
+mkdirSync(path.join(root,'dist'),{recursive:true});
+writeFileSync(path.join(root,'dist','Snapline_Sprint_P65_Playtest_Lab.html'),out);
+console.log('Built single-file playtest lab',Buffer.byteLength(out),'bytes, embedded game',Buffer.byteLength(game),'bytes');
