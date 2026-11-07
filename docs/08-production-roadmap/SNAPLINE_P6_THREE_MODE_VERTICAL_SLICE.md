@@ -105,3 +105,14 @@ A functional browser vertical slice with all three working modes, eight verified
 
 ## Current state
 P5 3-mode prototype: IMPLEMENTED. P6 architecture/content expansion: NOT STARTED. Eight-level target: PROPOSED. Physical phone performance benchmark: NOT RECORDED. First-time-player study: NOT PERFORMED.
+
+## P6.2 implementation addendum — November 7, 2026
+- [x] Implement three distinct A/B/C first-run, three-step contextual tutorials with one shared Pulse Grid dialog.
+- [x] Provide persistent HOW TO PLAY on mode course list and in Gameplay; show once per mode unless reopened.
+- [x] Save guide viewed/skipped separately from actual course-win records; guard malformed/stale storage values.
+- [x] Pause when opening Help mid-run; keyboard Escape and focus controls supported for dialog.
+- [x] 40/40 Node tests (34 P6.1 + 6 new), responsive Chromium desktop and 360/390/412 phone-emulation checks, separate B snap regression locally passed.
+- [ ] GitHub CI merge and owner screenshot/physical device review.
+- [ ] True origin-owned storage and screen-reader acceptance checks.
+- [ ] Five new course definitions in P6.3 and expanded content QA.
+**Status:** P6.2 implemented for review, not an approved final release; no new levels beyond original three.
