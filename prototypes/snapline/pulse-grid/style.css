@@ -126,3 +126,10 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 .guide-actions .guide-skip:hover{color:var(--text)!important}
 @media(max-width:400px){.course-intro .mode-learn-row{margin-top:6px}.course-intro .mode-learn-row p{font-size:9px}.mode-learn-btn{min-height:44px;padding:0 11px}.howto-card{padding:19px 18px}.howto-card h2{font-size:32px}.guide-preview{max-height:81px}.guide-steps{gap:10px}}
 @media(max-height:725px){.howto-card{max-height:calc(100% - 8px);padding:16px}.howto-card h2{margin:7px 0 5px;font-size:29px}.guide-preview{max-height:65px;margin-bottom:9px}.guide-steps{gap:6px}.guide-steps li{font-size:11px}.guide-actions{margin-top:10px}}
+
+/* Reactive material lab — opt-in board surface, existing Pulse Grid UI retained. */
+.surface-toggle{flex:0 0 auto;min-width:104px;min-height:42px;border:1px solid #346579;border-radius:11px;background:#12283a;color:#b8dce0!important;font-size:10px;font-weight:850;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;white-space:nowrap}
+.surface-toggle span{font-size:15px;color:#72f3d8}
+.surface-toggle[aria-pressed="true"]{border-color:#72f3d8;background:#17423f;box-shadow:0 0 0 1px #72f3d842 inset;color:#b6fff1!important}
+.surface-toggle:focus-visible{outline-offset:2px}
+@media(max-width:355px){.surface-toggle{min-width:94px;font-size:9px;padding:0 4px}.brand-name{font-size:12px}}
