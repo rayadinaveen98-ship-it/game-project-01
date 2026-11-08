@@ -1,9 +1,9 @@
 {
   "name": "snapline-sprint",
-  "version": "0.6.4",
+  "version": "0.7.0-reactive",
   "private": true,
   "type": "module",
-  "description": "Snapline Sprint P6.4: hardened Android/browser gesture interruption, pause integrity and clear progress storage messaging",
+  "description": "Snapline Sprint material study: movement-reactive jelly renderer on unchanged P6.4 three-mode game",
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/prepare.mjs",
     "test": "node --test tests/*.test.mjs",

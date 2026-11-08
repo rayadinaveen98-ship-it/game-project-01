@@ -1,0 +1,37 @@
+name: Snapline M1 — Reactive Jelly Visual Regression
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-m1-reactive.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-m1-reactive.yml'
+permissions:
+  contents: read
+jobs:
+  reactive-material:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned compiler
+        run: npm install --no-audit --no-fund
+      - name: Compile and run all 65 automated tests
+        run: npm run check
+      - name: Offline standalone file reproducibility
+        run: |
+          node scripts/make-single-html.mjs
+          git diff --exit-code -- standalone.html
+      - name: Confirm reactive renderer and fallback switch
+        run: |
+          grep -q 'class JellyField' src/ui/jelly.ts
+          grep -q 'surfaceToggle' src/main.ts
+          grep -q 'Reactive Jelly' README_REACTIVE_JELLY.md

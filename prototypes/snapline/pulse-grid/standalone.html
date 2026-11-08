@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Pulse Grid P6.3 Eight-Course Slice</title>
+  <title>Snapline Sprint — Reactive Jelly / Pulse Grid Material Lab</title>
   <style>
 /* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -135,6 +135,13 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 @media(max-width:400px){.course-intro .mode-learn-row{margin-top:6px}.course-intro .mode-learn-row p{font-size:9px}.mode-learn-btn{min-height:44px;padding:0 11px}.howto-card{padding:19px 18px}.howto-card h2{font-size:32px}.guide-preview{max-height:81px}.guide-steps{gap:10px}}
 @media(max-height:725px){.howto-card{max-height:calc(100% - 8px);padding:16px}.howto-card h2{margin:7px 0 5px;font-size:29px}.guide-preview{max-height:65px;margin-bottom:9px}.guide-steps{gap:6px}.guide-steps li{font-size:11px}.guide-actions{margin-top:10px}}
 
+/* Reactive material lab — opt-in board surface, existing Pulse Grid UI retained. */
+.surface-toggle{flex:0 0 auto;min-width:104px;min-height:42px;border:1px solid #346579;border-radius:11px;background:#12283a;color:#b8dce0!important;font-size:10px;font-weight:850;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;white-space:nowrap}
+.surface-toggle span{font-size:15px;color:#72f3d8}
+.surface-toggle[aria-pressed="true"]{border-color:#72f3d8;background:#17423f;box-shadow:0 0 0 1px #72f3d842 inset;color:#b6fff1!important}
+.surface-toggle:focus-visible{outline-offset:2px}
+@media(max-width:355px){.surface-toggle{min-width:94px;font-size:9px;padding:0 4px}.brand-name{font-size:12px}}
+
 </style>
 </head>
 <body data-theme="pulse" data-view="home">
@@ -143,8 +150,8 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
       <div class="rail-top">
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>Three gameplay modes. Eight designed courses across three distinct modes, with focused first-run guides and one approved Pulse Grid style.</p>
-        <span class="lab-tag">P6.3 • EIGHT COURSES</span>
+        <p>Three gameplay modes and eight courses. Experiment with an opt-in surface that reacts to the runner, without changing collision geometry.</p>
+        <span class="lab-tag">M1 • REACTIVE MATERIAL LAB</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
@@ -153,7 +160,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. All three mechanics are kept as distinct modes.</p>
+        <p class="rail-note">Approved Pulse Grid remains the baseline. The new jelly material changes the board background only; compare both on the same run.</p>
       </div>
       <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
     </section>
@@ -165,7 +172,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
         <div class="game-screen" id="gameScreen">
           <header class="screen-top">
             <div class="game-logo"><div class="mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div>
-            <div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
+            <button type="button" id="surfaceToggle" class="surface-toggle" aria-pressed="false" aria-label="Enable reactive jelly surface"><span aria-hidden="true">◉</span> JELLY: OFF</button><div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
           </header>
           <div class="level-header">
             <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>
@@ -907,6 +914,7 @@ const simulation_js_1 = require("./core/simulation.js");
 const courses_js_1 = require("./game/courses.js");
 const drawing_js_1 = require("./game/drawing.js");
 const render_js_1 = require("./ui/render.js");
+const jelly_js_1 = require("./ui/jelly.js");
 const snap_js_1 = require("./core/snap.js");
 const live_js_1 = require("./core/live.js");
 const canvas = document.querySelector('#courseCanvas');
@@ -934,6 +942,40 @@ catch {
 } })();
 let progress = (0, progress_js_1.readProgress)(localStore);
 let guideHistory = (0, onboarding_js_1.readGuideHistory)(localStore);
+// Presentation-only material: the runner, collisions and level fixtures are never modified.
+const jelly = new jelly_js_1.JellyField();
+const surfaceToggle = document.querySelector('#surfaceToggle');
+if (!surfaceToggle)
+    throw new Error('Reactive surface selector missing');
+const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+const MATERIAL_KEY = 'snapline-material-v01';
+let material = (() => { try {
+    return localStore?.getItem(MATERIAL_KEY) === 'jelly' ? 'jelly' : 'pulse';
+}
+catch {
+    return 'pulse';
+} })();
+let gelAccumulator = 0;
+function refreshMaterial() {
+    surfaceToggle.setAttribute('aria-pressed', String(material === 'jelly'));
+    surfaceToggle.setAttribute('aria-label', material === 'jelly' ? 'Switch from Reactive Jelly to normal Pulse Grid' : 'Switch from normal Pulse Grid to Reactive Jelly');
+    surfaceToggle.innerHTML = material === 'jelly' ? '<span aria-hidden="true">◉</span> JELLY: ON' : '<span aria-hidden="true">◉</span> JELLY: OFF';
+    document.body.dataset.material = material;
+    const name = document.getElementById('styleName');
+    if (name)
+        name.textContent = material === 'jelly' ? 'REACTIVE JELLY / EXPERIMENT' : 'PULSE GRID / APPROVED';
+}
+surfaceToggle.addEventListener('click', () => {
+    material = material === 'jelly' ? 'pulse' : 'jelly';
+    if (material === 'jelly')
+        jelly.reset();
+    try {
+        localStore?.setItem(MATERIAL_KEY, material);
+    }
+    catch { /* optional preference: game still works */ }
+    refreshMaterial();
+});
+refreshMaterial();
 let liveComplete = false, liveWaitingTicks = 0, liveError = null, liveInputReleased = false;
 let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
 let snapPlan = null, snapTarget = null, snapPreview = null;
@@ -1060,6 +1102,8 @@ function interruptInputs(reason) {
 }
 function newCourse(id, clearAttempts = true) {
     releaseActivePointers();
+    jelly.reset();
+    gelAccumulator = 0;
     course = courses_js_1.COURSES.find(x => x.id === id && (0, catalog_js_1.isAccessibleCourse)(mode, id)) ?? (0, catalog_js_1.firstCourse)(mode);
     draft = [];
     route = null;
@@ -1415,13 +1459,23 @@ function loop(now) {
                 showEarnedResult();
         }
     }
-    (0, render_js_1.render)(canvasEl, { course, mode, draft, route, run, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
+    if (material === 'jelly' && !reducedMotion) {
+        jelly.observeRunner(run);
+        gelAccumulator = Math.min(.066, gelAccumulator + delta);
+        while (gelAccumulator >= 1 / 60) {
+            jelly.step();
+            gelAccumulator -= 1 / 60;
+        }
+    }
+    (0, render_js_1.render)(canvasEl, { course, mode, draft, route, run, material, jelly: material === 'jelly' && !reducedMotion ? jelly : undefined, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
         live: mode === 'c' ? { completed: liveComplete, waiting: liveWaitingTicks > 0, tip: route?.points.at(-1) ?? course.start, grace: Math.max(0, 1 - liveWaitingTicks / live_js_1.LIVE_GRACE_TICKS) } : undefined,
         snap: snapEditing && snapPlan ? { anchor: snapTarget ?? snapPlan.anchor, original: snapPlan.anchor, lead: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.leadDistance), tail: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.tailDistance), preview: snapPreview?.ok ? snapPreview.route : null, valid: snapPreview === null ? true : snapPreview.ok } : undefined });
     requestAnimationFrame(loop);
 }
 newCourse(course.id);
 requestAnimationFrame(loop);
+// Material observability for browser tests: no private data, no remote analytics.
+Object.assign(window, { __jellySnapshot: () => ({ ...jelly.snapshot(), material, reducedMotion, course: course.id, runPhase: phase(), runTick: run?.ticks ?? 0 }) });
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
 Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), drawing, activePointer, pauseNote, liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
 let appView = 'home';
@@ -1608,12 +1662,228 @@ Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, p
     __p63Snapshot: () => ({ view: appView, mode, course: course.id, courseCount: (0, catalog_js_1.coursesForMode)(mode).length, eligible: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), courseOptions: Array.from(sel.options).map(o => o.value), resultTitle: document.getElementById('resultCourseTitle')?.textContent, progress: JSON.parse(JSON.stringify(progress)) }) });
 
 },
+"src/ui/jelly.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JellyField = void 0;
+exports.drawJellyBackground = drawJellyBackground;
+const courses_js_1 = require("../game/courses.js");
+const NX = 19, NY = 33, SPACING = 20;
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+class JellyField {
+    columns = NX;
+    rows = NY;
+    height = new Float32Array(NX * NY);
+    motion = new Float32Array(NX * NY);
+    ripples = [];
+    previous = null;
+    lastTick = -1;
+    lastPhase = null;
+    lastCourse = null;
+    lastDirection = null;
+    sinceRipple = 0;
+    clock = 0;
+    impulseCount = 0;
+    traveled = 0;
+    reset() {
+        this.height.fill(0);
+        this.motion.fill(0);
+        this.ripples.length = 0;
+        this.previous = null;
+        this.lastTick = -1;
+        this.lastPhase = null;
+        this.lastCourse = null;
+        this.lastDirection = null;
+        this.sinceRipple = 0;
+        this.clock = 0;
+        this.impulseCount = 0;
+        this.traveled = 0;
+    }
+    /** Reacts only to simulated runner movement, not touch or mouse coordinates. */
+    observeRunner(run) {
+        if (!run) {
+            this.previous = null;
+            this.lastTick = -1;
+            this.lastPhase = null;
+            this.lastDirection = null;
+            return;
+        }
+        if (this.lastCourse !== run.courseId || run.ticks < this.lastTick) {
+            this.reset();
+            this.lastCourse = run.courseId;
+        }
+        const previous = this.previous;
+        if (previous && run.ticks !== this.lastTick) {
+            const traveled = dist(previous, run.position);
+            if (traveled > .05 && traveled < 40) {
+                this.traveled += traveled;
+                this.sinceRipple += traveled;
+                const direction = { x: (run.position.x - previous.x) / traveled, y: (run.position.y - previous.y) / traveled };
+                const turn = this.lastDirection ? 1 - clamp(direction.x * this.lastDirection.x + direction.y * this.lastDirection.y, -1, 1) : 0;
+                this.kick(run.position, clamp(1.2 + traveled * .9, 1.4, 5.4));
+                if (turn > .08)
+                    this.kick(run.position, clamp(2 + turn * 5, 2, 8));
+                if (this.sinceRipple >= 13 || turn > .16) {
+                    this.ripples.push({ x: run.position.x, y: run.position.y, age: 0, force: clamp(1.3 + turn * .7, 1.3, 2.5), angle: Math.atan2(direction.y, direction.x) });
+                    if (this.ripples.length > 20)
+                        this.ripples.shift();
+                    this.sinceRipple = 0;
+                }
+                this.lastDirection = direction;
+            }
+        }
+        if (run.phase === 'lost' && this.lastPhase !== 'lost') {
+            this.kick(run.position, 12);
+            this.ripples.push({ x: run.position.x, y: run.position.y, age: 0, force: 3.7, angle: 0 });
+        }
+        this.previous = { ...run.position };
+        this.lastTick = run.ticks;
+        this.lastPhase = run.phase;
+    }
+    /** Gaussian force localized to the moving runner; does not move any world-space hitboxes. */
+    kick(at, force) {
+        for (let iy = 0; iy < NY; iy++)
+            for (let ix = 0; ix < NX; ix++) {
+                const dx = ix * SPACING - at.x, dy = iy * SPACING - at.y;
+                const radius2 = dx * dx + dy * dy;
+                if (radius2 > 90 * 90)
+                    continue;
+                const i = iy * NX + ix;
+                this.motion[i] = clamp(this.motion[i] - force * Math.exp(-radius2 / (2 * 34 * 34)) * .50, -8, 8);
+            }
+        this.impulseCount++;
+    }
+    /** One fixed 60Hz visual tick; bounded for stability even after backgrounding. */
+    step() {
+        this.clock++;
+        const before = this.height, velocity = this.motion;
+        for (let y = 1; y < NY - 1; y++)
+            for (let x = 1; x < NX - 1; x++) {
+                const i = y * NX + x;
+                const lap = before[i - 1] + before[i + 1] + before[i - NX] + before[i + NX] - 4 * before[i];
+                velocity[i] = clamp((velocity[i] + lap * .17 - before[i] * .018) * .965, -9, 9);
+            }
+        for (let y = 1; y < NY - 1; y++)
+            for (let x = 1; x < NX - 1; x++) {
+                const i = y * NX + x;
+                before[i] = clamp(before[i] + velocity[i], -19, 19);
+            }
+        for (let i = this.ripples.length - 1; i >= 0; i--) {
+            const r = this.ripples[i];
+            const age = r.age + 1 / 60;
+            if (age >= 1.18)
+                this.ripples.splice(i, 1);
+            else
+                this.ripples[i] = { ...r, age };
+        }
+    }
+    /** Smooth height sampling for the deformed sheen/ridges. */
+    sample(x, y) {
+        const gx = clamp(x / SPACING, 0, NX - 1.001), gy = clamp(y / SPACING, 0, NY - 1.001);
+        const ix = Math.floor(gx), iy = Math.floor(gy), fx = gx - ix, fy = gy - iy;
+        const a = this.height[iy * NX + ix], b = this.height[iy * NX + ix + 1];
+        const c = this.height[(iy + 1) * NX + ix], d = this.height[(iy + 1) * NX + ix + 1];
+        return (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
+    }
+    energy() { let n = 0; for (const h of this.height)
+        n += Math.abs(h); for (const v of this.motion)
+        n += Math.abs(v); return n; }
+    snapshot() { return { energy: Number(this.energy().toFixed(3)), impulseCount: this.impulseCount, traveled: Number(this.traveled.toFixed(2)), waves: this.ripples.length, tick: this.clock }; }
+}
+exports.JellyField = JellyField;
+function drawJellyBackground(ctx, jelly) {
+    // All physics/route obstacles are painted above this layer in authoritative world coordinates.
+    const base = ctx.createLinearGradient(10, 0, 350, 640);
+    base.addColorStop(0, '#102839');
+    base.addColorStop(.52, '#103946');
+    base.addColorStop(1, '#082434');
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    const pooled = ctx.createRadialGradient(273, 105, 8, 190, 270, 460);
+    pooled.addColorStop(0, '#4ecbba30');
+    pooled.addColorStop(.53, '#2a9d9720');
+    pooled.addColorStop(1, '#0b1e2b08');
+    ctx.fillStyle = pooled;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    // Fixed translucent material is present even before a run; movement deforms these actual curves.
+    const sample = (x, y) => jelly?.sample(x, y) ?? 0;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let iy = 0; iy < 28; iy++) {
+        const y = 18 + iy * 23;
+        ctx.beginPath();
+        for (let x = 0; x <= 360; x += 9) {
+            const shift = sample(x, y), yy = y + shift * 1.16;
+            if (x === 0)
+                ctx.moveTo(x, yy);
+            else
+                ctx.lineTo(x, yy);
+        }
+        ctx.lineWidth = iy % 5 === 0 ? 5.2 : 2.0;
+        ctx.strokeStyle = iy % 5 === 0 ? '#65ffe018' : '#7dfff010';
+        ctx.stroke();
+        ctx.lineWidth = iy % 5 === 0 ? 1.65 : .77;
+        ctx.strokeStyle = iy % 5 === 0 ? '#a3fff04a' : '#83ede529';
+        ctx.stroke();
+    }
+    for (let ix = 1; ix < 13; ix++) {
+        const x = ix * 28;
+        ctx.beginPath();
+        for (let y = 0; y <= 640; y += 11) {
+            const shift = sample(x, y), xx = x - shift * .65;
+            if (y === 0)
+                ctx.moveTo(xx, y);
+            else
+                ctx.lineTo(xx, y);
+        }
+        ctx.strokeStyle = ix % 3 === 0 ? '#73e9db28' : '#4fc5c014';
+        ctx.lineWidth = ix % 3 === 0 ? 1.1 : .7;
+        ctx.stroke();
+    }
+    // A tiny set of expanding anisotropic waves: direction and energy derive from runner travel.
+    for (const r of jelly?.ripples ?? []) {
+        const t = r.age / 1.18, fade = (1 - t) * (1 - t), radius = 10 + r.age * 77;
+        ctx.save();
+        ctx.translate(r.x, r.y);
+        ctx.rotate(r.angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, radius * (1 + r.force * .08), radius * .74, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(134,255,232,${Math.min(.62, fade * .3 * r.force)})`;
+        ctx.lineWidth = 1.5 + fade * 2.8;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(0, 0, radius * .68, radius * .5, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(86,242,218,${fade * .18})`;
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.restore();
+    }
+    // The pool has layered reflective edge lenses rather than procedural noise obscuring the route.
+    ctx.beginPath();
+    ctx.moveTo(-20, 100);
+    ctx.bezierCurveTo(80, 38, 180, 76, 380, 0);
+    ctx.strokeStyle = '#b4fff024';
+    ctx.lineWidth = 13;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-35, 594);
+    ctx.bezierCurveTo(100, 560, 236, 625, 383, 536);
+    ctx.strokeStyle = '#4be2cd25';
+    ctx.lineWidth = 25;
+    ctx.stroke();
+    ctx.restore();
+}
+
+},
 "src/ui/render.js":function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = render;
 const courses_js_1 = require("../game/courses.js");
 const catalog_js_1 = require("../game/catalog.js");
+const jelly_js_1 = require("./jelly.js");
 const PAL = {
     pulse: { bg: '#0e1c2b', grid: '#193449', major: '#29485c', ink: '#71f3da', inkSoft: '#71f3da33', wall: '#344353', edge: '#f9957c', text: '#e9fbfa', muted: '#809aad', mint: '#72f3d8', accent: '#f9957c', moving: '#ffc47d', runner: '#eaffff', barBack: '#284152' },
     ink: { bg: '#f5e9d5', grid: '#decfb8', major: '#d4bda3', ink: '#19796d', inkSoft: '#19796d33', wall: '#e8ac8d', edge: '#ae5d49', text: '#403b36', muted: '#927f73', mint: '#19796d', accent: '#d66d47', moving: '#a36b8d', runner: '#fff9e7', barBack: '#dfcbb1' },
@@ -1860,7 +2130,10 @@ function render(canvas, s) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, 360, 640);
     const theme = themeKey(), p = PAL[theme];
-    drawBackground(ctx, theme, p);
+    if (s.material === 'jelly' && theme === 'pulse')
+        (0, jelly_js_1.drawJellyBackground)(ctx, s.jelly ?? null);
+    else
+        drawBackground(ctx, theme, p);
     ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'left';
     ctx.fillStyle = p.muted;
@@ -1877,6 +2150,13 @@ function render(canvas, s) {
         ctx.moveTo(299, 23);
         ctx.lineTo(341, 23);
         ctx.stroke();
+    }
+    if (s.material === 'jelly') {
+        ctx.textAlign = 'right';
+        ctx.font = '800 9px system-ui';
+        ctx.fillStyle = '#91f6e6';
+        ctx.fillText('REACTIVE GEL', 343, 56);
+        ctx.textAlign = 'left';
     }
     if (theme === 'ink') {
         ctx.strokeStyle = p.accent;
