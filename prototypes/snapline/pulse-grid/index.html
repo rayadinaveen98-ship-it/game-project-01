@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Reactive Jelly / Pulse Grid Material Lab</title>
+  <title>Snapline Sprint — Interactive Materials / Pulse Grid Lab</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body data-theme="pulse" data-view="home">
@@ -13,8 +13,8 @@
       <div class="rail-top">
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>Three gameplay modes and eight courses. Experiment with an opt-in surface that reacts to the runner, without changing collision geometry.</p>
-        <span class="lab-tag">M1 • REACTIVE MATERIAL LAB</span>
+        <p>Three gameplay modes and eight courses. Try Jelly and viscous Slime surfaces that react to the runner, without changing any collision geometry.</p>
+        <span class="lab-tag">M2 • REACTIVE MATERIALS</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
@@ -23,7 +23,7 @@
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Approved Pulse Grid remains the baseline. The new jelly material changes the board background only; compare both on the same run.</p>
+        <p class="rail-note">Approved Pulse Grid remains the baseline. Compare Normal, Jelly and Slime. Materials respond to real runner movement; only the background changes.</p>
       </div>
       <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
     </section>
@@ -35,7 +35,7 @@
         <div class="game-screen" id="gameScreen">
           <header class="screen-top">
             <div class="game-logo"><div class="mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div>
-            <button type="button" id="surfaceToggle" class="surface-toggle" aria-pressed="false" aria-label="Enable reactive jelly surface"><span aria-hidden="true">◉</span> JELLY: OFF</button><div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
+            <button type="button" id="surfaceToggle" class="surface-toggle" aria-pressed="false" aria-label="Cycle through normal grid, reactive jelly and reactive slime"><span aria-hidden="true">◉</span> NORMAL <small>1/3</small></button><div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
           </header>
           <div class="level-header">
             <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>

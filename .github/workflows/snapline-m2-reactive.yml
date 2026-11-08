@@ -1,0 +1,37 @@
+name: Snapline M2 — Reactive Slime Material QA
+on:
+  pull_request:
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-m2-reactive.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'prototypes/snapline/pulse-grid/**'
+      - '.github/workflows/snapline-m2-reactive.yml'
+permissions:
+  contents: read
+jobs:
+  slime-material:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prototypes/snapline/pulse-grid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned TypeScript compiler
+        run: npm install --no-audit --no-fund
+      - name: Compile and run all 73 automated tests
+        run: npm run check
+      - name: Verify byte-for-byte offline standalone
+        run: |
+          node scripts/make-single-html.mjs
+          git diff --exit-code -- standalone.html
+      - name: Verify material choices and isolated slime renderer
+        run: |
+          grep -q 'class SlimeField' src/ui/slime.ts
+          grep -q "'pulse','jelly','slime'" src/main.ts
+          grep -q 'M2 Reactive Slime' README_M2.md

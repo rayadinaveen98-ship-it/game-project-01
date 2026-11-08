@@ -3,14 +3,16 @@ import {hazardPosition,BOARD_WIDTH,BOARD_HEIGHT,RUNNER_RADIUS,SNAP_LAB_GUIDE,SEC
 
 import {coursesForMode} from '../game/catalog.js';
 import {drawJellyBackground} from './jelly.js';
+import {drawSlimeBackground} from './slime.js';
 import type {BoardMaterial,JellyField} from './jelly.js';
+import type {SlimeField} from './slime.js';
 
 export interface VisualState {
   course:Course;mode:GameMode;draft:readonly Vec[];route:Route|null;run:Run|null;
   inkUsed:number;invalid:boolean;drawing:boolean;
   snap?:{anchor:Vec;original:Vec;lead:Vec;tail:Vec;preview:Route|null;valid:boolean};
   live?:{completed:boolean;waiting:boolean;tip:Vec;grace:number};
-  material?:BoardMaterial; jelly?:JellyField;
+  material?:BoardMaterial; jelly?:JellyField;slime?:SlimeField;
 }
 type ThemeKey='pulse'|'ink'|'micro';
 interface Palette{bg:string;grid:string;major:string;ink:string;inkSoft:string;wall:string;edge:string;text:string;muted:string;mint:string;accent:string;moving:string;runner:string;barBack:string}
@@ -94,7 +96,9 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
   if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,360,640);
   const theme=themeKey(),p=PAL[theme];
-  if(s.material==='jelly'&&theme==='pulse')drawJellyBackground(ctx,s.jelly??null);else drawBackground(ctx,theme,p);
+  if(theme==='pulse'&&s.material==='jelly')drawJellyBackground(ctx,s.jelly??null);
+  else if(theme==='pulse'&&s.material==='slime')drawSlimeBackground(ctx,s.slime??null);
+  else drawBackground(ctx,theme,p);
   ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillStyle=p.muted;
   const eligible=coursesForMode(s.mode),ordinal=eligible.findIndex(c=>c.id===s.course.id)+1;
   const num=String(ordinal).padStart(2,'0');
@@ -103,7 +107,7 @@ export function render(canvas:HTMLCanvasElement,s:VisualState):void{
   ctx.font='700 11px system-ui';
   ctx.fillText(s.course.family==='practice'?'PRACTICE · LEARN THE MOVE':s.course.moving.length?'MOVING HAZARD':'STATIC OBSTACLES',16,42);
   if(theme==='pulse'){ctx.strokeStyle=p.mint+'66';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(299,23);ctx.lineTo(341,23);ctx.stroke()}
-  if(s.material==='jelly'){ctx.textAlign='right';ctx.font='800 9px system-ui';ctx.fillStyle='#91f6e6';ctx.fillText('REACTIVE GEL',343,56);ctx.textAlign='left';}
+  if(s.material==='jelly'||s.material==='slime'){ctx.textAlign='right';ctx.font='800 9px system-ui';ctx.fillStyle=s.material==='jelly'?'#91f6e6':'#caffac';ctx.fillText(s.material==='jelly'?'REACTIVE GEL':'VISCOUS SLIME',343,56);ctx.textAlign='left';}
   if(theme==='ink'){ctx.strokeStyle=p.accent;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(295,27);ctx.quadraticCurveTo(312,17,342,25);ctx.stroke()}
   if(theme==='micro'){dot(ctx,{x:329,y:26},11,'#ffffffaa');dot(ctx,{x:329,y:26},4,p.accent)}
   for(const wall of s.course.walls)drawWall(ctx,wall,theme,p);

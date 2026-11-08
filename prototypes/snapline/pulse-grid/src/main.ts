@@ -13,6 +13,7 @@ import {appendStroke} from './game/drawing.js';
 import {render} from './ui/render.js';
 import {JellyField} from './ui/jelly.js';
 import type {BoardMaterial} from './ui/jelly.js';
+import {SlimeField} from './ui/slime.js';
 import {createSnapPlan,previewSnap} from './core/snap.js';
 import type {SnapPlan,SnapCheck,SnapEvent} from './core/snap.js';
 import {appendLivePoint,adoptLiveRoute,advanceLiveRun,LIVE_LAUNCH_LENGTH,LIVE_JOIN_RADIUS,LIVE_GRACE_TICKS} from './core/live.js';
@@ -40,22 +41,27 @@ let progress:Progress=readProgress(localStore);
 let guideHistory:GuideHistory=readGuideHistory(localStore);
 // Presentation-only material: the runner, collisions and level fixtures are never modified.
 const jelly=new JellyField();
+const slime=new SlimeField();
 const surfaceToggle=document.querySelector<HTMLButtonElement>('#surfaceToggle');
 if(!surfaceToggle)throw new Error('Reactive surface selector missing');
 const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
 const MATERIAL_KEY='snapline-material-v01';
-let material:BoardMaterial=(()=>{try{return localStore?.getItem(MATERIAL_KEY)==='jelly'?'jelly':'pulse';}catch{return 'pulse';}})();
+let material:BoardMaterial=(()=>{try{const saved=localStore?.getItem(MATERIAL_KEY);return saved==='jelly'||saved==='slime'?saved:'pulse';}catch{return 'pulse';}})();
 let gelAccumulator=0;
+const MATERIAL_SEQUENCE:readonly BoardMaterial[]=['pulse','jelly','slime'];
 function refreshMaterial():void{
-  surfaceToggle!.setAttribute('aria-pressed',String(material==='jelly'));
-  surfaceToggle!.setAttribute('aria-label',material==='jelly'?'Switch from Reactive Jelly to normal Pulse Grid':'Switch from normal Pulse Grid to Reactive Jelly');
-  surfaceToggle!.innerHTML=material==='jelly'?'<span aria-hidden="true">◉</span> JELLY: ON':'<span aria-hidden="true">◉</span> JELLY: OFF';
+  const index=MATERIAL_SEQUENCE.indexOf(material);
+  surfaceToggle!.setAttribute('aria-pressed',String(material!=='pulse'));
+  surfaceToggle!.setAttribute('aria-label',`Board surface ${material==='pulse'?'Normal Pulse Grid':material==='jelly'?'Reactive Jelly':'Reactive Slime'}. Activate to switch to ${MATERIAL_SEQUENCE[(index+1)%MATERIAL_SEQUENCE.length]}.`);
+  surfaceToggle!.title='Choose board material: Normal → Jelly → Slime';
+  surfaceToggle!.innerHTML=`<span aria-hidden="true">◉</span> ${material==='pulse'?'NORMAL':material==='jelly'?'JELLY':'SLIME'} <small>${index+1}/3</small>`;
   document.body.dataset.material=material;
-  const name=document.getElementById('styleName');if(name)name.textContent=material==='jelly'?'REACTIVE JELLY / EXPERIMENT':'PULSE GRID / APPROVED';
+  const name=document.getElementById('styleName');if(name)name.textContent=material==='jelly'?'REACTIVE JELLY / EXPERIMENT':material==='slime'?'VISCOUS SLIME / EXPERIMENT':'PULSE GRID / APPROVED';
 }
 surfaceToggle.addEventListener('click',()=>{
-  material=material==='jelly'?'pulse':'jelly';
-  if(material==='jelly')jelly.reset();
+  const index=MATERIAL_SEQUENCE.indexOf(material);
+  material=MATERIAL_SEQUENCE[(index+1)%MATERIAL_SEQUENCE.length]!;
+  jelly.reset();slime.reset();gelAccumulator=0;
   try{localStore?.setItem(MATERIAL_KEY,material);}catch{/* optional preference: game still works */}
   refreshMaterial();
 });
@@ -146,7 +152,7 @@ function interruptInputs(reason:InterruptionReason):void{
 }
 function newCourse(id:string,clearAttempts=true):void{
   releaseActivePointers();
-  jelly.reset();gelAccumulator=0;
+  jelly.reset();slime.reset();gelAccumulator=0;
   course=COURSES.find(x=>x.id===id&&isAccessibleCourse(mode,id))??firstCourse(mode);
   draft=[];route=null;run=null;drawing=false;activePointer=null;accumulator=0;cancelEdit(false);snapSpent=false;tutorialPrompted=false;snapHistory.length=0;
   liveComplete=false;liveWaitingTicks=0;liveError=null;liveInputReleased=false;pauseNote=null;if(clearAttempts)attempts=0;
@@ -333,19 +339,19 @@ function loop(now:number){
     }
     if(run.phase!=='running'){refresh();if(run.phase==='won')showEarnedResult();}
   }
-  if(material==='jelly'&&!reducedMotion){
-    jelly.observeRunner(run);
+  if(material!=='pulse'&&!reducedMotion){
+    if(material==='jelly')jelly.observeRunner(run);else slime.observeRunner(run);
     gelAccumulator=Math.min(.066,gelAccumulator+delta);
-    while(gelAccumulator>=1/60){jelly.step();gelAccumulator-=1/60;}
+    while(gelAccumulator>=1/60){if(material==='jelly')jelly.step();else slime.step();gelAccumulator-=1/60;}
   }
-  render(canvasEl,{course,mode,draft,route,run,material,jelly:material==='jelly'&&!reducedMotion?jelly:undefined,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
+  render(canvasEl,{course,mode,draft,route,run,material,jelly:material==='jelly'&&!reducedMotion?jelly:undefined,slime:material==='slime'&&!reducedMotion?slime:undefined,inkUsed:snapEditing&&snapPreview?.ok?snapPreview.route.length:(route?.length??lengthOf(draft)),invalid:!route&&lengthOf(draft)>course.maxInk,drawing,
     live:mode==='c'?{completed:liveComplete,waiting:liveWaitingTicks>0,tip:route?.points.at(-1)??course.start, grace:Math.max(0,1-liveWaitingTicks/LIVE_GRACE_TICKS)}:undefined,
     snap:snapEditing&&snapPlan?{anchor:snapTarget??snapPlan.anchor,original:snapPlan.anchor,lead:pointAtDistance(run!.route.points,snapPlan.leadDistance),tail:pointAtDistance(run!.route.points,snapPlan.tailDistance),preview:snapPreview?.ok?snapPreview.route:null,valid:snapPreview===null?true:snapPreview.ok}:undefined});
   requestAnimationFrame(loop);
 }
 newCourse(course.id);requestAnimationFrame(loop);
 // Material observability for browser tests: no private data, no remote analytics.
-Object.assign(window,{__jellySnapshot:()=>({...jelly.snapshot(),material,reducedMotion,course:course.id,runPhase:phase(),runTick:run?.ticks??0})});
+Object.assign(window,{__jellySnapshot:()=>({...jelly.snapshot(),material,reducedMotion,course:course.id,runPhase:phase(),runTick:run?.ticks??0}),__materialSnapshot:()=>({material,reducedMotion,jelly:jelly.snapshot(),slime:slime.snapshot(),course:course.id,mode,phase:phase(),tick:run?.ticks??0})});
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
 Object.assign(window,{__snaplineSnapshot:()=>({course:course.id,phase:phase(),ink:Math.round(route?.length??lengthOf(draft)),points:route?.points.length??draft.length,ticks:run?.ticks??0,attempts,result:run?.failure??null,mode,snapSpent,snapEditing,snapDragging,snapAnchor:snapTarget,snapValid:snapPreview?.ok??null,snapError:snapPreview&&!snapPreview.ok?snapPreview.reason:null,snapEvents:snapHistory.map(x=>({...x})),drawing,activePointer,pauseNote,liveComplete,liveWaitingTicks,liveError,liveInputReleased,runnerPosition:run?.position,runDistance:run?.distance,tutorialPrompted})});
 

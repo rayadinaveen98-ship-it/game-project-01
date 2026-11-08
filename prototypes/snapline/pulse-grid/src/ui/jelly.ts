@@ -2,7 +2,7 @@ import type {Run,Vec} from '../core/types.js';
 import {BOARD_HEIGHT,BOARD_WIDTH} from '../game/courses.js';
 
 /** A visual-only damped spring lattice. It never affects the authoritative collision engine. */
-export type BoardMaterial='pulse'|'jelly';
+export type BoardMaterial='pulse'|'jelly'|'slime';
 export interface GelRipple {readonly x:number;readonly y:number;readonly age:number;readonly force:number;readonly angle:number}
 const NX=19, NY=33, SPACING=20;
 const clamp=(v:number,min:number,max:number)=>Math.min(max,Math.max(min,v));
