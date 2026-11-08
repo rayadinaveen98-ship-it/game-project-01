@@ -218,3 +218,9 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Existing 3 modes, 8 authored courses, progress data, 59 older tests and fixed-step collision engine preserved; **65/65 Node tests pass** locally. Desktop/headless and three phone-sized Chromium A/B/C Jelly runs passed.
 - Captured real browser comparison screens and delivered standalone offline HTML + source ZIP for owner review. Owner aesthetic approval, real Android performance/touch verification, physical progress storage test and outside-player impressions remain pending.
 - Ten cosmetic characters, slime/water variants, and 100-level content expansion **are ideas, not implemented**. [M1 QA](../06-technical-design/snapline_M1_reactive_material_qa.md).
+
+## M1 reactive material merged and CI complete — November 8, 2026
+- [PR #31](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/31) merged into main at `e7b90f0ffa93313cf5c7b68e64a80f9f5ff81e9e` after **12/12 independent GitHub workflow checks passed**, including new M1 and all prior game/research regressions.
+- The optional runner-driven **JELLY ON/OFF** gameplay-board renderer is now in canonical offline `prototypes/snapline/pulse-grid/standalone.html`. The approved Pulse Grid board remains available; all three modes and eight courses unchanged. Local TypeScript + 65/65 tests passed and browser A/B/C jelly gameplay worked.
+- **Research integrity fix:** Existing P6.5 Playtest Lab now embeds a pinned byte-identical P6.4 baseline fixture rather than the latest evolving game, so a reactive visual experiment cannot silently invalidate its comparative study. 16/16 lab tests and byte-for-byte rebuild passed in CI.
+- Owner visual and physical Android material-performance acceptance still outstanding; [Issue #32](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/32). Slime/water variants, 10 characters and 100-course plans have **not** been implemented.
