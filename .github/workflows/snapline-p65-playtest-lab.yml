@@ -4,12 +4,10 @@ on:
     paths:
       - 'playtests/snapline-p65/**'
       - '.github/workflows/snapline-p65-playtest-lab.yml'
-      - 'prototypes/snapline/pulse-grid/standalone.html'
   push:
     paths:
       - 'playtests/snapline-p65/**'
       - '.github/workflows/snapline-p65-playtest-lab.yml'
-      - 'prototypes/snapline/pulse-grid/standalone.html'
 permissions:
   contents: read
 jobs:

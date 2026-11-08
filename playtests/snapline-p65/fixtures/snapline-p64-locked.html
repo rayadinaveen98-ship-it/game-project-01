@@ -1,0 +1,2013 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1321" />
+  <title>Snapline Sprint — Pulse Grid P6.3 Eight-Course Slice</title>
+  <style>
+/* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}body{margin:0;background:#111318;color:#f4f5f6}button,select{font:inherit;cursor:pointer}button:focus-visible,select:focus-visible,canvas:focus-visible{outline:3px solid #88f7e7;outline-offset:3px}button:disabled{opacity:.42;cursor:not-allowed}button[hidden],div[hidden],section[hidden]{display:none!important}
+.review-studio{min-height:100dvh;display:grid;grid-template-columns:320px minmax(360px,1fr);max-width:1250px;margin:auto;gap:clamp(20px,5vw,64px);padding:38px 28px 45px;align-items:start}
+.review-rail{display:flex;flex-direction:column;gap:35px;position:sticky;top:30px;padding-top:14px;max-width:320px}
+.rail-eyebrow{font-size:11px;letter-spacing:.19em;font-weight:800;color:#a7afb9;display:flex;align-items:center;gap:10px}.led{width:8px;height:8px;background:#69f1d7;border-radius:50%;box-shadow:0 0 12px #69f1d7}
+.rail-top h1{font-size:clamp(42px,4vw,57px);line-height:.98;letter-spacing:-.07em;margin:24px 0 22px;font-weight:820}.rail-top h1 em{font-style:normal;color:#8b95a2}
+.rail-top p{font-size:15px;line-height:1.75;color:#a7b0bc;max-width:290px}.lab-tag{display:inline-block;border:1px solid #45505e;border-radius:20px;padding:7px 11px;font-size:10px;font-weight:780;letter-spacing:.12em;color:#b0c0cc;margin-top:8px}
+.rail-section{border-top:1px solid #353941;padding-top:21px}.rail-section h2{font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase;color:#a2abb6;margin:0 0 18px;display:flex;gap:12px}.rail-section h2 span{color:#6be3ce}
+.theme-choice{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:1px solid transparent;background:transparent;color:#e9ecef;border-radius:13px;text-align:left;margin-bottom:7px}.theme-choice:hover{background:#222931}.theme-choice.active{background:#232934;border-color:#596171}.theme-choice strong{display:block;font-size:13px;margin-bottom:3px}.theme-choice small{display:block;font-size:11px;color:#9fa9b6}.theme-choice .checkmark{margin-left:auto;opacity:0;font-size:15px;color:#75e6ce}.theme-choice.active .checkmark{opacity:1}
+.theme-swatch{flex-shrink:0;width:41px;height:41px;border-radius:10px;position:relative;display:grid;place-items:center;overflow:hidden}.theme-swatch i{width:22px;height:12px;border:solid currentColor;border-width:0 0 3px 3px;transform:rotate(-30deg);border-radius:2px}.pulse-swatch{background:#101f32;color:#66f3da}.ink-swatch{background:#f4e8ce;color:#d96d4c}.micro-swatch{background:#a5a0ff;color:#ffeb88}
+.view-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:#23282f;padding:5px;border-radius:12px}.view-tabs button{border:0;background:transparent;color:#b8c2ca;border-radius:8px;padding:10px 5px;font-size:12px;font-weight:750}.view-tabs button.active{color:#141a1f;background:#d6e0e4}.rail-note{font-size:12px;color:#8995a0;line-height:1.7;margin:14px 0 0}.rail-footer{font-size:11px;color:#9da6b0;line-height:1.7;border-top:1px solid #353941;padding-top:17px}.rail-footer strong{color:#e6e7e8}.rail-footer p{margin-top:5px}.tiny-square{display:inline-block;width:7px;height:7px;background:#dfa96c;margin-right:8px;transform:rotate(45deg)}
+.presentation{display:flex;flex-direction:column;align-items:center;gap:14px}.presentation-label,.presentation-foot{width:min(390px,100%);display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:.13em;font-weight:800;color:#a8b0bb}.presentation-label span:last-child{color:#86ead7}.presentation-foot{font-size:9px;color:#8d95a0}
+.phone{width:390px;height:844px;position:relative;flex:0 0 auto;overflow:hidden;border:1px solid var(--phone-edge);background:var(--screen);color:var(--text);border-radius:34px;box-shadow:0 28px 95px #0009,0 8px 20px #0005;transition:background .25s,color .25s}
+.notch{position:absolute;z-index:11;top:7px;left:calc(50% - 46px);width:92px;height:13px;background:var(--notch);border-radius:12px;opacity:.72}
+.phone button{color:inherit}.game-screen{padding:30px 21px 12px;height:100%;display:flex;flex-direction:column}
+.screen-top,.home-top,.result-top{display:flex;align-items:center;justify-content:space-between}.screen-top{height:58px;flex:0 0 58px;border-bottom:1px solid var(--divider)}
+.game-logo{display:flex;align-items:center;gap:9px}.mark{display:flex;align-items:center;gap:3px;height:26px}.mark i{display:block;width:5px;height:17px;background:var(--mint);transform:skew(-28deg);border-radius:2px}.mark i:nth-child(2){height:23px;background:var(--accent)}.mark i:nth-child(3){height:13px}
+.brand-name{font-size:14px;font-weight:950;letter-spacing:-.045em;line-height:.9}.brand-name span{display:block;font-size:10px;font-weight:800;letter-spacing:.25em;color:var(--muted);margin-top:5px}
+.head-right{text-align:right;display:flex;flex-direction:column;gap:4px}.tiny-label{font-size:9px;font-weight:800;color:var(--muted);letter-spacing:.2em}.head-right strong{font-size:15px}.head-right strong span{color:var(--muted)}
+.level-header{display:flex;justify-content:space-between;align-items:end;flex:0 0 68px;padding-top:8px;gap:9px}.micro-line{font-size:8px;letter-spacing:.115em;font-weight:850;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}.beacon{display:inline-block;width:6px;height:6px;border-radius:100%;background:var(--mint);box-shadow:0 0 9px var(--mint);flex-shrink:0}.micro-dash{color:var(--accent)}.level-header h2{font-size:27px;letter-spacing:-.065em;line-height:1;margin:7px 0 3px;font-weight:900}.level-header h2 em{font-style:normal;color:var(--mint)}.level-header select{font-size:10px;font-weight:850;letter-spacing:.07em;color:var(--text);background:var(--surface);border:1px solid var(--divider);border-radius:9px;width:52px;padding:9px 5px;margin-bottom:3px}
+.board-frame{position:relative;border:1px solid var(--board-edge);border-radius:15px;overflow:hidden;width:320px;height:568px;align-self:center;flex:0 0 568px;background:var(--board);box-shadow:var(--board-shadow)}.board-frame canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.hud-status{display:flex;align-items:center;gap:9px;flex:1 1 auto;min-height:43px;overflow:hidden}.status-glyph{width:24px;height:24px;border:1px solid var(--divider);border-radius:7px;display:grid;place-items:center;color:var(--mint);font-size:13px;flex-shrink:0}.hud-status div:last-child{min-width:0}.hud-status strong{display:block;font-size:11px;line-height:1.3;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hud-status span{display:block;color:var(--muted);font-size:9px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.inline-result{position:absolute;z-index:6;left:37px;right:37px;bottom:101px;background:var(--surface);color:var(--text);padding:8px;border-radius:8px;border:1px solid var(--mint);font-size:11px;font-weight:800;text-align:center;box-shadow:0 2px 20px #0004}
+.game-buttons{display:grid;grid-template-columns:1fr 46px 46px 46px;gap:8px;flex:0 0 48px}.game-buttons button{height:48px;border-radius:13px;border:1px solid var(--button-border);background:var(--surface);font-weight:800;font-size:16px}.game-buttons .action-btn{background:var(--mint);color:var(--action-text);border-color:transparent;font-size:13px;letter-spacing:.1em;display:flex;align-items:center;justify-content:space-between;padding:0 15px}.action-btn span{font-size:19px}.icon-btn{font-size:22px!important}.pause-btn{font-size:18px!important}.help-btn{font-size:18px!important}.bottom-rail{display:flex;align-items:center;justify-content:space-between;flex:0 0 23px;font-size:8px;font-weight:850;letter-spacing:.14em;color:var(--muted);padding:4px 1px 0}
+/* Home and result are illustrative screen presentations, not claims of a finished menu. */
+.overlay-screen{position:absolute;inset:0;z-index:4;background:var(--screen);color:var(--text);padding:36px 28px 24px}.home-top{height:54px;border-bottom:1px solid var(--divider)}.home-build{font-size:9px;font-weight:850;letter-spacing:.15em;color:var(--muted)}.home-tag{margin:44px 0 15px;font-size:9px;letter-spacing:.17em;color:var(--muted);font-weight:850;display:flex;align-items:center;gap:8px}.home-screen h2{font-size:62px;letter-spacing:-.085em;line-height:.94;margin:0;font-weight:920}.home-screen h2 em{color:var(--mint);font-style:normal}.home-copy{font-size:13px;color:var(--muted);line-height:1.7;width:90%;margin:18px 0 0}.home-art{position:absolute;top:407px;left:24px;width:340px;height:250px}.home-bottom{position:absolute;bottom:33px;left:27px;right:27px}.home-metadata{display:block;margin-bottom:14px;font-size:9px;font-weight:850;letter-spacing:.14em;color:var(--muted)}.home-metadata span{margin:0 8px;color:var(--mint)}.home-cta{height:62px;background:var(--mint);color:var(--action-text)!important;border:0;border-radius:15px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:950;letter-spacing:.1em;width:100%;box-shadow:var(--button-shadow)}.home-cta span{font-size:21px}.home-footer{font-size:8px;letter-spacing:.18em;text-align:center;color:var(--muted);font-weight:800;margin-top:18px}
+.result-top{margin-top:0;height:52px;border-bottom:1px solid var(--divider);font-size:10px;letter-spacing:.15em;font-weight:850;color:var(--muted)}.result-hero{text-align:center;padding-top:43px}.star-burst{margin:0 auto 25px;width:159px;height:159px;display:grid;place-items:center;position:relative;border:2px solid var(--mint);border-radius:50%;box-shadow:0 0 0 18px var(--soft-ring),0 0 0 43px var(--softer-ring)}.star-burst span{font-size:84px;color:var(--mint);line-height:1}.star-burst i{position:absolute;width:8px;height:8px;background:var(--accent);transform:rotate(45deg)}.star-burst i:nth-of-type(1){top:0;left:7px}.star-burst i:nth-of-type(2){bottom:12px;right:5px}.result-overline{margin:0 0 14px;font-size:10px;font-weight:850;letter-spacing:.2em;color:var(--muted)}.result-hero h2{font-size:49px;letter-spacing:-.07em;line-height:1.05;margin:0}.result-hero h2 em{color:var(--mint);font-style:normal}.result-hero>p:last-child{font-size:13px;color:var(--muted);line-height:1.6;max-width:250px;margin:18px auto 0}.result-card{margin-top:24px;padding:16px;border:1px solid var(--divider);border-radius:16px;background:var(--surface)}.result-card-title{font-size:9px;font-weight:850;letter-spacing:.16em;color:var(--muted);display:flex;justify-content:space-between}.result-card-title span{color:var(--accent)}.result-metrics{display:flex;justify-content:space-between;gap:10px;margin:22px 0 13px}.result-metrics small{font-size:8px;font-weight:800;letter-spacing:.09em;color:var(--muted);display:block}.result-metrics strong{font-size:22px;display:block;margin-top:5px;white-space:nowrap}.result-metrics strong span{font-size:10px;color:var(--muted)}.mockup-warning{font-size:9px;color:var(--muted);border-top:1px solid var(--divider);padding-top:9px;line-height:1.4}.result-bottom{position:absolute;left:27px;right:27px;bottom:34px}.quiet-link{border:0;background:none;color:var(--muted)!important;display:block;width:100%;text-align:center;font-size:11px;font-weight:850;letter-spacing:.11em;padding:15px 0 0}
+/* Direction A: precise luminous geometry, restrained technical premium */
+body[data-theme="pulse"]{--screen:#0b1321;--text:#f3fbfc;--muted:#8ca5b7;--mint:#72f3d8;--accent:#fa977c;--surface:#142337;--divider:#24354a;--board:#0e1c2b;--board-edge:#2d485c;--phone-edge:#3a586d;--notch:#29445b;--hazard:#384453;--hazard-edge:#ff977a;--grid:#38556a;--action-text:#0a2430;--board-shadow:inset 0 0 25px #001b3b77;--button-border:#304c61;--button-shadow:0 8px 28px #42e6c026;--soft-ring:#70f3d811;--softer-ring:#70f3d808}
+/* Direction B: tactile, gentle illustration with ink and warm paper */
+body[data-theme="ink"]{--screen:#f7efe1;--text:#292a32;--muted:#877f76;--mint:#19796d;--accent:#d66d47;--surface:#fff9ee;--divider:#d9c9b4;--board:#f5e9d5;--board-edge:#bfae91;--phone-edge:#decaa8;--notch:#cebba2;--hazard:#e8ac8d;--hazard-edge:#b85e48;--grid:#deccb8;--action-text:#fffaf0;--board-shadow:inset 0 0 18px #c3a48130;--button-border:#d4bea4;--button-shadow:4px 5px 0 #c3b69b;--soft-ring:#16766d10;--softer-ring:#16766d08}
+/* Direction C: optimistic soft-toy geometry */
+body[data-theme="micro"]{--screen:#e3e2ff;--text:#2e2b65;--muted:#7774ab;--mint:#5b4de3;--accent:#ed6f94;--surface:#f7f4ff;--divider:#c9c3f2;--board:#d9d7ff;--board-edge:#aba2ea;--phone-edge:#aea2f2;--notch:#ada8e7;--hazard:#faa9be;--hazard-edge:#ba618e;--grid:#bbb6ec;--action-text:#fffefa;--board-shadow:inset 0 0 22px #7771ca1b;--button-border:#bbb2eb;--button-shadow:0 8px 0 #b6aafa;--soft-ring:#5c4ee316;--softer-ring:#5c4ee30a}
+/* Distinct UI handling for each direction */
+body[data-theme="ink"] .phone{border-radius:22px;box-shadow:7px 9px 0 #b9a487,0 26px 80px #0003}body[data-theme="ink"] .board-frame{border-radius:10px;border-style:dashed;border-width:2px}body[data-theme="ink"] .level-header h2 em,body[data-theme="ink"] .home-screen h2 em,body[data-theme="ink"] .result-hero h2 em{font-style:italic;font-family:Georgia,serif;font-weight:700}body[data-theme="ink"] .mark i{border-radius:0;transform:rotate(-20deg)}body[data-theme="ink"] .game-buttons button,body[data-theme="ink"] .home-cta{border-radius:8px}body[data-theme="ink"] .result-card{border-radius:8px;border-style:dashed}
+body[data-theme="micro"] .phone{border-radius:42px;box-shadow:0 28px 80px #0004}body[data-theme="micro"] .board-frame{border-radius:24px;border-width:3px}body[data-theme="micro"] .level-header h2 em,body[data-theme="micro"] .home-screen h2 em,body[data-theme="micro"] .result-hero h2 em{font-style:italic}body[data-theme="micro"] .brand-name,body[data-theme="micro"] h2{letter-spacing:-.052em}body[data-theme="micro"] .game-buttons button,body[data-theme="micro"] .home-cta{border-radius:21px}body[data-theme="micro"] .mark i{border-radius:5px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:860px){.review-studio{grid-template-columns:1fr;gap:22px;padding:20px 10px 40px}.review-rail{position:static;max-width:440px;width:100%;margin:0 auto;gap:20px;padding:4px 8px}.rail-top h1{font-size:35px;margin:8px 0 5px}.rail-top p{font-size:12px;line-height:1.4;margin:8px 0}.lab-tag{margin-top:4px}.rail-section{padding-top:10px}.rail-section h2{margin-bottom:9px}.theme-choice{padding:7px 10px;margin-bottom:2px}.theme-swatch{width:31px;height:31px}.rail-footer{display:none}.presentation{gap:7px}.phone{max-width:100%}}
+@media(max-width:400px){.phone{width:100%;height:auto;aspect-ratio:390/844}.phone .game-screen{padding-left:5.38%;padding-right:5.38%}.board-frame{width:90%;height:auto;aspect-ratio:320/568;flex:0 0 auto}.game-screen{height:100%}.level-header{flex-basis:8%}.screen-top{flex-basis:7%}.hud-status{flex:1}.game-buttons{flex-basis:6%}.bottom-rail{flex-basis:3%}.overlay-screen{overflow:hidden}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* P2.1 pulse refinement — approved direction, final UI signoff pending */
+body[data-theme="pulse"]{--screen:#0b1321;--text:#f3fbfc;--muted:#98b1c1;--mint:#72f3d8;--accent:#fa977c;--surface:#142337;--divider:#263e53;--board:#0e1c2b;--board-edge:#32556b;--phone-edge:#3a586d;--notch:#29445b;--hazard:#384453;--hazard-edge:#ff977a;--grid:#38556a;--action-text:#0a2430;--board-shadow:inset 0 0 25px #001b3b77;--button-border:#304c61;--button-shadow:0 8px 28px #42e6c026;--soft-ring:#70f3d811;--softer-ring:#70f3d808}
+.review-studio{max-width:1120px;grid-template-columns:minmax(265px,320px) minmax(360px,1fr)}
+.rail-dot{color:#72f3d8}.review-rail{top:32px}.rail-note{font-size:13px;color:#a6bdca;line-height:1.8}.rail-note strong{color:#72f3d8}.pulse-proof{display:flex;align-items:center;gap:12px;border:1px solid #315366;background:#102337;border-radius:14px;padding:13px}.pulse-chip{width:37px;height:37px;display:block;border-radius:10px;background:linear-gradient(135deg,#0b1321 45%,#72f3d8 46%,#72f3d8 57%,#fa977c 58%);border:1px solid #335772}.pulse-proof strong{font-size:13px;display:block}.pulse-proof small{display:block;font-size:11px;color:#a6bdca;margin-top:4px}.proof-check{margin-left:auto;color:#72f3d8;font-weight:bold;font-size:21px}
+.game-screen{padding-bottom:13px}.phone{transition:none}.screen-top{flex-basis:64px}.level-header{flex-basis:71px}.level-header h2{font-size:27px}.hud-status{min-height:45px}.hud-status strong{font-size:12px}.hud-status span{font-size:10px}.game-buttons{grid-template-columns:1fr 48px 48px 48px;gap:7px;flex-basis:50px}.game-buttons button{height:50px}.game-buttons .action-btn{font-size:14px}.bottom-rail{font-size:8px;flex-basis:25px}.text-link{padding:5px 0;border:none;background:none;color:var(--muted)!important;font-weight:850;font-size:9px;letter-spacing:.1em}.text-link:hover{color:var(--mint)!important}
+.home-screen h2{font-size:58px}.home-copy{font-size:13px;max-width:298px}.home-art{top:410px;left:18px;width:calc(100% - 36px);height:248px}.home-top{gap:6px}.home-build{font-size:8px}.home-cta{min-height:56px}.result-hero{padding-top:40px}.result-hero h2{font-size:47px}.result-card{margin-top:21px}.result-card-title span:first-child{color:var(--muted)}.result-card-title span:last-child{color:var(--accent)}.result-metrics{margin:19px 0 13px}.result-metrics strong{font-size:22px}.result-metrics strong span:last-child{font-size:11px;color:var(--muted)}.result-detail{font-size:10px;color:var(--muted);border-top:1px solid var(--divider);padding-top:11px;line-height:1.5}.result-bottom{bottom:26px}.result-bottom .quiet-link{padding-top:11px}.result-top{gap:10px}.star-burst{width:151px;height:151px;margin-bottom:21px}.star-burst span{font-size:80px}
+.howto-overlay{position:absolute;inset:0;z-index:12;background:#07111fd9;display:flex;align-items:center;justify-content:center;padding:26px}.howto-card{border:1px solid #39566b;background:#12243a;border-radius:23px;padding:28px 25px;box-shadow:0 18px 70px #0009;width:100%}.howto-small{font-size:9px;color:#72f3d8;font-weight:850;letter-spacing:.19em}.howto-card h2{font-size:45px;letter-spacing:-.08em;line-height:1.04;margin:16px 0 22px}.howto-card h2 em{font-style:normal;color:#72f3d8}.howto-card p{font-size:13px;color:#b2c9d8;line-height:1.75}.howto-card b{color:#72f3d8}.howto-card button{margin-top:20px}
+/* The screen is no longer an illustration: actual controls + actual result values */
+@media(max-width:860px){.review-studio{display:block;padding:0;min-height:100dvh}.review-rail{display:none}.presentation{gap:0}.presentation-label,.presentation-foot{display:none}.phone{width:min(100vw,390px);height:auto;aspect-ratio:390/844;max-width:none;border:0;border-radius:0;box-shadow:none}.notch{display:none}.game-screen{padding-top:10px}.overlay-screen{padding-top:26px}.result-hero{padding-top:30px}}
+@media(max-width:400px){.phone{width:100vw;height:100dvh;min-height:660px;aspect-ratio:auto}.game-screen{height:100%;padding:10px 18px 6px}.screen-top{flex-basis:52px}.level-header{flex-basis:64px;padding-top:5px}.level-header h2{font-size:25px}.board-frame{width:auto!important;height:auto!important;aspect-ratio:360/640;flex:1 1 auto;min-height:0}.board-frame canvas{width:100%;height:100%;object-fit:fill}.hud-status{flex:0 0 46px;min-height:0}.game-buttons{flex-basis:48px}.game-buttons button{height:48px}.bottom-rail{flex-basis:22px}.home-art{top:46%;height:28%}.home-screen h2{font-size:clamp(46px,13.5vw,58px)}.home-copy{margin-top:14px}.home-tag{margin-top:30px}.home-bottom{bottom:18px}.result-hero{padding-top:30px}.result-hero h2{font-size:43px}.star-burst{width:137px;height:137px}.result-bottom{bottom:22px}.result-card{padding:13px;margin-top:18px}}
+@media(prefers-reduced-motion:reduce){.star-burst,.beacon{animation:none!important;transition:none!important}}
+
+/* Desktop/large-screen phone frame: make gameplay rail fit 844px without clipping. */
+@media(min-width:401px){.board-frame{width:306px;height:544px;flex:0 0 544px}}
+
+/* Legibility refinements: important metadata must not rely on 8px type. */
+.micro-line{font-size:9px}.home-build{font-size:9px}.result-card-title,.result-metrics small{font-size:10px}.result-detail{font-size:11px}.home-footer{font-size:9px}
+
+/* P3 Gameplay expansion: approved Pulse Grid tokens, compact one-finger correction controls. */
+.mode-picker{display:grid;grid-template-columns:1fr 1.18fr;gap:7px;margin:0 0 12px}
+.mode-picker button{background:#122538;border:1px solid #385266;border-radius:12px;color:#a6c6d3;font-size:9px;letter-spacing:.015em;font-weight:850;padding:12px 5px;white-space:nowrap;min-height:44px}
+.mode-picker button[aria-pressed="true"]{background:#163b42;color:#98fff0;border-color:#72f3d8;box-shadow:0 0 0 1px #72f3d855 inset}
+.mode-picker strong{color:#fa977c;margin-right:4px}
+.snap-action{font-size:10px!important;letter-spacing:.03em!important;background:#15343a!important;color:#86f8e3!important;border:1px solid #499d97!important;border-radius:12px!important;min-width:0;padding:0 3px;font-weight:950!important}
+.snap-action:disabled{opacity:.44}
+body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(57px,.68fr) 39px 39px 39px;gap:5px}
+body[data-mode="b"] .game-buttons .action-btn{padding:0 10px}
+body[data-mode="b"] .game-buttons button{height:48px}
+body[data-mode="b"] .bottom-rail span{color:#77edda}
+.home-art{height:224px;top:396px}
+.home-bottom{bottom:21px}
+@media(max-width:400px){.home-art{height:24%;top:42%}.home-bottom{bottom:15px}.mode-picker{margin-bottom:8px}.home-metadata{margin-bottom:8px}.home-footer{margin-top:10px}.game-buttons{gap:5px}body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) minmax(59px,.7fr) 38px 38px 38px;gap:4px}}
+@media(max-width:355px){body[data-mode="b"] .game-buttons{grid-template-columns:minmax(0,1fr) 58px 35px 35px 35px;gap:3px}.game-screen{padding-left:12px!important;padding-right:12px!important}}
+
+/* P5: three prototype modes, still Pulse Grid. Avoid stacking text at 360px. */
+.mode-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.mode-picker button{min-height:45px;white-space:normal;font-size:9px;line-height:1.28;padding:7px 5px;letter-spacing:0}
+.mode-picker strong{display:block;margin:0 0 3px;font-size:11px}
+body[data-mode="c"] .game-buttons{grid-template-columns:1fr 48px 48px 48px}
+body[data-mode="c"] .game-buttons .action-btn{display:none!important}
+body[data-mode="c"] .game-buttons{grid-template-columns:repeat(3,1fr)}
+body[data-mode="c"] .game-buttons .icon-btn{max-width:none}
+body[data-mode="c"] .bottom-rail span{color:var(--mint)}
+@media(max-width:400px){.mode-picker button{font-size:8.3px;padding:6px 3px;min-height:44px}.mode-picker strong{margin-bottom:3px}.home-copy{line-height:1.45;margin-top:10px}}
+
+/* P6.1 — real mode-aware course catalog. Preserve approved Pulse Grid tokens. */
+.course-screen{display:flex;flex-direction:column;gap:0}
+.course-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:17px;border-bottom:1px solid var(--divider)}
+.course-top span{font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:850}
+.course-back{font-size:11px;font-weight:900;letter-spacing:.08em;border:0;background:transparent;color:var(--mint)!important;padding:10px 0;min-height:44px}
+.course-intro{padding:21px 0 14px}
+.course-intro .home-tag{margin:0 0 15px}
+.course-intro h2{font-size:53px;letter-spacing:-.075em;line-height:.94;margin:0;font-weight:920}
+.course-intro h2 em{font-style:normal;color:var(--mint)}
+.course-intro p{font-size:11px;letter-spacing:.15em;color:var(--accent);font-weight:850;margin:19px 0 0}
+.course-cards{display:flex;flex-direction:column;gap:11px;overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;padding:4px 2px 18px}
+.course-card{text-align:left;color:var(--text)!important;background:var(--surface);border:1px solid var(--divider);border-radius:15px;padding:15px 17px;display:flex;flex-direction:column;gap:7px;min-height:107px;width:100%;flex-shrink:0}
+.course-card:hover,.course-card:focus-visible{border-color:var(--mint);background:#1a3546}
+.course-card small{font-size:9px;font-weight:880;letter-spacing:.13em;color:var(--mint)}
+.course-card strong{font-size:19px;letter-spacing:-.04em;font-weight:850}
+.course-card span{font-size:10px;font-weight:720;letter-spacing:.035em;color:var(--muted)}
+.course-bottom{padding-top:13px;border-top:1px solid var(--divider);display:flex;flex-direction:column;gap:8px}
+.course-bottom p{font-size:12px;font-weight:800;color:var(--mint);margin:0}
+.course-bottom button{height:39px;border:1px solid var(--divider);color:var(--muted)!important;background:transparent;border-radius:9px;font-size:10px;font-weight:850;letter-spacing:.1em}
+.course-bottom>span{font-size:9px;color:var(--muted);line-height:1.5}
+@media(max-width:400px){.course-screen{padding:19px 21px 19px}.course-intro{padding:9px 0 12px}.course-intro h2{font-size:43px}.course-intro p{margin:11px 0 0}.course-card{min-height:92px;padding:11px 14px;gap:6px}.course-cards{gap:9px;padding-bottom:10px}.course-bottom{padding-top:10px;gap:6px}.course-bottom button{height:36px}.course-bottom>span{font-size:9px}}
+
+/* P6.2 — concise guides, one visual system, no extra gameplay HUD clutter. */
+.mode-learn-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.course-intro .mode-learn-row p{margin:0;font-size:10px;letter-spacing:.12em}
+.mode-learn-btn{border:1px solid var(--divider);background:var(--surface);border-radius:9px;min-height:44px;padding:0 12px;color:var(--mint)!important;font-size:9px;font-weight:850;letter-spacing:.065em;white-space:nowrap}
+.mode-learn-btn:hover,.mode-learn-btn:focus-visible{border-color:var(--mint)}
+.mode-learn-btn span{margin-left:4px}
+.howto-overlay{overscroll-behavior:contain;padding:14px}
+.howto-card{padding:23px 22px;border-radius:18px;max-height:calc(100% - 12px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.howto-card h2{margin:12px 0 7px;font-size:35px;line-height:1.06;letter-spacing:-.06em}
+.howto-card p.guide-tagline{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
+.guide-preview{display:block;width:100%;height:auto;aspect-ratio:290/96;background:var(--board);border:1px solid var(--divider);border-radius:11px;margin:0 0 16px;max-height:96px}
+.guide-steps{list-style:none;padding:0;margin:0;counter-reset:guide;display:flex;flex-direction:column;gap:12px}
+.guide-steps li{counter-increment:guide;position:relative;padding:0 0 0 34px;font-size:12px;line-height:1.55;color:var(--text)}
+.guide-steps li::before{content:counter(guide,decimal-leading-zero);position:absolute;left:0;top:0;color:var(--mint);font-size:10px;font-weight:900;letter-spacing:.04em}
+.guide-actions{display:flex;flex-direction:column;gap:5px;margin-top:18px}
+.guide-actions .home-cta{margin:0;min-height:52px;height:52px;font-size:11px}
+.guide-actions .guide-skip{margin:0;min-height:44px;border:0;background:transparent;color:var(--muted)!important;font-size:10px;font-weight:850;letter-spacing:.09em}
+.guide-actions .guide-skip:hover{color:var(--text)!important}
+@media(max-width:400px){.course-intro .mode-learn-row{margin-top:6px}.course-intro .mode-learn-row p{font-size:9px}.mode-learn-btn{min-height:44px;padding:0 11px}.howto-card{padding:19px 18px}.howto-card h2{font-size:32px}.guide-preview{max-height:81px}.guide-steps{gap:10px}}
+@media(max-height:725px){.howto-card{max-height:calc(100% - 8px);padding:16px}.howto-card h2{margin:7px 0 5px;font-size:29px}.guide-preview{max-height:65px;margin-bottom:9px}.guide-steps{gap:6px}.guide-steps li{font-size:11px}.guide-actions{margin-top:10px}}
+
+</style>
+</head>
+<body data-theme="pulse" data-view="home">
+  <main class="review-studio">
+    <section class="review-rail" aria-label="Prototype guidance">
+      <div class="rail-top">
+        <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
+        <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
+        <p>Three gameplay modes. Eight designed courses across three distinct modes, with focused first-run guides and one approved Pulse Grid style.</p>
+        <span class="lab-tag">P6.3 • EIGHT COURSES</span>
+      </div>
+      <div class="rail-section">
+        <h2><span>01</span> How to play</h2>
+        <p class="rail-note"><strong>A</strong> Plan a complete route.<br><strong>B</strong> Correct one point while running.<br><strong>C</strong> Draw live ahead of the runner.<br>Tap any course to see a short, mode-specific first-run guide.</p>
+      </div>
+      <div class="rail-section">
+        <h2><span>02</span> Locked visual direction</h2>
+        <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
+        <p class="rail-note">Your P2 selection is recorded. Approved Pulse Grid retained. All three mechanics are kept as distinct modes.</p>
+      </div>
+      <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
+    </section>
+
+    <section class="presentation" aria-label="Phone-scale visual preview">
+      <div class="presentation-label"><span>LIVE HTML/CANVAS RENDER</span><span id="styleName">PULSE GRID / APPROVED</span></div>
+      <div class="phone" id="phone">
+        <div class="notch" aria-hidden="true"></div>
+        <div class="game-screen" id="gameScreen">
+          <header class="screen-top">
+            <div class="game-logo"><div class="mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div>
+            <div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
+          </header>
+          <div class="level-header">
+            <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>
+            <label class="sr-only" for="courseSelect">Course</label><select id="courseSelect" aria-label="Select test course"><option value="detour">01</option><option value="timing">02</option><option value="snaplab" hidden disabled>03 ★</option></select>
+          </div>
+          <div class="board-frame"><canvas id="courseCanvas" width="360" height="640" aria-label="Interactive route course: drag one stroke from S to F, avoid the obstacles." tabindex="0"></canvas></div>
+          <div class="hud-status" role="status" aria-live="polite"><div class="status-glyph" aria-hidden="true">↗</div><div><strong id="status">Draw a line from S to F.</strong><span id="substatus">Trace one continuous path.</span></div></div>
+          <div id="result" class="inline-result" hidden></div>
+          <div class="game-buttons"><button id="goBtn" class="action-btn" disabled>GO <span>➜</span></button><button id="snapBtn" class="snap-action" hidden disabled title="One route correction">SNAP</button><button id="resetBtn" class="icon-btn" aria-label="Reset route" title="Reset route">↻</button><button id="pauseBtn" class="icon-btn pause-btn" aria-label="Pause route" disabled title="Pause">Ⅱ</button><button id="helpBtn" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button></div>
+          <div class="bottom-rail"><button id="backToHome" class="text-link" aria-label="Back to Home">← HOME</button><span id="modeDescription">DRAW • RUN • IMPROVE</span></div>
+        </div>
+
+        <div class="home-screen overlay-screen" id="homeScreen" hidden>
+          <div class="home-top"><div class="game-logo"><div class="mark"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div><span class="home-build">THREE DISTINCT MODES</span></div>
+          <div class="home-tag"><span class="beacon"></span> ONE LINE. MANY POSSIBILITIES.</div>
+          <h2>Make<br>your own<br><em>way.</em></h2>
+          <p class="home-copy">The shortest route is not always the safest. Draw, dodge the hazards, and compare three ways to create your own route.</p>
+          <svg class="home-art" viewBox="0 0 340 270" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs><linearGradient id="homeGlow" x1="0" y1="1" x2="1" y2="0"><stop stop-color="var(--mint)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+            <g opacity=".36" stroke="var(--grid)" stroke-width="1"><path d="M0 50H340 M0 100H340 M0 150H340 M0 200H340 M0 250H340 M50 0V270 M100 0V270 M150 0V270 M200 0V270 M250 0V270 M300 0V270"/></g>
+            <rect x="118" y="140" width="91" height="36" rx="9" fill="var(--hazard)" stroke="var(--hazard-edge)" stroke-width="3"/><rect x="221" y="65" width="59" height="34" rx="8" fill="var(--hazard)" stroke="var(--hazard-edge)" stroke-width="3"/>
+            <path d="M38 232 L58 219 L62 87 Q63 34 112 34 L290 34" stroke="var(--mint)" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".12"/>
+            <path d="M38 232 L58 219 L62 87 Q63 34 112 34 L290 34" stroke="url(#homeGlow)" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="38" cy="232" r="16" fill="var(--screen)" stroke="var(--mint)" stroke-width="3"/><circle cx="38" cy="232" r="6" fill="var(--mint)"/><circle cx="290" cy="34" r="19" fill="var(--screen)" stroke="var(--accent)" stroke-width="3"/><path d="M282 34h16m-7-8v16" stroke="var(--accent)" stroke-width="2"/>
+            <circle cx="84" cy="34" r="6" fill="var(--mint)" opacity=".7"/><circle cx="186" cy="34" r="3" fill="var(--mint)"/>
+          </svg>
+          <div class="home-bottom"><span class="home-metadata">CHOOSE A GAME MODE</span><div class="mode-picker" role="group" aria-label="Game mode"><button type="button" id="modeA" aria-pressed="true"><strong>A</strong> PLAN & RUN</button><button type="button" id="modeB" aria-pressed="false"><strong>B</strong> SNAP & REDIRECT</button><button type="button" id="modeC" aria-pressed="false"><strong>C</strong> LIVE DRAWING</button></div><button id="startDemo" class="home-cta">LET'S PLAY <span>➜</span></button><div class="home-footer">THE PATH IS YOURS TO MAKE.</div></div>
+        </div>
+
+        <div class="course-screen overlay-screen" id="courseScreen" hidden>
+          <div class="course-top"><button type="button" id="courseBack" class="course-back">← MODES</button><span>YOUR COURSES</span></div>
+          <div class="course-intro"><span class="home-tag"><span class="beacon"></span> CHOOSE YOUR NEXT RUN</span><h2>Pick your<br><em>path.</em></h2><div class="mode-learn-row"><p id="courseModeHeading">PLAN & RUN</p><button type="button" id="courseGuideBtn" class="mode-learn-btn">HOW TO PLAY <span aria-hidden="true">↗</span></button></div></div>
+          <div class="course-cards" id="courseCards" aria-label="Available levels"></div>
+          <div class="course-bottom"><p id="courseSummary" aria-live="polite">0 / 2 cleared locally</p><button type="button" id="resetProgress">RESET LOCAL RESULTS</button><span>No account. Progress is stored by this browser when storage is permitted.</span></div>
+        </div>
+
+        <div class="result-screen overlay-screen" id="resultScreen" hidden>
+          <div class="result-top"><span id="resultEyebrow">RUN COMPLETED</span><span id="resultSequence">01 / 02</span></div>
+          <div class="result-hero"><div class="star-burst" aria-hidden="true"><span>✦</span><i></i><i></i></div>
+            <p id="resultOverline" class="result-overline">COURSE COMPLETE</p>
+            <h2 id="resultHeadline">Beautifully<br><em>done.</em></h2>
+            <p id="resultMessage">You made it from start to finish.</p>
+          </div>
+          <div class="result-card"><div class="result-card-title"><span id="resultCourseLabel">COURSE 01</span><span id="resultCourseTitle">THE DETOUR</span></div>
+            <div class="result-metrics"><div><small>YOUR ROUTE</small><strong><span id="resultInk">—</span> <span>px</span></strong></div>
+              <div><small>RUN TIME</small><strong><span id="resultTime">—</span> <span>s</span></strong></div>
+              <div><small>ATTEMPTS</small><strong id="resultAttempts">—</strong></div></div>
+            <div class="result-detail" id="resultDetail">Values from this run, not placeholder statistics.</div></div>
+          <div class="result-bottom"><button id="nextDemo" class="home-cta">NEXT COURSE <span>➜</span></button><button id="retryResult" class="quiet-link">REPLAY THIS COURSE</button><button id="resultHome" class="quiet-link">BACK TO HOME</button></div>
+        </div>
+        <div class="howto-overlay" id="howtoOverlay" role="dialog" aria-modal="true" aria-labelledby="howtoTitle" aria-describedby="guideTagline" hidden>
+          <div class="howto-card" tabindex="-1">
+            <span class="howto-small" id="guideKicker">A · PLAN & RUN</span>
+            <h2 id="howtoTitle">Plan your path.</h2>
+            <p class="guide-tagline" id="guideTagline">Take your time. One clear route is enough.</p>
+            <svg class="guide-preview" viewBox="0 0 290 96" role="img" aria-label="Mint route bends around a coral obstacle to reach the finish">
+              <g stroke="var(--grid)" stroke-width=".7" opacity=".35"><path d="M0 32H290M0 64H290M40 0V96M100 0V96M160 0V96M220 0V96M280 0V96"/></g>
+              <rect x="109" y="35" width="70" height="31" rx="6" fill="var(--hazard)" stroke="var(--accent)" stroke-width="2"/>
+              <path d="M27 75L66 75L77 18L205 18L235 28L266 28" fill="none" stroke="var(--mint)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="75" r="11" stroke="var(--mint)" fill="var(--screen)" stroke-width="2.5"/><text x="27" y="79" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">S</text>
+              <circle cx="266" cy="28" r="11" stroke="var(--accent)" fill="var(--screen)" stroke-width="2.5"/><text x="266" y="32" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="900">F</text>
+            </svg>
+            <ol class="guide-steps" id="guideSteps"><li>Start at S and draw to F.</li></ol>
+            <div class="guide-actions"><button type="button" class="home-cta" id="closeHowto">START PLANNING <span aria-hidden="true">✓</span></button><button type="button" class="guide-skip" id="skipHowto">SKIP GUIDE</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="presentation-foot"><span>PHONE-READY BROWSER PROTOTYPE</span><span>PULSE GRID / P6.4 QA</span></div>
+    </section>
+  </main>
+  <script>
+(()=>{const modules={"src/core/geometry.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isValidVec = exports.lerpPoint = exports.clamp = exports.distance = void 0;
+exports.lengthOf = lengthOf;
+exports.pointAtDistance = pointAtDistance;
+exports.segmentHitsRect = segmentHitsRect;
+exports.pointSegmentDistanceSq = pointSegmentDistanceSq;
+exports.movingCircleHitsSegment = movingCircleHitsSegment;
+const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+exports.distance = distance;
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+exports.clamp = clamp;
+const lerpPoint = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+exports.lerpPoint = lerpPoint;
+const isValidVec = (p) => Number.isFinite(p.x) && Number.isFinite(p.y);
+exports.isValidVec = isValidVec;
+/** Distance along connected segments; no curve smoothing or hidden alteration. */
+function lengthOf(points) {
+    let sum = 0;
+    for (let i = 1; i < points.length; i++)
+        sum += (0, exports.distance)(points[i - 1], points[i]);
+    return sum;
+}
+function pointAtDistance(points, d) {
+    if (!points.length)
+        throw new Error('empty route');
+    if (points.length === 1 || d <= 0)
+        return { ...points[0] };
+    let left = d;
+    for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1], b = points[i], len = (0, exports.distance)(a, b);
+        if (len === 0)
+            continue;
+        if (left <= len)
+            return (0, exports.lerpPoint)(a, b, (0, exports.clamp)(left / len, 0, 1));
+        left -= len;
+    }
+    return { ...points[points.length - 1] };
+}
+/** Exact segment-vs-inflated AABB (swept circle). Edges count as collision. */
+function segmentHitsRect(a, b, rect, radius = 0) {
+    const loX = rect.x - radius, hiX = rect.x + rect.w + radius;
+    const loY = rect.y - radius, hiY = rect.y + rect.h + radius;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    let t0 = 0, t1 = 1;
+    const pairs = [[-dx, a.x - loX], [dx, hiX - a.x], [-dy, a.y - loY], [dy, hiY - a.y]];
+    for (const [p, q] of pairs) {
+        if (Math.abs(p) < 1e-12) {
+            if (q < 0)
+                return false;
+            continue;
+        }
+        const t = q / p;
+        if (p < 0) {
+            t0 = Math.max(t0, t);
+        }
+        else {
+            t1 = Math.min(t1, t);
+        }
+        if (t0 > t1)
+            return false;
+    }
+    return t0 <= t1;
+}
+/** Squared distance of segment from stationary circle centre. */
+function pointSegmentDistanceSq(c, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y, lenSq = dx * dx + dy * dy;
+    const t = lenSq > 0 ? (0, exports.clamp)(((c.x - a.x) * dx + (c.y - a.y) * dy) / lenSq, 0, 1) : 0;
+    const x = a.x + dx * t - c.x, y = a.y + dy * t - c.y;
+    return x * x + y * y;
+}
+/** Moving circle swept in relative coordinates against runner segment. */
+function movingCircleHitsSegment(runnerFrom, runnerTo, centreFrom, centreTo, combinedRadius) {
+    const a = { x: runnerFrom.x - centreFrom.x, y: runnerFrom.y - centreFrom.y };
+    const b = { x: runnerTo.x - centreTo.x, y: runnerTo.y - centreTo.y };
+    return pointSegmentDistanceSq({ x: 0, y: 0 }, a, b) <= combinedRadius * combinedRadius;
+}
+
+},
+"src/core/live.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LIVE_JOIN_RADIUS = exports.LIVE_GRACE_TICKS = exports.LIVE_LAUNCH_LENGTH = void 0;
+exports.appendLivePoint = appendLivePoint;
+exports.adoptLiveRoute = adoptLiveRoute;
+exports.advanceLiveRun = advanceLiveRun;
+const geometry_js_1 = require("./geometry.js");
+const drawing_js_1 = require("../game/drawing.js");
+const courses_js_1 = require("../game/courses.js");
+const simulation_js_1 = require("./simulation.js");
+exports.LIVE_LAUNCH_LENGTH = 85;
+exports.LIVE_GRACE_TICKS = 90; // 0.75s at fixed 120Hz, with hazards still advancing.
+exports.LIVE_JOIN_RADIUS = 29;
+/** Reject barrier crossings *before* committing a fresh visible stroke. */
+function appendLivePoint(points, target, course) {
+    if (!(0, geometry_js_1.isValidVec)(target) || target.x < 0 || target.x > courses_js_1.BOARD_WIDTH || target.y < 0 || target.y > courses_js_1.BOARD_HEIGHT)
+        return { ok: false, reason: 'Stay inside the course.' };
+    if (points.length === 0) {
+        if ((0, geometry_js_1.distance)(target, course.start) > 29)
+            return { ok: false, reason: 'Start at S.' };
+        return { ok: true, route: { points: [{ ...course.start }], length: 0 }, completed: false };
+    }
+    if (points.length > 4980)
+        return { ok: false, reason: 'Too many route points. Reset and redraw.' };
+    const previous = points[points.length - 1];
+    const nextPoints = (0, drawing_js_1.appendStroke)(points, target, 8);
+    for (let k = points.length; k < nextPoints.length; k++) {
+        const a = nextPoints[k - 1], b = nextPoints[k];
+        if (course.walls.some(w => (0, geometry_js_1.segmentHitsRect)(a, b, w, courses_js_1.RUNNER_RADIUS)))
+            return { ok: false, reason: 'Trail cannot cross a coral wall.' };
+    }
+    const len = (0, geometry_js_1.lengthOf)(nextPoints);
+    if (len > course.maxInk + 1e-8)
+        return { ok: false, reason: 'Ink limit reached; redraw a shorter trail.' };
+    return { ok: true, route: { points: nextPoints, length: len }, completed: (0, geometry_js_1.distance)(nextPoints.at(-1), course.finish) <= simulation_js_1.GOAL_ZONE };
+}
+/** Append-only: current position and elapsed ticks stay fixed exactly. */
+function adoptLiveRoute(run, route) {
+    if (route.length + 1e-8 < run.route.length)
+        throw Error('Cannot erase traversed trail.');
+    if (route.points.length < run.route.points.length)
+        throw Error('Live route must append only.');
+    for (let i = 0; i < run.route.points.length; i++) {
+        if ((0, geometry_js_1.distance)(route.points[i], run.route.points[i]) > 1e-8)
+            throw Error('Cannot alter existing trail points.');
+    }
+    if ((0, geometry_js_1.distance)((0, geometry_js_1.pointAtDistance)(route.points, run.distance), run.position) > 1e-5)
+        throw Error('Live route update would teleport runner.');
+    return { ...run, route };
+}
+/** A stationary runner may wait at the line tip for 0.75s; this is SIMULATION time. */
+function advanceLiveRun(run, course, completed, waitingTicks) {
+    if (run.phase !== 'running')
+        return { run, waitingTicks };
+    if (run.route.length - run.distance > 1e-7) {
+        const progressed = (0, simulation_js_1.advanceRun)(run, course, simulation_js_1.FIXED_STEP, true);
+        const atTip = !completed && progressed.phase === 'running' && progressed.route.length - progressed.distance <= 1e-7;
+        return { run: progressed, waitingTicks: atTip ? 1 : 0 };
+    }
+    if (completed) { // P1 reaches FINISH on the last moving tick, so no premature win in waiting state.
+        const won = (0, geometry_js_1.distance)(run.position, course.finish) <= simulation_js_1.GOAL_ZONE;
+        return { run: { ...run, phase: won ? 'won' : 'lost', failure: won ? null : 'Missed finish zone.' }, waitingTicks: 0 };
+    }
+    const t0 = run.ticks * simulation_js_1.FIXED_STEP, t1 = (run.ticks + 1) * simulation_js_1.FIXED_STEP;
+    if (course.moving.some(h => (0, geometry_js_1.movingCircleHitsSegment)(run.position, run.position, (0, courses_js_1.hazardPosition)(h, t0), (0, courses_js_1.hazardPosition)(h, t1), courses_js_1.RUNNER_RADIUS + h.radius)))
+        return { run: { ...run, phase: 'lost', ticks: run.ticks + 1, failure: 'Hit the moving hazard while waiting for ink.' }, waitingTicks: waitingTicks + 1 };
+    const nextWait = waitingTicks + 1;
+    if (nextWait >= exports.LIVE_GRACE_TICKS)
+        return { run: { ...run, phase: 'lost', ticks: run.ticks + 1, failure: 'Your runner caught the end of your line.' }, waitingTicks: nextWait };
+    return { run: { ...run, ticks: run.ticks + 1 }, waitingTicks: nextWait };
+}
+
+},
+"src/core/simulation.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GOAL_ZONE = exports.START_ZONE = exports.FIXED_STEP = void 0;
+exports.validateRoute = validateRoute;
+exports.beginRun = beginRun;
+exports.advanceRun = advanceRun;
+exports.simulateToEnd = simulateToEnd;
+const geometry_js_1 = require("./geometry.js");
+const courses_js_1 = require("../game/courses.js");
+exports.FIXED_STEP = 1 / 120;
+exports.START_ZONE = 28, exports.GOAL_ZONE = 32;
+const MAX_POINTS = 5000;
+function validateRoute(points, course) {
+    if (points.length < 2)
+        return { ok: false, reason: 'Draw a route from START to FINISH.' };
+    if (points.length > MAX_POINTS)
+        return { ok: false, reason: 'Too many points. Use one smoother stroke.' };
+    if (points.some(p => !(0, geometry_js_1.isValidVec)(p) || p.x < 0 || p.y < 0 || p.x > 360 || p.y > 640))
+        return { ok: false, reason: 'Route must stay inside the course.' };
+    if ((0, geometry_js_1.distance)(points[0], course.start) > exports.START_ZONE)
+        return { ok: false, reason: 'Begin your line inside the START circle.' };
+    if ((0, geometry_js_1.distance)(points[points.length - 1], course.finish) > exports.GOAL_ZONE)
+        return { ok: false, reason: 'End your line inside the FINISH circle.' };
+    const total = (0, geometry_js_1.lengthOf)(points);
+    if (total < 20)
+        return { ok: false, reason: 'Your route is too short.' };
+    if (total > course.maxInk + 1e-7)
+        return { ok: false, reason: `Ink exceeded by ${Math.ceil(total - course.maxInk)} units.` };
+    return { ok: true, route: { points: points.map(p => ({ x: p.x, y: p.y })), length: total } };
+}
+function beginRun(route, course) {
+    if (route.points.length < 2 || route.length <= 0)
+        throw new Error('route not valid');
+    return { phase: 'running', route, distance: 0, ticks: 0, position: { ...route.points[0] }, failure: null, courseId: course.id };
+}
+function advanceRun(run, course, dt = exports.FIXED_STEP, allowIncomplete = false) {
+    if (run.phase !== 'running')
+        return run;
+    if (run.courseId !== course.id)
+        throw new Error('course changed during attempt');
+    if (Math.abs(dt - exports.FIXED_STEP) > 1e-12)
+        throw new Error('use fixed timestep');
+    const prev = run.position, nd = Math.min(run.distance + dt * course.runnerSpeed, run.route.length);
+    const next = (0, geometry_js_1.pointAtDistance)(run.route.points, nd);
+    const t0 = run.ticks * dt, t1 = (run.ticks + 1) * dt;
+    for (const wall of course.walls) {
+        if ((0, geometry_js_1.segmentHitsRect)(prev, next, wall, courses_js_1.RUNNER_RADIUS))
+            return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Hit a solid obstacle.' };
+    }
+    for (const h of course.moving) {
+        if ((0, geometry_js_1.movingCircleHitsSegment)(prev, next, (0, courses_js_1.hazardPosition)(h, t0), (0, courses_js_1.hazardPosition)(h, t1), courses_js_1.RUNNER_RADIUS + h.radius))
+            return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Hit the moving hazard.' };
+    }
+    if (nd >= run.route.length - 1e-8) {
+        if (allowIncomplete && (0, geometry_js_1.distance)(next, course.finish) > exports.GOAL_ZONE)
+            return { ...run, position: next, distance: nd, ticks: run.ticks + 1 };
+        if ((0, geometry_js_1.distance)(next, course.finish) <= exports.GOAL_ZONE)
+            return { ...run, phase: 'won', position: next, distance: nd, ticks: run.ticks + 1, failure: null };
+        return { ...run, phase: 'lost', position: next, distance: nd, ticks: run.ticks + 1, failure: 'Missed the finish zone.' };
+    }
+    return { ...run, position: next, distance: nd, ticks: run.ticks + 1 };
+}
+function simulateToEnd(route, course, maxTicks = 30000) {
+    let run = beginRun(route, course);
+    for (let i = 0; i < maxTicks && run.phase === 'running'; i++)
+        run = advanceRun(run, course);
+    return run;
+}
+
+},
+"src/core/snap.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.pathPrefix = pathPrefix;
+exports.pathSuffix = pathSuffix;
+exports.createSnapPlan = createSnapPlan;
+exports.previewSnap = previewSnap;
+exports.replayWithSnap = replayWithSnap;
+const geometry_js_1 = require("./geometry.js");
+const simulation_js_1 = require("./simulation.js");
+const courses_js_1 = require("../game/courses.js");
+/** Return a complete prefix ending at the requested arclength (including that point). */
+function pathPrefix(points, at) {
+    const result = [{ ...points[0] }];
+    let covered = 0;
+    for (let i = 1; i < points.length; i++) {
+        const segment = (0, geometry_js_1.distance)(points[i - 1], points[i]);
+        if (covered + segment >= at - 1e-8) {
+            const p = (0, geometry_js_1.pointAtDistance)(points, at);
+            if ((0, geometry_js_1.distance)(result[result.length - 1], p) > 1e-8)
+                result.push(p);
+            return result;
+        }
+        result.push({ ...points[i] });
+        covered += segment;
+    }
+    return result;
+}
+/** Return a complete suffix starting at the requested arclength (including that point). */
+function pathSuffix(points, at) {
+    const result = [(0, geometry_js_1.pointAtDistance)(points, at)];
+    let covered = 0;
+    for (let i = 1; i < points.length; i++) {
+        const segment = (0, geometry_js_1.distance)(points[i - 1], points[i]);
+        if (covered + segment > at + 1e-8) {
+            result.push(...points.slice(i).map(p => ({ ...p })));
+            return result;
+        }
+        covered += segment;
+    }
+    if ((0, geometry_js_1.distance)(result[result.length - 1], points[points.length - 1]) > 1e-8)
+        result.push({ ...points[points.length - 1] });
+    return result;
+}
+function createSnapPlan(run) {
+    if (run.phase !== 'running' && run.phase !== 'paused')
+        return null;
+    const left = run.route.length - run.distance;
+    if (left < 190)
+        return null;
+    const pivot = run.distance + Math.min(180, left * .51);
+    const lead = Math.max(run.distance + 30, pivot - 65);
+    const tail = Math.min(run.route.length - 30, pivot + 65);
+    if (!(tail > pivot + 10 && lead < pivot - 10))
+        return null;
+    return { atTick: run.ticks, leadDistance: lead, pivotDistance: pivot, tailDistance: tail, anchor: (0, geometry_js_1.pointAtDistance)(run.route.points, pivot) };
+}
+/**
+ * Pure, deterministic snap. Already-travelled geometry and runner world position cannot change.
+ * The same run, plan and target always generate the same route or rejection reason.
+ */
+function previewSnap(run, course, plan, target) {
+    if (run.phase !== 'paused')
+        return { ok: false, reason: 'Pause the runner before editing.' };
+    if (plan.atTick !== run.ticks)
+        return { ok: false, reason: 'Snap time changed. Try again.' };
+    if (run.courseId !== course.id)
+        return { ok: false, reason: 'Wrong course.' };
+    if (run.route.length - run.distance < 190)
+        return { ok: false, reason: 'Too close to the finish to snap.' };
+    if (!(0, geometry_js_1.isValidVec)(target) || target.x < 14 || target.x > courses_js_1.BOARD_WIDTH - 14 || target.y < 58 || target.y > courses_js_1.BOARD_HEIGHT - 62)
+        return { ok: false, reason: 'Keep the anchor inside the playable area.' };
+    if ((0, geometry_js_1.distance)(target, plan.anchor) < 13)
+        return { ok: false, reason: 'Move the anchor farther to redirect.' };
+    const prefix = pathPrefix(run.route.points, plan.leadDistance);
+    const suffix = pathSuffix(run.route.points, plan.tailDistance);
+    const from = prefix[prefix.length - 1], to = suffix[0];
+    for (const wall of course.walls) {
+        if ((0, geometry_js_1.segmentHitsRect)(from, target, wall, courses_js_1.RUNNER_RADIUS) || (0, geometry_js_1.segmentHitsRect)(target, to, wall, courses_js_1.RUNNER_RADIUS))
+            return { ok: false, reason: 'New route crosses a solid obstacle.' };
+    }
+    const points = [...prefix, { x: target.x, y: target.y }, ...suffix];
+    const checked = (0, simulation_js_1.validateRoute)(points, course);
+    if (!checked.ok)
+        return { ok: false, reason: checked.reason };
+    // If editing any past point accidentally changes the current coordinate, the operation is illegal.
+    if ((0, geometry_js_1.distance)((0, geometry_js_1.pointAtDistance)(checked.route.points, run.distance), run.position) > 1e-5)
+        return { ok: false, reason: 'The edit would move your runner.' };
+    const newRun = { ...run, route: checked.route, position: { ...run.position } };
+    return { ok: true, route: checked.route, run: newRun, lengthDelta: (0, geometry_js_1.lengthOf)(points) - run.route.length };
+}
+function replayWithSnap(initial, course, event, maxTicks = 30000) {
+    // The only event is the snap at a deterministic tick. No hidden animation or random effects.
+    let run = initial, applied = false;
+    for (let n = 0; n < maxTicks && run.phase === 'running'; n++) {
+        if (!applied && run.ticks === event.tick) {
+            const plan = createSnapPlan(run);
+            if (!plan)
+                throw new Error('Cannot create replay snap plan.');
+            const result = previewSnap({ ...run, phase: 'paused' }, course, plan, event.target);
+            if (!result.ok)
+                throw new Error('Replay snap invalid: ' + result.reason);
+            run = { ...result.run, phase: 'running' };
+            applied = true;
+        }
+        run = (0, simulation_js_1.advanceRun)(run, course);
+    }
+    if (!applied)
+        throw new Error('Replay snap tick never reached.');
+    return run;
+}
+
+},
+"src/core/types.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+},
+"src/game/catalog.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MODE_COURSE_ORDER = exports.MODE_COPY = exports.MODES = void 0;
+exports.supportsMode = supportsMode;
+exports.coursesForMode = coursesForMode;
+exports.isAccessibleCourse = isAccessibleCourse;
+exports.nextCourse = nextCourse;
+exports.firstCourse = firstCourse;
+const courses_js_1 = require("./courses.js");
+/** Mode identity is stable across course navigation and progress keys. */
+exports.MODES = ['a', 'b', 'c'];
+exports.MODE_COPY = {
+    a: { name: 'PLAN & RUN', verb: 'THINK', summary: 'Draw your route. Press GO. Perfect the plan.' },
+    b: { name: 'SNAP & REDIRECT', verb: 'ADAPT', summary: 'Plan ahead. Make one careful mid-run correction.' },
+    c: { name: 'LIVE DRAWING', verb: 'REACT', summary: 'Keep drawing as your runner moves along the line.' }
+};
+/** Intentional, mode-specific learning progression (not source-array order). */
+exports.MODE_COURSE_ORDER = {
+    a: ['planbasics', 'detour', 'efficient', 'timing'],
+    b: ['detour', 'snaplab', 'snapchoice', 'timing'],
+    c: ['liveahead', 'detour', 'liveflow', 'timing']
+};
+function supportsMode(course, mode) {
+    return course.supportedModes.includes(mode);
+}
+function coursesForMode(mode) {
+    return exports.MODE_COURSE_ORDER[mode].map(id => courses_js_1.COURSES.find(c => c.id === id)).filter((c) => Boolean(c && supportsMode(c, mode)));
+}
+function isAccessibleCourse(mode, id) {
+    return coursesForMode(mode).some(course => course.id === id);
+}
+function nextCourse(mode, id) {
+    const available = coursesForMode(mode), index = available.findIndex(course => course.id === id);
+    return index >= 0 ? available[index + 1] ?? null : null;
+}
+function firstCourse(mode) {
+    const course = coursesForMode(mode)[0];
+    if (!course)
+        throw new Error(`No courses for mode ${mode}`);
+    return course;
+}
+
+},
+"src/game/courses.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.COURSES = exports.SECOND_CHANCE_GUIDE = exports.SNAP_LAB_GUIDE = exports.RUNNER_RADIUS = exports.BOARD_HEIGHT = exports.BOARD_WIDTH = void 0;
+exports.hazardPosition = hazardPosition;
+exports.getCourse = getCourse;
+exports.BOARD_WIDTH = 360, exports.BOARD_HEIGHT = 640, exports.RUNNER_RADIUS = 9;
+/** The existing B practice guide deliberately meets the patrol unless corrected. */
+exports.SNAP_LAB_GUIDE = [{ x: 38, y: 555 }, { x: 255, y: 550 }, { x: 319, y: 87 }];
+/** The second B lesson uses a separate hazard geometry. The guide is a starting hypothesis, not a solution. */
+exports.SECOND_CHANCE_GUIDE = [{ x: 38, y: 555 }, { x: 258, y: 548 }, { x: 319, y: 87 }];
+/** Author-crafted, solvable courses. Two original shared courses remain physically unchanged. */
+exports.COURSES = [
+    {
+        id: 'detour', supportedModes: ['a', 'b', 'c'], family: 'shared', title: 'Static Detour',
+        hint: 'Draw around the two solid blocks. Keep within your ink budget.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 850, runnerSpeed: 160,
+        walls: [{ x: 93, y: 305, w: 170, h: 75 }, { x: 177, y: 152, w: 70, h: 82 }], moving: []
+    },
+    {
+        id: 'timing', supportedModes: ['a', 'b', 'c'], family: 'shared', title: 'Moving Hazard',
+        hint: 'The circular hazard moves on a predictable cycle. Choose a safer route.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 865, runnerSpeed: 160,
+        walls: [{ x: 94, y: 385, w: 95, h: 54 }, { x: 205, y: 180, w: 62, h: 49 }],
+        moving: [{ center: { x: 182, y: 303 }, radius: 23, amplitude: 92, phase: 0, angularSpeed: 1.7, axis: 'y' }]
+    },
+    {
+        id: 'snaplab', supportedModes: ['b'], family: 'practice', title: 'Patrol Crossing',
+        hint: 'Trace the suggested line, press GO, then SNAP right.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 870, runnerSpeed: 160,
+        walls: [{ x: 100, y: 393, w: 90, h: 50 }, { x: 105, y: 158, w: 65, h: 70 }],
+        moving: [{ center: { x: 235, y: 305 }, radius: 24, amplitude: 40, phase: -3, angularSpeed: 1.7, axis: 'x' }]
+    },
+    {
+        id: 'planbasics', supportedModes: ['a'], family: 'practice', title: 'Planning Basics',
+        hint: 'One thoughtful line. Go left of the barrier, then around the top to F.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 835, runnerSpeed: 150,
+        walls: [{ x: 118, y: 310, w: 110, h: 90 }], moving: []
+    },
+    {
+        id: 'efficient', supportedModes: ['a'], family: 'signature', title: 'Efficient Detour',
+        hint: 'Two blocks, one budget. Look for a safe upper corridor before pressing GO.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 810, runnerSpeed: 160,
+        walls: [{ x: 68, y: 330, w: 135, h: 48 }, { x: 168, y: 200, w: 124, h: 52 }], moving: []
+    },
+    {
+        id: 'snapchoice', supportedModes: ['b'], family: 'signature', title: 'Second-Chance Timing',
+        hint: 'A different patrol timing. Draw the suggested line, then SNAP to escape its approach.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 895, runnerSpeed: 160,
+        walls: [{ x: 92, y: 390, w: 85, h: 52 }, { x: 110, y: 165, w: 65, h: 60 }],
+        moving: [{ center: { x: 252, y: 290 }, radius: 25, amplitude: 42, phase: -2.6, angularSpeed: 1.55, axis: 'x' }]
+    },
+    {
+        id: 'liveahead', supportedModes: ['c'], family: 'practice', title: 'Keep Ahead',
+        hint: 'Draw a little more trail than the runner needs. Lift and rejoin at the mint tip.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 835, runnerSpeed: 130,
+        walls: [{ x: 130, y: 365, w: 95, h: 80 }], moving: []
+    },
+    {
+        id: 'liveflow', supportedModes: ['c'], family: 'signature', title: 'Continuous Flow',
+        hint: 'Keep moving across the middle corridor while the patrol passes below.',
+        start: { x: 38, y: 555 }, finish: { x: 319, y: 87 }, maxInk: 890, runnerSpeed: 145,
+        walls: [{ x: 105, y: 410, w: 110, h: 50 }, { x: 205, y: 200, w: 60, h: 55 }],
+        moving: [{ center: { x: 190, y: 317 }, radius: 16, amplitude: 45, phase: 1.1, angularSpeed: 1.4, axis: 'x' }]
+    }
+];
+function hazardPosition(h, seconds) {
+    const offset = Math.sin(seconds * h.angularSpeed + h.phase) * h.amplitude;
+    return h.axis === 'y' ? { x: h.center.x, y: h.center.y + offset } : { x: h.center.x + offset, y: h.center.y };
+}
+function getCourse(id) {
+    const found = exports.COURSES.find(c => c.id === id);
+    if (!found)
+        throw new Error('missing course ' + id);
+    return found;
+}
+
+},
+"src/game/drawing.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.appendStroke = appendStroke;
+const geometry_js_1 = require("../core/geometry.js");
+/** Capture the literal input stroke, inserting collinear samples for consistent stroke spacing. */
+function appendStroke(points, next, spacing = 8) {
+    if (!points.length)
+        return [next];
+    const previous = points[points.length - 1], d = (0, geometry_js_1.distance)(previous, next);
+    if (d < 1)
+        return [...points];
+    const added = [...points];
+    const count = Math.ceil(d / spacing);
+    for (let i = 1; i <= count; i++)
+        added.push((0, geometry_js_1.lerpPoint)(previous, next, i / count));
+    return added;
+}
+
+},
+"src/game/interruption.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.interruptionEffect = interruptionEffect;
+function interruptionEffect(mode, gesture, snapEditing, running, reason) {
+    const external = reason === 'page-hidden' || reason === 'window-blur' || reason === 'navigate' || reason === 'manual-pause';
+    return {
+        discardDraft: gesture === 'stroke' && mode !== 'c',
+        preserveLiveRoute: gesture === 'stroke' && mode === 'c',
+        cancelSnapEdit: snapEditing && (external || gesture === 'snap'),
+        pauseRun: running && (external || (mode === 'c' && gesture === 'stroke'))
+    };
+}
+
+},
+"src/game/onboarding.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MODE_GUIDES = exports.GUIDE_KEY = void 0;
+exports.parseGuideHistory = parseGuideHistory;
+exports.readGuideHistory = readGuideHistory;
+exports.markGuide = markGuide;
+exports.saveGuideHistory = saveGuideHistory;
+exports.GUIDE_KEY = 'snapline-pulse-mode-guides-v1';
+exports.MODE_GUIDES = {
+    a: { label: 'A · PLAN & RUN', title: 'Plan your path.', tagline: 'Take your time. One clear route is enough.',
+        steps: ['Touch the glowing S and draw one continuous route to F.', 'Go around coral obstacles and stay inside the ink budget.', 'Tap GO to test your plan. Hit a hazard? Reset and try a better route.'], button: 'START PLANNING' },
+    b: { label: 'B · SNAP & REDIRECT', title: 'Plan. Then adapt.', tagline: 'One correction can change everything.',
+        steps: ['Draw your complete route from S to F, then tap GO.', 'While running, tap SNAP. The runner pauses and a mint anchor appears.', 'Drag the anchor ahead of the runner to a clear path. Release to use your one correction.'], button: 'TRY SNAP MODE' },
+    c: { label: 'C · LIVE DRAWING', title: 'Stay ahead.', tagline: 'Your line moves the game forward.',
+        steps: ['Touch S and draw. The runner launches automatically—there is no GO button.', 'Keep drawing ahead of the moving runner while avoiding coral obstacles.', 'Lift and rejoin at the mint trail tip if needed. Catching up gives a short 0.75s grace period.'], button: 'START DRAWING' }
+};
+function parseGuideHistory(raw) {
+    if (!raw || raw.length > 1024)
+        return {};
+    try {
+        const input = JSON.parse(raw);
+        if (!input || typeof input !== 'object' || Array.isArray(input))
+            return {};
+        const obj = input;
+        if (obj.version !== 1 || !obj.modes || typeof obj.modes !== 'object' || Array.isArray(obj.modes))
+            return {};
+        const m = obj.modes, result = {};
+        for (const k of ['a', 'b', 'c']) {
+            if (m[k] === 'viewed' || m[k] === 'skipped')
+                result[k] = m[k];
+        }
+        return result;
+    }
+    catch {
+        return {};
+    }
+}
+function readGuideHistory(storage) {
+    try {
+        return parseGuideHistory(storage?.getItem(exports.GUIDE_KEY) ?? null);
+    }
+    catch {
+        return {};
+    }
+}
+function markGuide(history, mode, choice) {
+    return { ...history, [mode]: choice };
+}
+function saveGuideHistory(storage, history) {
+    if (!storage)
+        return false;
+    try {
+        storage.setItem(exports.GUIDE_KEY, JSON.stringify({ version: 1, modes: history }));
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+
+},
+"src/game/progress.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PROGRESS_KEY = void 0;
+exports.progressId = progressId;
+exports.parseProgress = parseProgress;
+exports.readProgress = readProgress;
+exports.recordWin = recordWin;
+exports.writeProgress = writeProgress;
+exports.clearProgress = clearProgress;
+exports.completedInMode = completedInMode;
+const catalog_js_1 = require("./catalog.js");
+exports.PROGRESS_KEY = 'snapline-pulse-progress-v1';
+function isMode(value) {
+    return catalog_js_1.MODES.some(mode => mode === value);
+}
+function progressId(mode, courseId) { return `${mode}:${courseId}`; }
+function validResult(data) {
+    if (!data || typeof data !== 'object')
+        return false;
+    const v = data;
+    return Number.isSafeInteger(v.wins) && v.wins >= 1 && v.wins <= 1000000 &&
+        Number.isSafeInteger(v.bestTimeTicks) && v.bestTimeTicks >= 1 && v.bestTimeTicks <= 10000000 &&
+        typeof v.bestInk === 'number' && Number.isFinite(v.bestInk) && v.bestInk > 0 && v.bestInk <= 100000;
+}
+/** Unknown keys, wrong versions, and corrupted records never enter the app state. */
+function parseProgress(raw) {
+    if (!raw || raw.length > 30000)
+        return {};
+    try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
+            return {};
+        const obj = parsed;
+        if (obj.version !== 1 || !obj.results || typeof obj.results !== 'object' || Array.isArray(obj.results))
+            return {};
+        const results = Object.create(null);
+        for (const [key, record] of Object.entries(obj.results)) {
+            const [mode, id, ...rest] = key.split(':');
+            if (!mode || !id || rest.length || !isMode(mode) || !(0, catalog_js_1.isAccessibleCourse)(mode, id) || !validResult(record))
+                continue;
+            results[key] = { wins: record.wins, bestTimeTicks: record.bestTimeTicks, bestInk: record.bestInk };
+        }
+        return results;
+    }
+    catch {
+        return {};
+    }
+}
+function readProgress(storage) {
+    try {
+        return parseProgress(storage?.getItem(exports.PROGRESS_KEY) ?? null);
+    }
+    catch {
+        return {};
+    }
+}
+/** Only actual won runs should call this function. It does not accept a game phase. */
+function recordWin(progress, mode, courseId, timeTicks, ink) {
+    if (!(0, catalog_js_1.isAccessibleCourse)(mode, courseId) || !Number.isSafeInteger(timeTicks) || timeTicks <= 0 || !Number.isFinite(ink) || ink <= 0)
+        return progress;
+    const key = progressId(mode, courseId), old = progress[key];
+    const result = {
+        wins: Math.min(1000000, (old?.wins ?? 0) + 1),
+        bestTimeTicks: Math.min(old?.bestTimeTicks ?? Infinity, timeTicks),
+        bestInk: Math.min(old?.bestInk ?? Infinity, ink)
+    };
+    return { ...progress, [key]: result };
+}
+function writeProgress(storage, progress) {
+    if (!storage)
+        return false;
+    try {
+        storage.setItem(exports.PROGRESS_KEY, JSON.stringify({ version: 1, results: progress }));
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+function clearProgress(storage) {
+    if (!storage)
+        return false;
+    try {
+        storage.removeItem(exports.PROGRESS_KEY);
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+function completedInMode(progress, mode) {
+    return Object.keys(progress).filter(key => key.startsWith(mode + ':') && (0, catalog_js_1.isAccessibleCourse)(mode, key.slice(2))).length;
+}
+
+},
+"src/main.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const catalog_js_1 = require("./game/catalog.js");
+const progress_js_1 = require("./game/progress.js");
+const onboarding_js_1 = require("./game/onboarding.js");
+const interruption_js_1 = require("./game/interruption.js");
+const geometry_js_1 = require("./core/geometry.js");
+const simulation_js_1 = require("./core/simulation.js");
+const courses_js_1 = require("./game/courses.js");
+const drawing_js_1 = require("./game/drawing.js");
+const render_js_1 = require("./ui/render.js");
+const snap_js_1 = require("./core/snap.js");
+const live_js_1 = require("./core/live.js");
+const canvas = document.querySelector('#courseCanvas');
+const goBtn = document.querySelector('#goBtn');
+const resetBtn = document.querySelector('#resetBtn');
+const pauseBtn = document.querySelector('#pauseBtn');
+const helpBtn = document.querySelector('#helpBtn');
+const select = document.querySelector('#courseSelect');
+const banner = document.querySelector('#status');
+const sub = document.querySelector('#substatus');
+const result = document.querySelector('#result');
+if (!canvas || !goBtn || !resetBtn || !pauseBtn || !helpBtn || !select || !banner || !sub || !result)
+    throw new Error('UI element missing');
+const canvasEl = canvas, btnGo = goBtn, btnReset = resetBtn, btnPause = pauseBtn, btnHelp = helpBtn, sel = select, txt = banner, hint = sub, resultEl = result;
+let course = courses_js_1.COURSES[0];
+let draft = [], route = null, run = null;
+let drawing = false, activePointer = null, lastTime = 0, accumulator = 0, attempts = 0, tutorialPrompted = false;
+let pauseNote = null;
+let mode = 'a';
+const localStore = (() => { try {
+    return window.localStorage;
+}
+catch {
+    return null;
+} })();
+let progress = (0, progress_js_1.readProgress)(localStore);
+let guideHistory = (0, onboarding_js_1.readGuideHistory)(localStore);
+let liveComplete = false, liveWaitingTicks = 0, liveError = null, liveInputReleased = false;
+let snapSpent = false, snapEditing = false, snapDragging = false, snapPointer = null;
+let snapPlan = null, snapTarget = null, snapPreview = null;
+const snapHistory = [];
+const btnSnap = document.querySelector('#snapBtn');
+const modeA = document.querySelector('#modeA');
+const modeB = document.querySelector('#modeB');
+const modeC = document.querySelector('#modeC');
+const modeDescription = document.querySelector('#modeDescription');
+if (!btnSnap || !modeA || !modeB || !modeC || !modeDescription)
+    throw new Error('P3 controls missing');
+const buttonSnap = btnSnap, buttonA = modeA, buttonB = modeB, buttonC = modeC, modeInfo = modeDescription;
+function cancelEdit(resume) {
+    if (snapEditing && run?.phase === 'paused' && resume)
+        run = { ...run, phase: 'running' };
+    snapEditing = false;
+    snapDragging = false;
+    snapPointer = null;
+    snapPlan = null;
+    snapTarget = null;
+    snapPreview = null;
+    accumulator = 0;
+    if (resume)
+        pauseNote = null;
+}
+// Audio is deliberately absent from this P1 mechanical proof.
+function phase() { return run?.phase ?? 'ready'; }
+function message(top, bottom) { txt.textContent = top; hint.textContent = bottom; }
+function refresh() {
+    const p = phase();
+    btnGo.hidden = mode === 'c';
+    btnGo.disabled = mode === 'c' || !route || p !== 'ready';
+    buttonSnap.hidden = mode !== 'b';
+    buttonSnap.disabled = mode === 'a' || snapSpent || (!snapEditing && p !== 'running');
+    buttonSnap.textContent = snapEditing ? 'CANCEL' : snapSpent ? 'USED' : 'SNAP';
+    buttonSnap.setAttribute('aria-label', snapEditing ? 'Cancel route correction' : snapSpent ? 'Snap already used' : 'Pause to adjust your route once');
+    document.body.dataset.mode = mode;
+    buttonA.setAttribute('aria-pressed', String(mode === 'a'));
+    buttonB.setAttribute('aria-pressed', String(mode === 'b'));
+    buttonC.setAttribute('aria-pressed', String(mode === 'c'));
+    modeInfo.textContent = mode === 'b' ? 'Draw • Run • Snap once' : mode === 'c' ? 'Draw ahead • runner follows live' : 'Draw • Run • Improve';
+    btnPause.disabled = snapEditing || (p !== 'running' && p !== 'paused');
+    btnPause.textContent = p === 'paused' ? '▶' : 'Ⅱ';
+    btnPause.setAttribute('aria-label', p === 'paused' ? 'Resume run' : 'Pause run');
+    sel.disabled = snapEditing || p === 'running' || p === 'paused';
+    resultEl.hidden = p !== 'won' && p !== 'lost';
+    if (mode === 'c') {
+        if (p === 'won') {
+            resultEl.textContent = `✓ FINISHED — ${((run?.ticks ?? 0) * simulation_js_1.FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts === 1 ? '' : 's'}`;
+            message('Live trail completed.', 'The runner followed your drawing in real time.');
+        }
+        else if (p === 'lost') {
+            resultEl.textContent = `✕ ${run?.failure ?? 'Attempt failed'}`;
+            message('Live trail interrupted.', run?.failure ?? 'Reset and draw ahead.');
+        }
+        else if (p === 'paused')
+            message('Live run paused.', pauseNote ?? 'Press Resume to keep the runner moving.');
+        else if (p === 'running')
+            message(liveError ?? (liveWaitingTicks > 0 ? 'DRAW AHEAD — runner at the tip' : 'Keep drawing ahead of the runner.'), `Ink ${Math.round(route?.length ?? 0)} / ${course.maxInk} • ${Math.max(0, Math.round((live_js_1.LIVE_GRACE_TICKS - liveWaitingTicks) / 120 * 10) / 10)}s tip grace`);
+        else
+            message(liveError ?? 'Touch S and draw continuously.', 'The runner launches after a short trail. Continue drawing to F.');
+    }
+    else if (snapEditing) {
+        message('SNAP PAUSED — move mint anchor', snapPreview?.ok ? `Valid correction • ${Math.round(snapPreview.route.length)} / ${course.maxInk} ink` : snapPreview && !snapPreview.ok ? snapPreview.reason : course.id === 'snaplab' ? 'Drag the ring right, then release.' : course.id === 'snapchoice' ? 'Drag the ring left, then release.' : 'Drag the ring to a safer location.');
+    }
+    else if (p === 'won') {
+        resultEl.textContent = `✓ FINISHED — ${((run?.ticks ?? 0) * simulation_js_1.FIXED_STEP).toFixed(2)} s / ${attempts} attempt${attempts === 1 ? '' : 's'}`;
+        message('Completed successfully.', 'Try a shorter or safer route, or switch courses.');
+    }
+    else if (p === 'lost') {
+        resultEl.textContent = `✕ ${run?.failure ?? 'Attempt failed'}`;
+        message('Collision detected.', 'Your route hit a hazard. Reset to redraw.');
+    }
+    else if (p === 'running')
+        message('Running route…', course.id === 'snaplab' ? 'Tap SNAP while climbing; drag the ring right.' : course.id === 'snapchoice' ? 'Tap SNAP while climbing; move the ring left.' : 'Watch the runner and the moving hazard.');
+    else if (p === 'paused')
+        message('Paused.', pauseNote ?? 'Press Resume to continue from the same simulation tick.');
+    else if (route)
+        message('Route ready. Press GO.', `${Math.round(route.length)} / ${course.maxInk} ink used. You can reset to redraw.`);
+    else if (!drawing)
+        message('Draw a line from S to F.', course.hint);
+}
+/** Safe when reset, Android gestures, the tab switcher, or focus loss cancels input. */
+function releaseActivePointers() {
+    for (const id of [activePointer, snapPointer]) {
+        if (id === null)
+            continue;
+        try {
+            if (canvasEl.hasPointerCapture(id))
+                canvasEl.releasePointerCapture(id);
+        }
+        catch { /* pointer already removed by OS */ }
+    }
+}
+function interruptInputs(reason) {
+    const gesture = snapDragging ? 'snap' : drawing ? 'stroke' : 'none';
+    const plan = (0, interruption_js_1.interruptionEffect)(mode, gesture, snapEditing, phase() === 'running', reason);
+    if (gesture !== 'none')
+        releaseActivePointers();
+    if (plan.discardDraft) {
+        draft = [];
+        route = null;
+    }
+    if (plan.preserveLiveRoute) {
+        liveInputReleased = true;
+        liveError = 'Touch interrupted. Resume, then rejoin at the mint tip.';
+    }
+    drawing = false;
+    activePointer = null;
+    snapDragging = false;
+    snapPointer = null;
+    if (plan.cancelSnapEdit)
+        cancelEdit(false); // keeps runner paused; never spends the snap.
+    if (plan.pauseRun && run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        pauseNote = reason === 'manual-pause' ? 'Press Resume to continue from this position.' :
+            'App or touch interrupted. Press Resume to continue safely.';
+    }
+    else if (plan.cancelSnapEdit && run?.phase === 'paused') {
+        pauseNote = 'Snap interrupted; press Resume, or try SNAP again after resuming.';
+    }
+    accumulator = 0;
+    refresh();
+}
+function newCourse(id, clearAttempts = true) {
+    releaseActivePointers();
+    course = courses_js_1.COURSES.find(x => x.id === id && (0, catalog_js_1.isAccessibleCourse)(mode, id)) ?? (0, catalog_js_1.firstCourse)(mode);
+    draft = [];
+    route = null;
+    run = null;
+    drawing = false;
+    activePointer = null;
+    accumulator = 0;
+    cancelEdit(false);
+    snapSpent = false;
+    tutorialPrompted = false;
+    snapHistory.length = 0;
+    liveComplete = false;
+    liveWaitingTicks = 0;
+    liveError = null;
+    liveInputReleased = false;
+    pauseNote = null;
+    if (clearAttempts)
+        attempts = 0;
+    const eligible = (0, catalog_js_1.coursesForMode)(mode);
+    // Rebuild the selector for every mode: static P6.2 options cannot represent 8 courses.
+    sel.replaceChildren();
+    for (const [i, entry] of eligible.entries()) {
+        const option = document.createElement('option');
+        option.value = entry.id;
+        option.textContent = String(i + 1).padStart(2, '0') + (entry.family === 'practice' ? ' ★' : '');
+        sel.append(option);
+    }
+    sel.value = course.id;
+    const ordinal = String(eligible.findIndex(c => c.id === course.id) + 1).padStart(2, '0');
+    const max = String(eligible.length).padStart(2, '0');
+    const label = document.querySelector('#courseLabel');
+    if (label)
+        label.textContent = `${ordinal} ${course.title.toUpperCase()}`;
+    const progress = document.querySelector('#courseProgress');
+    if (progress)
+        progress.innerHTML = `${ordinal} <span>/</span> ${max}`;
+    refresh();
+}
+function pointFromEvent(e) {
+    const rect = canvasEl.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(courses_js_1.BOARD_WIDTH, (e.clientX - rect.left) * courses_js_1.BOARD_WIDTH / rect.width)),
+        y: Math.max(0, Math.min(courses_js_1.BOARD_HEIGHT, (e.clientY - rect.top) * courses_js_1.BOARD_HEIGHT / rect.height)) };
+}
+function beginStroke(e) {
+    if (mode === 'c') {
+        if (phase() === 'paused')
+            return; // Do not modify the trail behind a pause/help overlay.
+        if (e.pointerType === 'mouse' && e.button !== 0)
+            return;
+        if (drawing || activePointer !== null || liveComplete || phase() === 'lost' || phase() === 'won')
+            return;
+        const pos = pointFromEvent(e);
+        const join = route?.points.at(-1) ?? course.start;
+        if ((0, geometry_js_1.distance)(pos, join) > live_js_1.LIVE_JOIN_RADIUS) {
+            liveError = 'Continue from the glowing trail tip.';
+            refresh();
+            return;
+        }
+        const initial = route?.points ?? [];
+        const check = (0, live_js_1.appendLivePoint)(initial, pos, course);
+        if (!check.ok) {
+            liveError = check.reason;
+            refresh();
+            return;
+        }
+        if (!route)
+            route = check.route;
+        liveComplete = check.completed;
+        liveError = null;
+        drawing = true;
+        activePointer = e.pointerId;
+        liveInputReleased = false;
+        canvasEl.setPointerCapture(e.pointerId);
+        refresh();
+        e.preventDefault();
+        return;
+    }
+    if (snapEditing) {
+        if (!snapPlan || !run || snapDragging)
+            return;
+        if (e.pointerType === 'mouse' && e.button !== 0)
+            return;
+        const pos = pointFromEvent(e);
+        if ((0, geometry_js_1.distance)(pos, snapTarget ?? snapPlan.anchor) > 42) {
+            message('Touch the mint anchor ring.', 'Drag the highlighted circle to a safer position.');
+            return;
+        }
+        snapDragging = true;
+        snapPointer = e.pointerId;
+        snapTarget = pos;
+        snapPreview = (0, snap_js_1.previewSnap)(run, course, snapPlan, pos);
+        canvasEl.setPointerCapture(e.pointerId);
+        refresh();
+        e.preventDefault();
+        return;
+    }
+    if (phase() !== 'ready' || drawing)
+        return;
+    if (e.pointerType === 'mouse' && e.button !== 0)
+        return;
+    const pos = pointFromEvent(e);
+    if ((0, geometry_js_1.distance)(pos, course.start) > simulation_js_1.START_ZONE) {
+        message('Start inside the circle marked S.', 'Touch or click S, then drag to F in one gesture.');
+        return;
+    }
+    if (activePointer !== null)
+        return;
+    drawing = true;
+    activePointer = e.pointerId;
+    draft = [pos];
+    route = null;
+    accumulator = 0;
+    canvasEl.setPointerCapture(e.pointerId);
+    txt.textContent = 'Drawing…';
+    hint.textContent = 'Keep dragging towards the finish circle.';
+    refresh();
+    e.preventDefault();
+}
+function applyLivePoint(position) {
+    if (liveComplete)
+        return;
+    const result = (0, live_js_1.appendLivePoint)(route?.points ?? [], position, course);
+    if (!result.ok) {
+        liveError = result.reason;
+        refresh();
+        return;
+    }
+    if (route && result.route.length <= route.length + 1e-7)
+        return;
+    route = result.route;
+    liveComplete = result.completed;
+    liveError = null;
+    if (!run && route.length >= live_js_1.LIVE_LAUNCH_LENGTH) {
+        run = (0, simulation_js_1.beginRun)(route, course);
+        attempts++;
+        accumulator = 0;
+        liveWaitingTicks = 0;
+        pauseNote = null;
+    }
+    else if (run) {
+        run = (0, live_js_1.adoptLiveRoute)(run, route);
+        liveWaitingTicks = 0;
+    }
+    refresh();
+}
+function moveStroke(e) {
+    if (mode === 'c' && drawing && e.pointerId === activePointer) {
+        const samples = e.getCoalescedEvents?.() ?? [];
+        for (const ev of samples) {
+            if (ev.pointerId === activePointer)
+                applyLivePoint(pointFromEvent(ev));
+        }
+        applyLivePoint(pointFromEvent(e));
+        e.preventDefault();
+        return;
+    }
+    if (snapDragging && e.pointerId === snapPointer && snapPlan && run) {
+        snapTarget = pointFromEvent(e);
+        snapPreview = (0, snap_js_1.previewSnap)(run, course, snapPlan, snapTarget);
+        refresh();
+        e.preventDefault();
+        return;
+    }
+    if (!drawing || e.pointerId !== activePointer)
+        return;
+    const samples = e.getCoalescedEvents?.() ?? [];
+    for (const event of samples) {
+        if (event.pointerId === activePointer)
+            draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(event));
+    }
+    draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(e));
+    const used = (0, geometry_js_1.lengthOf)(draft);
+    txt.textContent = used > course.maxInk ? 'Over ink limit — simplify route.' : 'Drawing route…';
+    hint.textContent = `Ink: ${Math.round(used)} / ${course.maxInk}`;
+    e.preventDefault();
+}
+function endStroke(e) {
+    if (mode === 'c' && drawing && e.pointerId === activePointer) {
+        if (e.type === 'pointerup')
+            applyLivePoint(pointFromEvent(e));
+        drawing = false;
+        activePointer = null;
+        liveInputReleased = true;
+        if (canvasEl.hasPointerCapture(e.pointerId))
+            canvasEl.releasePointerCapture(e.pointerId);
+        if (e.type !== 'pointerup')
+            liveError = 'Trail released. Continue from the mint tip.';
+        refresh();
+        e.preventDefault();
+        return;
+    }
+    if (snapDragging && e.pointerId === snapPointer) {
+        snapDragging = false;
+        snapPointer = null;
+        if (canvasEl.hasPointerCapture(e.pointerId))
+            canvasEl.releasePointerCapture(e.pointerId);
+        if (e.type !== 'pointerup') {
+            snapTarget = snapPlan?.anchor ?? null;
+            snapPreview = null;
+            message('Snap gesture interrupted.', 'Drag the mint anchor again or press CANCEL.');
+            refresh();
+            return;
+        }
+        if (snapPlan && run) {
+            snapTarget = pointFromEvent(e);
+            snapPreview = (0, snap_js_1.previewSnap)(run, course, snapPlan, snapTarget);
+            if (snapPreview.ok) {
+                const event = { tick: snapPlan.atTick, target: { ...snapTarget } };
+                snapHistory.push(event);
+                route = snapPreview.route;
+                run = { ...snapPreview.run, phase: 'running' };
+                pauseNote = null;
+                snapSpent = true;
+                cancelEdit(false);
+                refresh();
+                e.preventDefault();
+                return;
+            }
+            refresh();
+            e.preventDefault();
+            return;
+        }
+    }
+    if (!drawing || e.pointerId !== activePointer)
+        return;
+    if (e.type === 'pointerup')
+        draft = (0, drawing_js_1.appendStroke)(draft, pointFromEvent(e));
+    drawing = false;
+    activePointer = null;
+    if (canvasEl.hasPointerCapture(e.pointerId))
+        canvasEl.releasePointerCapture(e.pointerId);
+    if (e.type !== 'pointerup') {
+        draft = [];
+        route = null;
+        message('Stroke interrupted.', 'Try drawing again from the start.');
+        refresh();
+        return;
+    }
+    const check = (0, simulation_js_1.validateRoute)(draft, course);
+    if (check.ok) {
+        route = check.route;
+        draft = [];
+        refresh();
+    }
+    else {
+        route = null;
+        message('Route not accepted.', `${check.reason} Draw again from S.`);
+    }
+}
+canvasEl.addEventListener('pointerdown', beginStroke);
+canvasEl.addEventListener('pointermove', moveStroke);
+canvasEl.addEventListener('pointerup', endStroke);
+canvasEl.addEventListener('pointercancel', e => {
+    if (e.pointerId !== activePointer && e.pointerId !== snapPointer)
+        return;
+    interruptInputs('pointer-cancel');
+    e.preventDefault();
+});
+canvasEl.addEventListener('lostpointercapture', e => {
+    // A normal pointerup already cleared the active pointer; only unplanned loss matters.
+    if (e.pointerId === activePointer || e.pointerId === snapPointer)
+        interruptInputs('capture-lost');
+});
+btnGo.addEventListener('click', () => {
+    if (!route || phase() !== 'ready')
+        return;
+    const checked = (0, simulation_js_1.validateRoute)(route.points, course);
+    if (!checked.ok) {
+        message('Invalid route.', checked.reason);
+        return;
+    }
+    attempts++;
+    run = (0, simulation_js_1.beginRun)(checked.route, course);
+    accumulator = 0;
+    pauseNote = null;
+    refresh();
+});
+buttonSnap.addEventListener('click', () => {
+    if (mode !== 'b' || snapSpent || !run)
+        return;
+    if (snapEditing) {
+        cancelEdit(true);
+        refresh();
+        return;
+    }
+    if (run.phase !== 'running')
+        return;
+    const plan = (0, snap_js_1.createSnapPlan)(run);
+    if (!plan) {
+        message('Snap no longer available.', 'Use the correction while more route remains ahead.');
+        return;
+    }
+    run = { ...run, phase: 'paused' };
+    snapPlan = plan;
+    snapTarget = { ...plan.anchor };
+    snapPreview = null;
+    snapEditing = true;
+    accumulator = 0;
+    refresh();
+});
+function selectMode(next) {
+    mode = next;
+    newCourse((0, catalog_js_1.firstCourse)(mode).id);
+    refresh();
+}
+buttonA.addEventListener('click', () => selectMode('a'));
+buttonB.addEventListener('click', () => selectMode('b'));
+buttonC.addEventListener('click', () => selectMode('c'));
+btnReset.addEventListener('click', () => newCourse(course.id, false));
+btnPause.addEventListener('click', () => {
+    if (snapEditing)
+        return;
+    if (run?.phase === 'running')
+        interruptInputs('manual-pause');
+    else if (run?.phase === 'paused') {
+        run = { ...run, phase: 'running' };
+        accumulator = 0;
+        pauseNote = null;
+        refresh();
+    }
+});
+sel.addEventListener('change', () => newCourse(sel.value));
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden)
+        interruptInputs('page-hidden');
+    lastTime = performance.now();
+});
+window.addEventListener('blur', () => { interruptInputs('window-blur'); lastTime = performance.now(); });
+function loop(now) {
+    const delta = lastTime === 0 ? 0 : Math.min(.05, Math.max(0, (now - lastTime) / 1000));
+    lastTime = now;
+    if (run?.phase === 'running') {
+        accumulator += delta;
+        let safety = 0;
+        while (accumulator >= simulation_js_1.FIXED_STEP && run.phase === 'running' && safety < 8) {
+            if (mode === 'c') {
+                const next = (0, live_js_1.advanceLiveRun)(run, course, liveComplete, liveWaitingTicks);
+                run = next.run;
+                liveWaitingTicks = next.waitingTicks;
+            }
+            else
+                run = (0, simulation_js_1.advanceRun)(run, course);
+            accumulator -= simulation_js_1.FIXED_STEP;
+            safety++;
+        }
+        if ((course.id === 'snaplab' || course.id === 'snapchoice') && mode === 'b' && !snapSpent && !tutorialPrompted && run.phase === 'running' && run.ticks >= (course.id === 'snapchoice' ? 185 : 170)) {
+            tutorialPrompted = true;
+            message(course.id === 'snapchoice' ? 'NOW: SNAP TO THE LEFT' : 'NOW: SNAP AND MOVE RIGHT', course.id === 'snapchoice' ? 'Tap SNAP, then drag the mint ring left.' : 'Tap SNAP, then drag the mint ring right.');
+        }
+        if (run.phase !== 'running') {
+            refresh();
+            if (run.phase === 'won')
+                showEarnedResult();
+        }
+    }
+    (0, render_js_1.render)(canvasEl, { course, mode, draft, route, run, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
+        live: mode === 'c' ? { completed: liveComplete, waiting: liveWaitingTicks > 0, tip: route?.points.at(-1) ?? course.start, grace: Math.max(0, 1 - liveWaitingTicks / live_js_1.LIVE_GRACE_TICKS) } : undefined,
+        snap: snapEditing && snapPlan ? { anchor: snapTarget ?? snapPlan.anchor, original: snapPlan.anchor, lead: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.leadDistance), tail: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.tailDistance), preview: snapPreview?.ok ? snapPreview.route : null, valid: snapPreview === null ? true : snapPreview.ok } : undefined });
+    requestAnimationFrame(loop);
+}
+newCourse(course.id);
+requestAnimationFrame(loop);
+// A read-only debugging snapshot for automated browser checks; never includes personal data.
+Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), drawing, activePointer, pauseNote, liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
+let appView = 'home';
+const howto = document.querySelector('#howtoOverlay');
+if (!howto)
+    throw new Error('Help overlay missing');
+const guideKicker = document.getElementById('guideKicker');
+const guideTitle = document.getElementById('howtoTitle');
+const guideTagline = document.getElementById('guideTagline');
+const guideSteps = document.getElementById('guideSteps');
+const guideGo = document.querySelector('#closeHowto');
+const guideSkip = document.querySelector('#skipHowto');
+const guideFromCourses = document.querySelector('#courseGuideBtn');
+if (!guideKicker || !guideTitle || !guideTagline || !guideSteps || !guideGo || !guideSkip || !guideFromCourses)
+    throw new Error('Mode guides controls missing');
+let guideReturnFocus = null;
+function openModeGuide(origin) {
+    // Help must revoke any captured finger before freezing the simulation.
+    // Otherwise a late pointerup can append an invisible segment behind the dialog.
+    if (run?.phase === 'running' || drawing || snapEditing)
+        interruptInputs('manual-pause');
+    const copy = onboarding_js_1.MODE_GUIDES[mode];
+    guideKicker.textContent = copy.label;
+    guideTitle.textContent = copy.title;
+    guideTagline.textContent = copy.tagline;
+    guideSteps.replaceChildren();
+    for (const step of copy.steps) {
+        const item = document.createElement('li');
+        item.textContent = step;
+        guideSteps.append(item);
+    }
+    guideGo.replaceChildren(document.createTextNode(copy.button + ' '));
+    const mark = document.createElement('span');
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = '✓';
+    guideGo.append(mark);
+    guideReturnFocus = origin;
+    howto.hidden = false;
+    guideGo.focus();
+}
+function closeModeGuide(choice) {
+    if (howto.hidden)
+        return;
+    guideHistory = (0, onboarding_js_1.markGuide)(guideHistory, mode, choice);
+    (0, onboarding_js_1.saveGuideHistory)(localStore, guideHistory);
+    howto.hidden = true;
+    guideReturnFocus?.focus();
+    guideReturnFocus = null;
+}
+function showView(view) {
+    if (view !== 'game')
+        interruptInputs('navigate');
+    appView = view;
+    if (view !== 'game')
+        howto.hidden = true;
+    document.body.dataset.view = view;
+    for (const [name, id] of [['home', 'homeScreen'], ['courses', 'courseScreen'], ['game', 'gameScreen'], ['result', 'resultScreen']]) {
+        const element = document.getElementById(id);
+        if (element)
+            element.hidden = name !== view;
+    }
+    if (view !== 'game' && snapEditing)
+        cancelEdit(false);
+    if (view !== 'game' && run?.phase === 'running') {
+        run = { ...run, phase: 'paused' };
+        accumulator = 0;
+        refresh();
+    }
+}
+function assignText(id, value) { const e = document.getElementById(id); if (e)
+    e.textContent = value; }
+function showEarnedResult() {
+    if (run?.phase !== 'won' || !route || appView !== 'game')
+        return;
+    assignText('resultEyebrow', 'RUN COMPLETED');
+    const eligible = (0, catalog_js_1.coursesForMode)(mode), ordinal = eligible.findIndex(c => c.id === course.id) + 1;
+    assignText('resultSequence', `${String(ordinal).padStart(2, '0')} / ${String(eligible.length).padStart(2, '0')}`);
+    assignText('resultOverline', 'ROUTE COMPLETE');
+    const headline = document.getElementById('resultHeadline');
+    if (headline)
+        headline.innerHTML = 'Beautifully<br><em>done.</em>';
+    const completion = {
+        detour: 'You made it around the detour.', timing: 'You navigated the moving hazard.',
+        snaplab: 'You redirected around the crossing patrol.', planbasics: 'Your first planned route worked.',
+        efficient: 'You found a precise path through both blocks.', snapchoice: 'Your well-timed correction saved the run.',
+        liveahead: 'You kept the line moving ahead of your runner.', liveflow: 'You kept flowing through the moving corridor.'
+    };
+    assignText('resultMessage', completion[course.id] ?? 'You made it from start to finish.');
+    assignText('resultCourseLabel', `${course.family === 'practice' ? 'PRACTICE' : 'COURSE'} ${String(ordinal).padStart(2, '0')}`);
+    assignText('resultCourseTitle', course.title.toUpperCase());
+    assignText('resultInk', String(Math.round(route.length)));
+    assignText('resultTime', (run.ticks * simulation_js_1.FIXED_STEP).toFixed(2));
+    assignText('resultAttempts', String(attempts));
+    progress = (0, progress_js_1.recordWin)(progress, mode, course.id, run.ticks, route.length);
+    const persisted = (0, progress_js_1.writeProgress)(localStore, progress);
+    const best = progress[(0, progress_js_1.progressId)(mode, course.id)];
+    assignText('resultDetail', `${catalog_js_1.MODE_COPY[mode].name} • ${best?.wins ?? 1} clear${(best?.wins ?? 1) === 1 ? '' : 's'} • best ${((best?.bestTimeTicks ?? run.ticks) * simulation_js_1.FIXED_STEP).toFixed(2)}s${persisted ? '' : ' • this session only'}`);
+    const next = document.querySelector('#nextDemo');
+    if (next)
+        next.innerHTML = (0, catalog_js_1.nextCourse)(mode, course.id) ? 'NEXT COURSE <span>➜</span>' : 'COURSE SELECT <span>➜</span>';
+    showView('result');
+}
+const courseList = document.getElementById('courseCards');
+const courseHeading = document.getElementById('courseModeHeading');
+const courseSummary = document.getElementById('courseSummary');
+if (!courseList || !courseHeading || !courseSummary)
+    throw new Error('P6.1 course catalog missing');
+function showCourseMenu() {
+    courseHeading.textContent = catalog_js_1.MODE_COPY[mode].name;
+    guideFromCourses.setAttribute('aria-label', `How to play ${catalog_js_1.MODE_COPY[mode].name}`);
+    courseSummary.textContent = `${(0, progress_js_1.completedInMode)(progress, mode)} / ${(0, catalog_js_1.coursesForMode)(mode).length} cleared locally`;
+    const storageNote = document.querySelector('#storageNote');
+    if (storageNote)
+        storageNote.textContent = localStore ? 'Progress is stored by this browser when storage is permitted.' : 'Storage unavailable: progress lasts only for this session.';
+    courseList.replaceChildren();
+    for (const [index, entry] of (0, catalog_js_1.coursesForMode)(mode).entries()) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'course-card';
+        const saved = progress[(0, progress_js_1.progressId)(mode, entry.id)];
+        const overline = document.createElement('small');
+        overline.textContent = `COURSE ${String(index + 1).padStart(2, '0')}  ·  ${entry.family === 'practice' ? 'PRACTICE' : entry.family === 'signature' ? 'SIGNATURE' : 'CHALLENGE'}`;
+        const title = document.createElement('strong');
+        title.textContent = entry.title;
+        const details = document.createElement('span');
+        details.textContent = saved ? `✓ CLEARED · ${saved.wins} WIN${saved.wins === 1 ? '' : 'S'} · BEST ${(saved.bestTimeTicks * simulation_js_1.FIXED_STEP).toFixed(2)}s` : 'NOT YET CLEARED';
+        button.append(overline, title, details);
+        button.addEventListener('click', () => { newCourse(entry.id); showView('game'); if (!guideHistory[mode])
+            openModeGuide(btnHelp); });
+        courseList.append(button);
+    }
+    showView('courses');
+}
+document.getElementById('startDemo')?.addEventListener('click', showCourseMenu);
+document.getElementById('courseBack')?.addEventListener('click', () => showView('home'));
+document.getElementById('resetProgress')?.addEventListener('click', () => {
+    if (!window.confirm('Clear saved course results for all three modes on this device?'))
+        return;
+    progress = {};
+    (0, progress_js_1.clearProgress)(localStore);
+    showCourseMenu();
+});
+document.getElementById('nextDemo')?.addEventListener('click', () => {
+    const next = (0, catalog_js_1.nextCourse)(mode, course.id);
+    if (next) {
+        newCourse(next.id);
+        showView('game');
+    }
+    else
+        showCourseMenu();
+});
+document.getElementById('retryResult')?.addEventListener('click', () => { newCourse(course.id, false); showView('game'); });
+document.getElementById('resultHome')?.addEventListener('click', () => showView('home'));
+document.getElementById('backToHome')?.addEventListener('click', () => showView('home'));
+guideFromCourses.addEventListener('click', () => openModeGuide(guideFromCourses));
+btnHelp.addEventListener('click', () => openModeGuide(btnHelp));
+guideGo.addEventListener('click', () => closeModeGuide('viewed'));
+guideSkip.addEventListener('click', () => closeModeGuide('skipped'));
+document.addEventListener('keydown', e => {
+    if (howto.hidden)
+        return;
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModeGuide('skipped');
+        return;
+    }
+    if (e.key === 'Tab') {
+        const active = document.activeElement;
+        if (e.shiftKey && active === guideGo) {
+            e.preventDefault();
+            guideSkip.focus();
+        }
+        else if (!e.shiftKey && active === guideSkip) {
+            e.preventDefault();
+            guideGo.focus();
+        }
+    }
+});
+showView('home');
+selectMode('a');
+Object.assign(window, { __p2Refine: () => ({ view: appView, course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), attempts, mode, snapSpent, liveComplete, liveWaitingTicks, resultDuration: run?.ticks ? Number((run.ticks * simulation_js_1.FIXED_STEP).toFixed(2)) : null }),
+    __p61Snapshot: () => ({ view: appView, mode, course: course.id, available: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), cleared: (0, progress_js_1.completedInMode)(progress, mode), progress: JSON.parse(JSON.stringify(progress)) }),
+    __p62Snapshot: () => ({ view: appView, mode, course: course.id, guideOpen: !howto.hidden, guideTitle: guideTitle?.textContent, guideSteps: guideSteps?.children.length, guideHistory: { ...guideHistory } }),
+    __p63Snapshot: () => ({ view: appView, mode, course: course.id, courseCount: (0, catalog_js_1.coursesForMode)(mode).length, eligible: (0, catalog_js_1.coursesForMode)(mode).map(c => c.id), courseOptions: Array.from(sel.options).map(o => o.value), resultTitle: document.getElementById('resultCourseTitle')?.textContent, progress: JSON.parse(JSON.stringify(progress)) }) });
+
+},
+"src/ui/render.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.render = render;
+const courses_js_1 = require("../game/courses.js");
+const catalog_js_1 = require("../game/catalog.js");
+const PAL = {
+    pulse: { bg: '#0e1c2b', grid: '#193449', major: '#29485c', ink: '#71f3da', inkSoft: '#71f3da33', wall: '#344353', edge: '#f9957c', text: '#e9fbfa', muted: '#809aad', mint: '#72f3d8', accent: '#f9957c', moving: '#ffc47d', runner: '#eaffff', barBack: '#284152' },
+    ink: { bg: '#f5e9d5', grid: '#decfb8', major: '#d4bda3', ink: '#19796d', inkSoft: '#19796d33', wall: '#e8ac8d', edge: '#ae5d49', text: '#403b36', muted: '#927f73', mint: '#19796d', accent: '#d66d47', moving: '#a36b8d', runner: '#fff9e7', barBack: '#dfcbb1' },
+    micro: { bg: '#d9d7ff', grid: '#cbc6f2', major: '#b3abeb', ink: '#584bda', inkSoft: '#584bda36', wall: '#f7a7c1', edge: '#ba5a91', text: '#373171', muted: '#857bb5', mint: '#584bda', accent: '#ed6f94', moving: '#f9b936', runner: '#fff9fe', barBack: '#bbb3ee' }
+};
+const rr = (ctx, x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
+const stroke = (ctx, pts, color, width) => {
+    if (pts.length < 2)
+        return;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++)
+        ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+};
+function dot(ctx, p, r, color) { ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); }
+function themeKey() { const t = document.body.dataset.theme; return t === 'ink' || t === 'micro' ? t : 'pulse'; }
+function drawBackground(ctx, theme, p) {
+    ctx.fillStyle = p.bg;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    if (theme === 'pulse') {
+        let g = ctx.createRadialGradient(306, 85, 8, 180, 335, 470);
+        g.addColorStop(0, '#183653');
+        g.addColorStop(1, p.bg);
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+        for (let x = 0; x <= 360; x += 24) {
+            ctx.strokeStyle = x % 96 === 0 ? p.major : p.grid;
+            ctx.lineWidth = .8;
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, 640);
+            ctx.stroke();
+        }
+        for (let y = 0; y <= 640; y += 24) {
+            ctx.strokeStyle = y % 96 === 0 ? p.major : p.grid;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(360, y);
+            ctx.stroke();
+        }
+        for (const [x, y] of [[305, 140], [44, 192], [285, 472], [74, 482], [322, 304]]) {
+            dot(ctx, { x, y }, 1.6, '#75e9d650');
+        }
+    }
+    else if (theme === 'ink') {
+        // Paper-like grain is deterministic; strokes stay registered to hitbox geometry.
+        for (let x = 12; x < 360; x += 22)
+            for (let y = 15; y < 640; y += 22) {
+                dot(ctx, { x, y }, .7, (x + y) % 3 === 0 ? '#a18a7155' : '#c9ac8b5a');
+            }
+        for (let y = 55; y < 600; y += 55) {
+            ctx.strokeStyle = '#d8bf9e44';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(13, y);
+            ctx.lineTo(345, y);
+            ctx.stroke();
+        }
+        ctx.strokeStyle = '#c36d5048';
+        ctx.lineWidth = 1.7;
+        ctx.setLineDash([4, 8]);
+        ctx.strokeRect(12, 66, 336, 512);
+        ctx.setLineDash([]);
+    }
+    else {
+        let g = ctx.createLinearGradient(0, 0, 360, 640);
+        g.addColorStop(0, '#e8e7ff');
+        g.addColorStop(1, '#d0cafa');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, 360, 640);
+        for (let y = 54; y < 610; y += 58)
+            for (let x = 27; x < 360; x += 60) {
+                dot(ctx, { x, y }, 2.2, '#c4bff2');
+            }
+        ctx.strokeStyle = '#bab0eb80';
+        ctx.lineWidth = 1.3;
+        ctx.setLineDash([5, 9]);
+        for (let y = 85; y < 550; y += 116) {
+            ctx.beginPath();
+            ctx.moveTo(20, y);
+            ctx.lineTo(340, y);
+            ctx.stroke();
+        }
+        ctx.setLineDash([]);
+    }
+}
+function drawWall(ctx, r, theme, p) {
+    ctx.save();
+    if (theme === 'pulse') {
+        rr(ctx, r.x, r.y, r.w, r.h, 8);
+        ctx.fillStyle = p.wall;
+        ctx.fill();
+        ctx.strokeStyle = p.edge;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.rect(r.x, r.y, r.w, r.h);
+        ctx.clip();
+        ctx.strokeStyle = '#f9957c30';
+        ctx.lineWidth = 2;
+        for (let x = r.x - r.h; x < r.x + r.w + r.h; x += 16) {
+            ctx.beginPath();
+            ctx.moveTo(x, r.y + r.h);
+            ctx.lineTo(x + r.h, r.y);
+            ctx.stroke();
+        }
+        ctx.fillStyle = '#ffd9cc';
+        ctx.globalAlpha = .75;
+        ctx.fillRect(r.x + 10, r.y + 9, 22, 3);
+        ctx.globalAlpha = 1;
+    }
+    else if (theme === 'ink') {
+        rr(ctx, r.x, r.y, r.w, r.h, 7);
+        ctx.fillStyle = p.wall;
+        ctx.fill();
+        ctx.strokeStyle = p.edge;
+        ctx.lineWidth = 2.7;
+        ctx.stroke();
+        ctx.strokeStyle = '#fff2d773';
+        ctx.lineWidth = 1.6;
+        for (let y = r.y + 10; y < r.y + r.h - 7; y += 13) {
+            ctx.beginPath();
+            ctx.moveTo(r.x + 8, y);
+            ctx.lineTo(r.x + r.w - 8, y - 3);
+            ctx.stroke();
+        }
+    }
+    else {
+        rr(ctx, r.x, r.y, r.w, r.h, 14);
+        ctx.fillStyle = p.wall;
+        ctx.fill();
+        ctx.strokeStyle = p.edge;
+        ctx.lineWidth = 2.6;
+        ctx.stroke();
+        rr(ctx, r.x + 7, r.y + 6, r.w - 14, Math.max(5, r.h * .20), 7);
+        ctx.fillStyle = '#fff7ff86';
+        ctx.fill();
+        for (let x = r.x + 18; x < r.x + r.w - 8; x += 33) {
+            dot(ctx, { x, y: r.y + r.h - 13 }, 3.5, '#d47ca1');
+        }
+    }
+    ctx.restore();
+}
+function drawTerminal(ctx, p, r, color, letter, theme, pal) {
+    ctx.save();
+    if (theme === 'pulse') {
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 15;
+    }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = theme === 'ink' ? '#fffaf0' : theme === 'micro' ? '#fffafd' : '#12263b';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = theme === 'micro' ? 4 : 2.8;
+    ctx.stroke();
+    if (theme === 'micro') {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r - 5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffffff9c';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    }
+    ctx.font = theme === 'ink' ? 'bold 13px Georgia,serif' : '900 11px system-ui';
+    ctx.fillStyle = theme === 'ink' ? pal.text : color;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(letter, p.x, p.y + .5);
+    ctx.restore();
+}
+function drawMoving(ctx, s, theme, p) {
+    const elapsed = s.run ? s.run.ticks / 120 : 0;
+    for (const h of s.course.moving) {
+        const a = h.axis === 'y' ? { x: h.center.x, y: h.center.y - h.amplitude } : { x: h.center.x - h.amplitude, y: h.center.y };
+        const b = h.axis === 'y' ? { x: h.center.x, y: h.center.y + h.amplitude } : { x: h.center.x + h.amplitude, y: h.center.y };
+        ctx.setLineDash(theme === 'ink' ? [2, 8] : [5, 8]);
+        stroke(ctx, [a, b], p.moving + '88', 2);
+        ctx.setLineDash([]);
+        const pos = (0, courses_js_1.hazardPosition)(h, elapsed);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, h.radius, 0, Math.PI * 2);
+        ctx.fillStyle = theme === 'pulse' ? '#ffc47d42' : theme === 'ink' ? '#a36b8d25' : '#ffcc6cdd';
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = p.moving;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x - 9, pos.y);
+        ctx.lineTo(pos.x + 9, pos.y);
+        ctx.moveTo(pos.x, pos.y - 9);
+        ctx.lineTo(pos.x, pos.y + 9);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+}
+function drawRunner(ctx, s, theme, p) {
+    if (!s.run)
+        return;
+    const pos = s.run.position;
+    const fill = s.run.phase === 'lost' ? p.accent : p.runner;
+    ctx.save();
+    if (theme === 'pulse') {
+        ctx.shadowBlur = 17;
+        ctx.shadowColor = p.mint;
+    }
+    dot(ctx, pos, courses_js_1.RUNNER_RADIUS, fill);
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, courses_js_1.RUNNER_RADIUS, 0, Math.PI * 2);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = p.mint;
+    ctx.stroke();
+    if (theme === 'micro') {
+        dot(ctx, { x: pos.x + 2, y: pos.y - 2 }, 1.6, '#30266d');
+    }
+    if (s.run.phase === 'lost') {
+        ctx.strokeStyle = p.accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(pos.x - 13, pos.y - 13);
+        ctx.lineTo(pos.x + 13, pos.y + 13);
+        ctx.moveTo(pos.x + 13, pos.y - 13);
+        ctx.lineTo(pos.x - 13, pos.y + 13);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+function render(canvas, s) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx)
+        return;
+    const dpr = Math.min(2.5, Math.max(1, window.devicePixelRatio || 1));
+    const cw = Math.round(360 * dpr), ch = Math.round(640 * dpr);
+    if (canvas.width !== cw || canvas.height !== ch) {
+        canvas.width = cw;
+        canvas.height = ch;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, 360, 640);
+    const theme = themeKey(), p = PAL[theme];
+    drawBackground(ctx, theme, p);
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = p.muted;
+    const eligible = (0, catalog_js_1.coursesForMode)(s.mode), ordinal = eligible.findIndex(c => c.id === s.course.id) + 1;
+    const num = String(ordinal).padStart(2, '0');
+    ctx.font = theme === 'ink' ? 'bold 12px Georgia,serif' : '800 12px system-ui';
+    ctx.fillText(`${num} // ${s.course.title.toUpperCase()}`, 16, 24);
+    ctx.font = '700 11px system-ui';
+    ctx.fillText(s.course.family === 'practice' ? 'PRACTICE · LEARN THE MOVE' : s.course.moving.length ? 'MOVING HAZARD' : 'STATIC OBSTACLES', 16, 42);
+    if (theme === 'pulse') {
+        ctx.strokeStyle = p.mint + '66';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(299, 23);
+        ctx.lineTo(341, 23);
+        ctx.stroke();
+    }
+    if (theme === 'ink') {
+        ctx.strokeStyle = p.accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(295, 27);
+        ctx.quadraticCurveTo(312, 17, 342, 25);
+        ctx.stroke();
+    }
+    if (theme === 'micro') {
+        dot(ctx, { x: 329, y: 26 }, 11, '#ffffffaa');
+        dot(ctx, { x: 329, y: 26 }, 4, p.accent);
+    }
+    for (const wall of s.course.walls)
+        drawWall(ctx, wall, theme, p);
+    drawMoving(ctx, s, theme, p);
+    // Non-interactive teaching guide: does not alter any collision, ink or player input geometry.
+    if ((s.course.id === 'snaplab' || s.course.id === 'snapchoice') && !s.run && !s.route && s.draft.length === 0) {
+        ctx.save();
+        ctx.setLineDash([8, 8]);
+        ctx.globalAlpha = .35;
+        stroke(ctx, s.course.id === 'snapchoice' ? courses_js_1.SECOND_CHANCE_GUIDE : courses_js_1.SNAP_LAB_GUIDE, p.ink, 3);
+        ctx.restore();
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '800 11px system-ui';
+        ctx.fillStyle = p.mint;
+        ctx.fillText('TRACE THE GUIDE', 338, 505);
+    }
+    const pts = s.snap?.preview?.points ?? s.route?.points ?? s.draft;
+    if (pts.length > 1) {
+        if (theme === 'pulse') {
+            ctx.save();
+            ctx.shadowColor = s.invalid ? p.accent : p.ink;
+            ctx.shadowBlur = 11;
+            stroke(ctx, pts, s.invalid ? p.accent : p.ink, 7);
+            ctx.restore();
+            stroke(ctx, pts, '#eefffa', 2);
+        }
+        else if (theme === 'ink') {
+            stroke(ctx, pts, s.invalid ? p.accent : p.inkSoft, 10);
+            stroke(ctx, pts, s.invalid ? p.accent : p.ink, 4.6);
+        }
+        else {
+            stroke(ctx, pts, s.invalid ? p.accent : '#ffffff90', 13);
+            stroke(ctx, pts, s.invalid ? p.accent : p.ink, 6);
+        }
+    }
+    if (s.live) {
+        const pos = s.live.tip;
+        if (!s.live.completed) {
+            ctx.save();
+            ctx.setLineDash([4, 5]);
+            ctx.strokeStyle = s.live.waiting ? '#fa977c' : '#72f3d8';
+            ctx.lineWidth = 2.3;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 16, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+            dot(ctx, pos, 4.5, s.live.waiting ? '#fa977c' : '#72f3d8');
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.font = '800 10px system-ui';
+            ctx.fillStyle = '#c6eff0';
+            ctx.fillText(s.live.waiting ? 'DRAW NOW' : 'DRAW AHEAD', pos.x, Math.max(59, pos.y - 25));
+        }
+    }
+    if (s.snap) {
+        const a = s.snap;
+        if (!a.preview) {
+            ctx.save();
+            ctx.globalAlpha = .7;
+            ctx.setLineDash([5, 6]);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = a.valid ? p.mint : p.accent;
+            ctx.beginPath();
+            ctx.moveTo(a.lead.x, a.lead.y);
+            ctx.lineTo(a.anchor.x, a.anchor.y);
+            ctx.lineTo(a.tail.x, a.tail.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+        dot(ctx, a.original, 6, '#7b9eb080');
+        ctx.save();
+        ctx.shadowBlur = 19;
+        ctx.shadowColor = a.valid ? p.mint : p.accent;
+        dot(ctx, a.anchor, 17, a.valid ? '#102c38' : '#4d2432');
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = a.valid ? p.mint : p.accent;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(a.anchor.x, a.anchor.y, 17, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = a.valid ? p.mint : p.accent;
+        ctx.beginPath();
+        ctx.arc(a.anchor.x, a.anchor.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        ctx.font = '900 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = a.valid ? p.mint : p.accent;
+        ctx.fillText('DRAG', Math.min(324, Math.max(36, a.anchor.x)), a.anchor.y - 29);
+    }
+    drawTerminal(ctx, s.course.start, 16, p.mint, 'S', theme, p);
+    drawTerminal(ctx, s.course.finish, 18, p.accent, 'F', theme, p);
+    drawRunner(ctx, s, theme, p);
+    const f = Math.min(1, s.inkUsed / s.course.maxInk);
+    rr(ctx, 16, 601, 328, 23, 7);
+    ctx.fillStyle = p.barBack;
+    ctx.fill();
+    const used = Math.max(0, 322 * f);
+    if (used > 0) {
+        rr(ctx, 19, 604, used, 17, 5);
+        ctx.fillStyle = s.invalid ? p.accent : p.mint;
+        ctx.fill();
+    }
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = '900 12px system-ui';
+    ctx.fillStyle = theme === 'pulse' ? '#effdfd' : theme === 'ink' ? '#292d26' : '#251d55';
+    ctx.fillText(`INK    ${Math.round(s.inkUsed)} / ${s.course.maxInk}`, 180, 613.5);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = p.muted;
+    ctx.font = '800 10px system-ui';
+    ctx.fillText(`${s.course.family === 'practice' ? 'PRACTICE' : 'PATH'} / ${num}`, 343, 590);
+}
+
+}};const cache={};function load(id){if(cache[id])return cache[id].exports;const fn=modules[id];if(!fn)throw Error('Module not found: '+id);const mod={exports:{}};cache[id]=mod;const localReq=(spec)=>{if(!spec.startsWith('.'))throw Error('External dependency refused: '+spec);const arr=id.split('/').slice(0,-1);for(const part of spec.split('/')){if(part==='..')arr.pop();else if(part!=='.')arr.push(part)}return load(arr.join('/'))};fn(localReq,mod,mod.exports);return mod.exports}load('src/main.js')})();
+</script>
+</body>
+</html>

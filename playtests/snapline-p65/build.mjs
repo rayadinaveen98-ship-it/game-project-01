@@ -4,7 +4,9 @@ import path from 'node:path';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const source=readFileSync(path.join(root,'src','shell.html'),'utf8');
 const logic=readFileSync(path.join(root,'src','study_logic.cjs'),'utf8');
-const gamePath=path.resolve(root,'../../prototypes/snapline/pulse-grid/standalone.html');
+// Research integrity: freeze the game version used for the comparative A/B/C study.
+// New experimental materials must not silently alter the study baseline.
+const gamePath=path.join(root,'fixtures','snapline-p64-locked.html');
 const game=readFileSync(gamePath,'utf8');
 if(!game.includes('__snaplineSnapshot')||!game.includes('Snapline'))throw Error('Missing real Snapline game');
 const escapedGame=JSON.stringify(game).replace(/<\/script/ig,'<\\/script');
