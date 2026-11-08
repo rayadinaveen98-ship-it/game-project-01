@@ -232,3 +232,10 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - Strict TypeScript compile, **73/73 tests** (65 older plus 8 new Slime), Chromium browser game wins on 360/390/412 phone emulation for A, 390 for B snap rescue and 412 for C live trail. Normal/Jelly/Slime real-browser comparison screenshots captured and packaged.
 - **Pending:** owner on-device visual approval, physical Android FPS/input/battery, browser-origin preference persistence, first-time-player feedback. Ten skins, a Liquid variant and 100-level campaign are still conceptual, **not implemented**.
 - [M2 QA report](../06-technical-design/snapline_M2_slime_material_qa.md).
+
+## M2 Slime material verified merge — November 8, 2026
+- [PR #33](https://github.com/rayadinaveen98-ship-it/game-project-01/pull/33) **merged to main** as `bc5064595d3ca34e49e6d677628fd31ad750d772` after **12/12 independent GitHub checks passed**, including M2 visual material QA, M1 Jelly regression, prior P1–P6.4 gameplay and Documentation Gate.
+- Canonical offline game `prototypes/snapline/pulse-grid/standalone.html` now cycles **NORMAL / JELLY / SLIME**. Normal remains approved default; M1 Jelly remains available; Slime adds actual runner-driven viscous wake without affecting hitboxes. 73/73 TypeScript/Node automated tests passed.
+- Real Chromium completed A at 360/390/412 synthetic phone viewports, B left-snap correction, and C live drawing with Slime. Original comparison screenshots, playable HTML and source ZIP delivered to user.
+- **Not approved on hardware:** physical Android material behavior, frame rate/latency/battery, accessibility and final Slime visual choice; [Issue #34](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/34).
+- Liquid effect, ten selectable player looks and 100-level campaign remain future design/engineering tracks; do **not** present these as shipped.
