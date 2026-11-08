@@ -224,3 +224,11 @@ See [Three-Idea Comparative Assessment](../03-game-concepts/2026-11-07_three_ide
 - The optional runner-driven **JELLY ON/OFF** gameplay-board renderer is now in canonical offline `prototypes/snapline/pulse-grid/standalone.html`. The approved Pulse Grid board remains available; all three modes and eight courses unchanged. Local TypeScript + 65/65 tests passed and browser A/B/C jelly gameplay worked.
 - **Research integrity fix:** Existing P6.5 Playtest Lab now embeds a pinned byte-identical P6.4 baseline fixture rather than the latest evolving game, so a reactive visual experiment cannot silently invalidate its comparative study. 16/16 lab tests and byte-for-byte rebuild passed in CI.
 - Owner visual and physical Android material-performance acceptance still outstanding; [Issue #32](https://github.com/rayadinaveen98-ship-it/game-project-01/issues/32). Slime/water variants, 10 characters and 100-course plans have **not** been implemented.
+
+## November 8, 2026 — M2 reactive Slime experiment, owner visual approval pending
+- Owner replied "yeah good bro continue" to first M1 Reactive Jelly experiment, authorizing next **material trial**, not final art replacement. [DEC-031](../decision-log/DEC-031-snapline-reactive-slime-m2.md).
+- **Built on feature branch:** a new **Slime** board surface with player-driven, directionally stretched, slower-settling viscous wake, turn deformation and impact pulse. The same header selector cycles **Normal → Jelly → Slime → Normal**; Normal Pulse Grid remains approved and available. System reduced-motion renders static material.
+- **Presentation-only:** unchanged fixed-step simulation, route validation, moving hazards, three A/B/C modes, eight course geometries and mode-based progress/onboarding.
+- Strict TypeScript compile, **73/73 tests** (65 older plus 8 new Slime), Chromium browser game wins on 360/390/412 phone emulation for A, 390 for B snap rescue and 412 for C live trail. Normal/Jelly/Slime real-browser comparison screenshots captured and packaged.
+- **Pending:** owner on-device visual approval, physical Android FPS/input/battery, browser-origin preference persistence, first-time-player feedback. Ten skins, a Liquid variant and 100-level campaign are still conceptual, **not implemented**.
+- [M2 QA report](../06-technical-design/snapline_M2_slime_material_qa.md).
