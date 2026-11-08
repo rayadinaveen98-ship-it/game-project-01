@@ -150,3 +150,12 @@ No additional course content, art redesign, accounts or monetization. [P6.4 QA r
 - [ ] Review raw player feedback and decide specific UI, accessibility and course balancing fixes. Do not fabricate user preference or force a mode winner.
 - [ ] Actual physical Android P6.4 background/persistence/FPS QA remains outstanding; study tool does not replace it.
 [Research protocol](../07-research/SNAPLINE_P65_PLAYTEST_PLAN.md).
+
+## Materials branch M2 — November 8, 2026
+- [x] Keep Pulse Grid approved default and M1 Reactive Jelly as optional board material.
+- [x] Prototype M2 Reactive Slime with runner-following viscous wake, slower settling, turn/collision pulses and visual-only collision separation.
+- [x] Add three-way small-screen material selector (Normal/Jelly/Slime), preserve saved Jelly preference and honor reduced motion.
+- [x] Regress A/B/C modes and all 8 course fixtures; 73/73 Node tests and actual Chromium desktop/mobile-emulated material checks pass locally.
+- [ ] Independent CI/merge, owner real-device review/visual signoff.
+- [ ] Only after review, consider Liquid material as a separate experiment; ten cosmetic skins and 100-level campaign are distinct future production tracks.
+[Material QA](../06-technical-design/snapline_M2_slime_material_qa.md).

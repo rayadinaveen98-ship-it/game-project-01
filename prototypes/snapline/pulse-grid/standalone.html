@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1321" />
-  <title>Snapline Sprint — Reactive Jelly / Pulse Grid Material Lab</title>
+  <title>Snapline Sprint — Interactive Materials / Pulse Grid Lab</title>
   <style>
 /* GP-01 P2 visual review. The three themes intentionally share identical geometry and game logic. */
 :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -142,6 +142,14 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 .surface-toggle:focus-visible{outline-offset:2px}
 @media(max-width:355px){.surface-toggle{min-width:94px;font-size:9px;padding:0 4px}.brand-name{font-size:12px}}
 
+/* M2 — three-way material selector, still inside approved Pulse Grid header geometry. */
+.surface-toggle{min-width:116px;min-height:44px;gap:4px;font-size:10px;font-variant-numeric:tabular-nums}
+.surface-toggle small{margin-left:1px;color:#88aeb8;font-size:8px;font-weight:900}
+body[data-material="slime"] .surface-toggle{background:#1d3936;border-color:#aaf2ac;color:#e1ffce!important}
+body[data-material="slime"] .surface-toggle span{color:#c2ff99}
+body[data-material="slime"] .surface-toggle small{color:#c8e9bd}
+@media(max-width:385px){.surface-toggle{min-width:98px;padding:0 5px;font-size:9px}.surface-toggle small{font-size:8px}}
+
 </style>
 </head>
 <body data-theme="pulse" data-view="home">
@@ -150,8 +158,8 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
       <div class="rail-top">
         <div class="rail-eyebrow"><span class="led"></span> GP—01 / GAMEPLAY EXPERIMENT</div>
         <h1>Pulse Grid<span class="rail-dot">.</span><br><em>Made to move.</em></h1>
-        <p>Three gameplay modes and eight courses. Experiment with an opt-in surface that reacts to the runner, without changing collision geometry.</p>
-        <span class="lab-tag">M1 • REACTIVE MATERIAL LAB</span>
+        <p>Three gameplay modes and eight courses. Try Jelly and viscous Slime surfaces that react to the runner, without changing any collision geometry.</p>
+        <span class="lab-tag">M2 • REACTIVE MATERIALS</span>
       </div>
       <div class="rail-section">
         <h2><span>01</span> How to play</h2>
@@ -160,7 +168,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
       <div class="rail-section">
         <h2><span>02</span> Locked visual direction</h2>
         <div class="pulse-proof"><span class="pulse-chip"></span><div><strong>Option A — Pulse Grid</strong><small>Midnight · Mint · Coral</small></div><span class="proof-check">✓</span></div>
-        <p class="rail-note">Approved Pulse Grid remains the baseline. The new jelly material changes the board background only; compare both on the same run.</p>
+        <p class="rail-note">Approved Pulse Grid remains the baseline. Compare Normal, Jelly and Slime. Materials respond to real runner movement; only the background changes.</p>
       </div>
       <div class="rail-footer"><span class="tiny-square"></span><strong>Prototype QA</strong><p>Draw/Run follows the unchanged P1 geometry, with only presentation and screen flow refined. A, B and C share the same geometry, collision and fixed-step simulation foundation.</p></div>
     </section>
@@ -172,7 +180,7 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
         <div class="game-screen" id="gameScreen">
           <header class="screen-top">
             <div class="game-logo"><div class="mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="brand-name">SNAPLINE<span>SPRINT</span></div></div>
-            <button type="button" id="surfaceToggle" class="surface-toggle" aria-pressed="false" aria-label="Enable reactive jelly surface"><span aria-hidden="true">◉</span> JELLY: OFF</button><div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
+            <button type="button" id="surfaceToggle" class="surface-toggle" aria-pressed="false" aria-label="Cycle through normal grid, reactive jelly and reactive slime"><span aria-hidden="true">◉</span> NORMAL <small>1/3</small></button><div class="head-right"><span class="tiny-label">COURSE</span><strong id="courseProgress">01 <span>/</span> 02</strong></div>
           </header>
           <div class="level-header">
             <div><div class="micro-line"><span class="beacon"></span> COURSE SELECTED <span class="micro-dash">—</span> <span id="courseLabel">01 STATIC DETOUR</span></div><h2>Find your <em>line.</em></h2></div>
@@ -915,6 +923,7 @@ const courses_js_1 = require("./game/courses.js");
 const drawing_js_1 = require("./game/drawing.js");
 const render_js_1 = require("./ui/render.js");
 const jelly_js_1 = require("./ui/jelly.js");
+const slime_js_1 = require("./ui/slime.js");
 const snap_js_1 = require("./core/snap.js");
 const live_js_1 = require("./core/live.js");
 const canvas = document.querySelector('#courseCanvas');
@@ -944,31 +953,38 @@ let progress = (0, progress_js_1.readProgress)(localStore);
 let guideHistory = (0, onboarding_js_1.readGuideHistory)(localStore);
 // Presentation-only material: the runner, collisions and level fixtures are never modified.
 const jelly = new jelly_js_1.JellyField();
+const slime = new slime_js_1.SlimeField();
 const surfaceToggle = document.querySelector('#surfaceToggle');
 if (!surfaceToggle)
     throw new Error('Reactive surface selector missing');
 const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const MATERIAL_KEY = 'snapline-material-v01';
 let material = (() => { try {
-    return localStore?.getItem(MATERIAL_KEY) === 'jelly' ? 'jelly' : 'pulse';
+    const saved = localStore?.getItem(MATERIAL_KEY);
+    return saved === 'jelly' || saved === 'slime' ? saved : 'pulse';
 }
 catch {
     return 'pulse';
 } })();
 let gelAccumulator = 0;
+const MATERIAL_SEQUENCE = ['pulse', 'jelly', 'slime'];
 function refreshMaterial() {
-    surfaceToggle.setAttribute('aria-pressed', String(material === 'jelly'));
-    surfaceToggle.setAttribute('aria-label', material === 'jelly' ? 'Switch from Reactive Jelly to normal Pulse Grid' : 'Switch from normal Pulse Grid to Reactive Jelly');
-    surfaceToggle.innerHTML = material === 'jelly' ? '<span aria-hidden="true">◉</span> JELLY: ON' : '<span aria-hidden="true">◉</span> JELLY: OFF';
+    const index = MATERIAL_SEQUENCE.indexOf(material);
+    surfaceToggle.setAttribute('aria-pressed', String(material !== 'pulse'));
+    surfaceToggle.setAttribute('aria-label', `Board surface ${material === 'pulse' ? 'Normal Pulse Grid' : material === 'jelly' ? 'Reactive Jelly' : 'Reactive Slime'}. Activate to switch to ${MATERIAL_SEQUENCE[(index + 1) % MATERIAL_SEQUENCE.length]}.`);
+    surfaceToggle.title = 'Choose board material: Normal → Jelly → Slime';
+    surfaceToggle.innerHTML = `<span aria-hidden="true">◉</span> ${material === 'pulse' ? 'NORMAL' : material === 'jelly' ? 'JELLY' : 'SLIME'} <small>${index + 1}/3</small>`;
     document.body.dataset.material = material;
     const name = document.getElementById('styleName');
     if (name)
-        name.textContent = material === 'jelly' ? 'REACTIVE JELLY / EXPERIMENT' : 'PULSE GRID / APPROVED';
+        name.textContent = material === 'jelly' ? 'REACTIVE JELLY / EXPERIMENT' : material === 'slime' ? 'VISCOUS SLIME / EXPERIMENT' : 'PULSE GRID / APPROVED';
 }
 surfaceToggle.addEventListener('click', () => {
-    material = material === 'jelly' ? 'pulse' : 'jelly';
-    if (material === 'jelly')
-        jelly.reset();
+    const index = MATERIAL_SEQUENCE.indexOf(material);
+    material = MATERIAL_SEQUENCE[(index + 1) % MATERIAL_SEQUENCE.length];
+    jelly.reset();
+    slime.reset();
+    gelAccumulator = 0;
     try {
         localStore?.setItem(MATERIAL_KEY, material);
     }
@@ -1103,6 +1119,7 @@ function interruptInputs(reason) {
 function newCourse(id, clearAttempts = true) {
     releaseActivePointers();
     jelly.reset();
+    slime.reset();
     gelAccumulator = 0;
     course = courses_js_1.COURSES.find(x => x.id === id && (0, catalog_js_1.isAccessibleCourse)(mode, id)) ?? (0, catalog_js_1.firstCourse)(mode);
     draft = [];
@@ -1459,15 +1476,21 @@ function loop(now) {
                 showEarnedResult();
         }
     }
-    if (material === 'jelly' && !reducedMotion) {
-        jelly.observeRunner(run);
+    if (material !== 'pulse' && !reducedMotion) {
+        if (material === 'jelly')
+            jelly.observeRunner(run);
+        else
+            slime.observeRunner(run);
         gelAccumulator = Math.min(.066, gelAccumulator + delta);
         while (gelAccumulator >= 1 / 60) {
-            jelly.step();
+            if (material === 'jelly')
+                jelly.step();
+            else
+                slime.step();
             gelAccumulator -= 1 / 60;
         }
     }
-    (0, render_js_1.render)(canvasEl, { course, mode, draft, route, run, material, jelly: material === 'jelly' && !reducedMotion ? jelly : undefined, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
+    (0, render_js_1.render)(canvasEl, { course, mode, draft, route, run, material, jelly: material === 'jelly' && !reducedMotion ? jelly : undefined, slime: material === 'slime' && !reducedMotion ? slime : undefined, inkUsed: snapEditing && snapPreview?.ok ? snapPreview.route.length : (route?.length ?? (0, geometry_js_1.lengthOf)(draft)), invalid: !route && (0, geometry_js_1.lengthOf)(draft) > course.maxInk, drawing,
         live: mode === 'c' ? { completed: liveComplete, waiting: liveWaitingTicks > 0, tip: route?.points.at(-1) ?? course.start, grace: Math.max(0, 1 - liveWaitingTicks / live_js_1.LIVE_GRACE_TICKS) } : undefined,
         snap: snapEditing && snapPlan ? { anchor: snapTarget ?? snapPlan.anchor, original: snapPlan.anchor, lead: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.leadDistance), tail: (0, geometry_js_1.pointAtDistance)(run.route.points, snapPlan.tailDistance), preview: snapPreview?.ok ? snapPreview.route : null, valid: snapPreview === null ? true : snapPreview.ok } : undefined });
     requestAnimationFrame(loop);
@@ -1475,7 +1498,7 @@ function loop(now) {
 newCourse(course.id);
 requestAnimationFrame(loop);
 // Material observability for browser tests: no private data, no remote analytics.
-Object.assign(window, { __jellySnapshot: () => ({ ...jelly.snapshot(), material, reducedMotion, course: course.id, runPhase: phase(), runTick: run?.ticks ?? 0 }) });
+Object.assign(window, { __jellySnapshot: () => ({ ...jelly.snapshot(), material, reducedMotion, course: course.id, runPhase: phase(), runTick: run?.ticks ?? 0 }), __materialSnapshot: () => ({ material, reducedMotion, jelly: jelly.snapshot(), slime: slime.snapshot(), course: course.id, mode, phase: phase(), tick: run?.ticks ?? 0 }) });
 // A read-only debugging snapshot for automated browser checks; never includes personal data.
 Object.assign(window, { __snaplineSnapshot: () => ({ course: course.id, phase: phase(), ink: Math.round(route?.length ?? (0, geometry_js_1.lengthOf)(draft)), points: route?.points.length ?? draft.length, ticks: run?.ticks ?? 0, attempts, result: run?.failure ?? null, mode, snapSpent, snapEditing, snapDragging, snapAnchor: snapTarget, snapValid: snapPreview?.ok ?? null, snapError: snapPreview && !snapPreview.ok ? snapPreview.reason : null, snapEvents: snapHistory.map(x => ({ ...x })), drawing, activePointer, pauseNote, liveComplete, liveWaitingTicks, liveError, liveInputReleased, runnerPosition: run?.position, runDistance: run?.distance, tutorialPrompted }) });
 let appView = 'home';
@@ -1884,6 +1907,7 @@ exports.render = render;
 const courses_js_1 = require("../game/courses.js");
 const catalog_js_1 = require("../game/catalog.js");
 const jelly_js_1 = require("./jelly.js");
+const slime_js_1 = require("./slime.js");
 const PAL = {
     pulse: { bg: '#0e1c2b', grid: '#193449', major: '#29485c', ink: '#71f3da', inkSoft: '#71f3da33', wall: '#344353', edge: '#f9957c', text: '#e9fbfa', muted: '#809aad', mint: '#72f3d8', accent: '#f9957c', moving: '#ffc47d', runner: '#eaffff', barBack: '#284152' },
     ink: { bg: '#f5e9d5', grid: '#decfb8', major: '#d4bda3', ink: '#19796d', inkSoft: '#19796d33', wall: '#e8ac8d', edge: '#ae5d49', text: '#403b36', muted: '#927f73', mint: '#19796d', accent: '#d66d47', moving: '#a36b8d', runner: '#fff9e7', barBack: '#dfcbb1' },
@@ -2130,8 +2154,10 @@ function render(canvas, s) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, 360, 640);
     const theme = themeKey(), p = PAL[theme];
-    if (s.material === 'jelly' && theme === 'pulse')
+    if (theme === 'pulse' && s.material === 'jelly')
         (0, jelly_js_1.drawJellyBackground)(ctx, s.jelly ?? null);
+    else if (theme === 'pulse' && s.material === 'slime')
+        (0, slime_js_1.drawSlimeBackground)(ctx, s.slime ?? null);
     else
         drawBackground(ctx, theme, p);
     ctx.textBaseline = 'alphabetic';
@@ -2151,11 +2177,11 @@ function render(canvas, s) {
         ctx.lineTo(341, 23);
         ctx.stroke();
     }
-    if (s.material === 'jelly') {
+    if (s.material === 'jelly' || s.material === 'slime') {
         ctx.textAlign = 'right';
         ctx.font = '800 9px system-ui';
-        ctx.fillStyle = '#91f6e6';
-        ctx.fillText('REACTIVE GEL', 343, 56);
+        ctx.fillStyle = s.material === 'jelly' ? '#91f6e6' : '#caffac';
+        ctx.fillText(s.material === 'jelly' ? 'REACTIVE GEL' : 'VISCOUS SLIME', 343, 56);
         ctx.textAlign = 'left';
     }
     if (theme === 'ink') {
@@ -2285,6 +2311,224 @@ function render(canvas, s) {
     ctx.fillStyle = p.muted;
     ctx.font = '800 10px system-ui';
     ctx.fillText(`${s.course.family === 'practice' ? 'PRACTICE' : 'PATH'} / ${num}`, 343, 590);
+}
+
+},
+"src/ui/slime.js":function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SlimeField = void 0;
+exports.drawSlimeBackground = drawSlimeBackground;
+const courses_js_1 = require("../game/courses.js");
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const DT = 1 / 60;
+const MAX_TRAIL = 54;
+class SlimeField {
+    trails = [];
+    pulses = [];
+    previous = null;
+    previousDirection = null;
+    lastTick = -1;
+    lastPhase = null;
+    lastCourse = null;
+    traveledSinceDeposit = 0;
+    time = 0;
+    deposits = 0;
+    traveled = 0;
+    reset() {
+        this.trails.length = 0;
+        this.pulses.length = 0;
+        this.previous = null;
+        this.previousDirection = null;
+        this.lastTick = -1;
+        this.lastPhase = null;
+        this.lastCourse = null;
+        this.traveledSinceDeposit = 0;
+        this.time = 0;
+        this.deposits = 0;
+        this.traveled = 0;
+    }
+    /** Observe authoritative movement only once per run tick; pauses do not create artificial force. */
+    observeRunner(run) {
+        if (!run) {
+            this.previous = null;
+            this.lastTick = -1;
+            this.lastPhase = null;
+            this.previousDirection = null;
+            return;
+        }
+        if (run.courseId !== this.lastCourse || run.ticks < this.lastTick) {
+            this.reset();
+            this.lastCourse = run.courseId;
+        }
+        const previous = this.previous;
+        if (previous && run.ticks !== this.lastTick) {
+            const dx = run.position.x - previous.x, dy = run.position.y - previous.y;
+            const d = Math.hypot(dx, dy);
+            if (d > .05 && d < 40) {
+                const dir = { x: dx / d, y: dy / d };
+                const turn = this.previousDirection ? clamp(1 - (dir.x * this.previousDirection.x + dir.y * this.previousDirection.y), 0, 2) : 0;
+                this.traveled += d;
+                this.traveledSinceDeposit += d;
+                // The wake is deposited in space, not bound to the player's finger position.
+                // At least one control point every 6 world units; a turn leaves a stronger slug.
+                if (this.traveledSinceDeposit >= 5.5 || turn > .22) {
+                    const power = clamp(.7 + d * .12 + turn * .9, .65, 2.8);
+                    this.trails.push({ x: run.position.x, y: run.position.y, dx: dir.x, dy: dir.y, strength: power, age: 0 });
+                    if (this.trails.length > MAX_TRAIL)
+                        this.trails.shift();
+                    this.deposits++;
+                    this.traveledSinceDeposit = 0;
+                }
+                if (turn > .26)
+                    this.pushPulse(run.position, clamp(.6 + turn * .9, .6, 2.6));
+                this.previousDirection = dir;
+            }
+        }
+        if (run.phase === 'lost' && this.lastPhase !== 'lost')
+            this.pushPulse(run.position, 3.6);
+        this.previous = { ...run.position };
+        this.lastTick = run.ticks;
+        this.lastPhase = run.phase;
+    }
+    pushPulse(at, power) {
+        this.pulses.push({ x: at.x, y: at.y, age: 0, power: clamp(power, 0, 4) });
+        if (this.pulses.length > 9)
+            this.pulses.shift();
+    }
+    /** Viscosity: wake drifts slowly and loses elasticity over ~2.5s. */
+    step() {
+        this.time += DT;
+        for (let i = this.trails.length - 1; i >= 0; i--) {
+            const t = this.trails[i], age = t.age + DT;
+            if (age >= 2.4)
+                this.trails.splice(i, 1);
+            else
+                this.trails[i] = { ...t, age };
+        }
+        for (let i = this.pulses.length - 1; i >= 0; i--) {
+            const t = this.pulses[i], age = t.age + DT;
+            if (age >= 1.3)
+                this.pulses.splice(i, 1);
+            else
+                this.pulses[i] = { ...t, age };
+        }
+    }
+    /** 0 at rest and finite for every bounded input. */
+    energy() {
+        let energy = 0;
+        for (const t of this.trails)
+            energy += t.strength * Math.pow(1 - t.age / 2.4, 2);
+        for (const p of this.pulses)
+            energy += p.power * Math.pow(1 - p.age / 1.3, 2);
+        return energy;
+    }
+    /** Attractive contact-lens displacement for the colored substrate, never a hitbox change. */
+    displacement(x, y) {
+        let dx = 0, dy = 0;
+        for (const t of this.trails) {
+            const d2 = (x - t.x) ** 2 + (y - t.y) ** 2;
+            if (d2 > 70 * 70)
+                continue;
+            const decay = (1 - t.age / 2.4) ** 2;
+            const w = Math.exp(-d2 / (2 * 25 * 25)) * decay * t.strength;
+            dx += t.dx * w * 5.2;
+            dy += t.dy * w * 5.2;
+        }
+        return { x: clamp(dx, -18, 18), y: clamp(dy, -18, 18) };
+    }
+    snapshot() { return { energy: Number(this.energy().toFixed(3)), deposits: this.deposits, traveled: Number(this.traveled.toFixed(2)), trails: this.trails.length, pulses: this.pulses.length, tick: Math.round(this.time * 60) }; }
+}
+exports.SlimeField = SlimeField;
+/** The thick wake flows behind the real runner; color layering implies translucent slime. */
+function drawSlimeBackground(ctx, slime) {
+    const base = ctx.createLinearGradient(30, 0, 335, 640);
+    base.addColorStop(0, '#0a2830');
+    base.addColorStop(.52, '#103b38');
+    base.addColorStop(1, '#09262c');
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    const glow = ctx.createRadialGradient(250, 230, 15, 192, 305, 410);
+    glow.addColorStop(0, '#6fdb9c2c');
+    glow.addColorStop(.7, '#2ea98914');
+    glow.addColorStop(1, '#0b242c00');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, courses_js_1.BOARD_WIDTH, courses_js_1.BOARD_HEIGHT);
+    ctx.save();
+    // Viscous surface lines sag behind movement: field sampling never touches collision geometry.
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let y = 22, idx = 0; y <= 605; y += 29, idx++) {
+        ctx.beginPath();
+        for (let x = 0; x <= 360; x += 12) {
+            const d = slime?.displacement(x, y) ?? { x: 0, y: 0 };
+            if (x === 0)
+                ctx.moveTo(x + d.x * .75, y + d.y * .6);
+            else
+                ctx.lineTo(x + d.x * .75, y + d.y * .6);
+        }
+        ctx.strokeStyle = idx % 4 === 0 ? '#bbfdbb32' : '#90e9be15';
+        ctx.lineWidth = idx % 4 === 0 ? 2.0 : 1.0;
+        ctx.stroke();
+    }
+    for (let x = 22, i = 0; x < 360; x += 35, i++) {
+        ctx.beginPath();
+        for (let y = 0; y <= 640; y += 13) {
+            const d = slime?.displacement(x, y) ?? { x: 0, y: 0 };
+            if (y === 0)
+                ctx.moveTo(x + d.x * .7, y + d.y * .7);
+            else
+                ctx.lineTo(x + d.x * .7, y + d.y * .7);
+        }
+        ctx.strokeStyle = i % 3 === 0 ? '#c0ffc026' : '#91eec010';
+        ctx.lineWidth = i % 3 === 0 ? 1.2 : .7;
+        ctx.stroke();
+    }
+    // Directionally stretched gelatin slugs with bright wet edges and matte centers.
+    for (const trail of slime?.trails ?? []) {
+        const fade = Math.pow(1 - trail.age / 2.4, 1.45);
+        const width = 12 + trail.strength * 5;
+        const length = 19 + trail.strength * 11;
+        const angle = Math.atan2(trail.dy, trail.dx);
+        ctx.save();
+        ctx.translate(trail.x, trail.y);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.ellipse(-length * .44, 0, length, width * .93, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(62,174,111,${(.15 * fade).toFixed(4)})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(159,255,179,${(.42 * fade).toFixed(4)})`;
+        ctx.lineWidth = 2.1;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(-length * .4, -width * .38, length * .69, width * .27, -.11, Math.PI * .97, Math.PI * 1.85);
+        ctx.strokeStyle = `rgba(220,255,212,${(.53 * fade).toFixed(4)})`;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        ctx.restore();
+    }
+    for (const pulse of slime?.pulses ?? []) {
+        const fade = Math.pow(1 - pulse.age / 1.3, 2), radius = 10 + pulse.age * 55;
+        ctx.beginPath();
+        ctx.ellipse(pulse.x, pulse.y, radius * 1.18, radius * .78, 0, 0, Math.PI * 2);
+        ctx.lineWidth = 2.5 * fade + 1;
+        ctx.strokeStyle = `rgba(186,255,177,${(.4 * fade).toFixed(4)})`;
+        ctx.stroke();
+    }
+    // Slow pooled lens at the edges, restrained enough not to hide wall outlines.
+    ctx.beginPath();
+    ctx.moveTo(-40, 135);
+    ctx.bezierCurveTo(80, 75, 175, 130, 402, 40);
+    ctx.lineWidth = 18;
+    ctx.strokeStyle = '#9bf5a515';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-30, 597);
+    ctx.bezierCurveTo(118, 528, 234, 657, 401, 555);
+    ctx.lineWidth = 31;
+    ctx.strokeStyle = '#c0f5af17';
+    ctx.stroke();
+    ctx.restore();
 }
 
 }};const cache={};function load(id){if(cache[id])return cache[id].exports;const fn=modules[id];if(!fn)throw Error('Module not found: '+id);const mod={exports:{}};cache[id]=mod;const localReq=(spec)=>{if(!spec.startsWith('.'))throw Error('External dependency refused: '+spec);const arr=id.split('/').slice(0,-1);for(const part of spec.split('/')){if(part==='..')arr.pop();else if(part!=='.')arr.push(part)}return load(arr.join('/'))};fn(localReq,mod,mod.exports);return mod.exports}load('src/main.js')})();

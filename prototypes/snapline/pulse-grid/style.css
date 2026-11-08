@@ -133,3 +133,11 @@ body[data-mode="c"] .bottom-rail span{color:var(--mint)}
 .surface-toggle[aria-pressed="true"]{border-color:#72f3d8;background:#17423f;box-shadow:0 0 0 1px #72f3d842 inset;color:#b6fff1!important}
 .surface-toggle:focus-visible{outline-offset:2px}
 @media(max-width:355px){.surface-toggle{min-width:94px;font-size:9px;padding:0 4px}.brand-name{font-size:12px}}
+
+/* M2 — three-way material selector, still inside approved Pulse Grid header geometry. */
+.surface-toggle{min-width:116px;min-height:44px;gap:4px;font-size:10px;font-variant-numeric:tabular-nums}
+.surface-toggle small{margin-left:1px;color:#88aeb8;font-size:8px;font-weight:900}
+body[data-material="slime"] .surface-toggle{background:#1d3936;border-color:#aaf2ac;color:#e1ffce!important}
+body[data-material="slime"] .surface-toggle span{color:#c2ff99}
+body[data-material="slime"] .surface-toggle small{color:#c8e9bd}
+@media(max-width:385px){.surface-toggle{min-width:98px;padding:0 5px;font-size:9px}.surface-toggle small{font-size:8px}}
